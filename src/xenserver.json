@@ -1,39 +1,60 @@
 {
-    "deviceClasses": [ {
-        "componentTypes": [
-        {
-            "name": "VM",
-            "properties": [
-                {"name": "VCPUs_max"},
-                {"name": "VCPUs_at_startup"},
-                {"name": "memory_dynamic_max"},
-                {"name": "memory_dynamic_min"},
-                {"name": "memory_overhead"},
-                {"name": "memory_static_max"},
-                {"name": "memory_static_min"},
-                {"name": "name_label"},
-                {"name": "name_description"},
-                {"name": "power_state"},
-                {"name": "uuid"}
-            ]
-        },
-        "path": "Device/http/XenServer",
-    } ],
-    "id": "ZenPacks.demo.Relationships",
-    "relationships": [
-        {
-            # "ComponentA": "Enclosure",
-            # "ComponentB": "Fan",
-            "Contained": false
-        }
-    ],
     "zProperties": [
-        {
-            "Category": "XenServer",
-            "default": true,
-            "name": "xen_hostname",
-            "type": "boolean"
-        },
-        {"name": "e1"}
-    ]
+        {"Category": "XenServer", "default": "", "type": "string", "name": "zXenServerHostname"},
+        {"Category": "XenServer", "default": "admin", "type": "string", "name": "zXenServerUsername"},
+        {"Category": "XenServer", "default": "zenoss", "type": "string", "name": "zXenServerPassword"},
+        {"Category": "XenServer", "default": true, "type": "boolean", "name": "zXenServerUseSSL"}
+    ],
+
+    "deviceClasses": [{
+        "path": "Device/http/XenServer",
+        "componentTypes": [
+            {
+                "name": "VM",
+                "properties": [
+                    {"name": "VCPUs_max"},
+                    {"name": "VCPUs_at_startup"},
+                    {"name": "memory_dynamic_max"},
+                    {"name": "memory_dynamic_min"},
+                    {"name": "memory_overhead"},
+                    {"name": "memory_static_max"},
+                    {"name": "memory_static_min"},
+                    {"name": "name_label"},
+                    {"name": "name_description"},
+                    {"name": "power_state"},
+                    {"name": "uuid"}
+                ]
+            },
+            {
+                "name": "VDI",
+                "properties": [
+                    {"name": "allow_caching"},
+                    {"name": "missing"},
+                    {"name": "name_description"},
+                    {"name": "name_label"},
+                    {"name": "on_boot"},
+                    {"name": "physical_utilisation"},
+                    {"name": "read_only"},
+                    {"name": "sharable"},
+                    {"name": "type"},
+                    {"name": "virtual_size"},
+                    {"name": "uuid"}
+                ]
+            },
+            {
+                "name": "VIF",
+                "properties": [
+                    {"name": "uuid"}
+                ]
+            },
+            {
+                "name": "PIF",
+                "properties": [
+                    {"name": "uuid"}
+                ]
+            },
+        ]
+    }],
+
+    "id": "ZenPacks.zenoss.XenServer"
 }
