@@ -1,0 +1,39 @@
+{
+    "deviceClasses": [ {
+        "componentTypes": [
+        {
+            "name": "VM",
+            "properties": [
+                {"name": "VCPUs_max"},
+                {"name": "VCPUs_at_startup"},
+                {"name": "memory_dynamic_max"},
+                {"name": "memory_dynamic_min"},
+                {"name": "memory_overhead"},
+                {"name": "memory_static_max"},
+                {"name": "memory_static_min"},
+                {"name": "name_label"},
+                {"name": "name_description"},
+                {"name": "power_state"},
+                {"name": "uuid"}
+            ]
+        },
+        "path": "Device/http/XenServer",
+    } ],
+    "id": "ZenPacks.demo.Relationships",
+    "relationships": [
+        {
+            # "ComponentA": "Enclosure",
+            # "ComponentB": "Fan",
+            "Contained": false
+        }
+    ],
+    "zProperties": [
+        {
+            "Category": "XenServer",
+            "default": true,
+            "name": "xen_hostname",
+            "type": "boolean"
+        },
+        {"name": "e1"}
+    ]
+}
