@@ -1,32 +1,19 @@
-################################
 # These variables are overwritten by Zenoss when the ZenPack is exported
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.XenServer"
-VERSION = "1.0.0"
-AUTHOR = "Zenoss"
-LICENSE = "All Rights Reserved"
-NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss']
-PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.XenServer']
+VERSION = "0.0.1"
+AUTHOR = "ZenossLabs <labs@zenoss.com>"
+LICENSE = "gpl"
+NAMESPACE_PACKAGES = [u'ZenPacks', u'ZenPacks.zenoss']
+PACKAGES = [u'ZenPacks', u'ZenPacks.zenoss', u'ZenPacks.zenoss.XenServer']
 INSTALL_REQUIRES = []
 COMPAT_ZENOSS_VERS = ">=4.2"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
-################################
 # Zenoss will not overwrite any changes you make below here.
 
-import os
-from subprocess import Popen, PIPE
 from setuptools import setup, find_packages
-
-
-# Run "make build" if a GNUmakefile is present.
-if os.path.isfile('GNUmakefile'):
-    print 'GNUmakefile found. Running "make build" ..'
-    p = Popen('make build', stdout=PIPE, stderr=PIPE, shell=True)
-    print p.communicate()[0]
-    if p.returncode != 0:
-        raise Exception('"make build" exited with an error: %s' % p.returncode)
 
 setup(
     # This ZenPack metadata should usually be edited with the Zenoss
@@ -57,9 +44,11 @@ setup(
     # in the binary egg when it is built.
     include_package_data=True,
 
-    # The MANIFEST.in file is the recommended way of including additional files
-    # in your ZenPack. package_data is another.
-    #package_data = {}
+    # Tell setuptools what non-python files should also be included
+    # with the binary egg.
+    package_data={
+         '': ['*.txt'],
+         },
 
     # Indicate dependencies on other python modules or ZenPacks.  This line
     # is modified by zenoss when the ZenPack edit page is submitted.  Zenoss

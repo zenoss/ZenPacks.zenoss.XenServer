@@ -1,4 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+    <!-- API: Info Adapters -->
+
+    <adapter
+        provides=".Device.IDeviceInfo"
+        for=".Device.Device"
+        factory=".Device.DeviceInfo"
+        />
+
+    <adapter
+        provides=".PIF.IPIFInfo"
+        for=".PIF.PIF"
+        factory=".PIF.PIFInfo"
+        />
+
+    <adapter
+        provides=".SR.ISRInfo"
+        for=".SR.SR"
+        factory=".SR.SRInfo"
+        />
+
+    <adapter
+        provides=".VBD.IVBDInfo"
+        for=".VBD.VBD"
+        factory=".VBD.VBDInfo"
+        />
+
+    <adapter
+        provides=".VDI.IVDIInfo"
+        for=".VDI.VDI"
+        factory=".VDI.VDIInfo"
+        />
+
+    <adapter
+        provides=".VIF.IVIFInfo"
+        for=".VIF.VIF"
+        factory=".VIF.VIFInfo"
+        />
+
+    <adapter
+        provides=".VM.IVMInfo"
+        for=".VM.VM"
+        factory=".VM.VMInfo"
+        />
+
+
+    <!-- Browser Resources -->
+    <browser:resourceDirectory
+        name="ZenPacks_zenoss_XenServer"
+        directory="resources"
+        />
+
+    <!-- JavaScript needed for all Zenoss pages. -->
+    <browser:viewlet
+        name="js-ZenPacks_zenoss_XenServer"
+        paths="/++resource++ZenPacks_zenoss_XenServer/js/ZenPacks_zenoss_XenServer.js"
+        for="*"
+        weight="20"
+        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+        permission="zope2.Public"
+        />
+
+    <!-- JavaScript needed only for NetApp devices. -->
+
+<zpg.lib.ComponentJS.ComponentJS object at 0x222fdd0>
+    <browser:viewlet
+        name="js-ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device"
+        paths="/++resource++ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device/js/ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device.js"
+        for="Products.ZenModel.Device.Device"
+        weight="20"
+        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+        permission="zope2.Public"
+        />
 
 </configure>
