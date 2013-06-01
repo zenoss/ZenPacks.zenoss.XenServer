@@ -10,6 +10,63 @@
         "path": "Device/http/XenServer", 
         "componentTypes": [
             {
+                "name": "host", 
+                "properties": [
+                    {"name": "API_version_major"},
+                    {"name": "API_version_minor"},
+                    {"name": "API_version_vendor"},
+                    {"name": "capabilities"},
+                    {"name": "crashdumps"},
+                    {"name": "edition"},
+                    {"name": "enabled"},
+                    {"name": "external_auth_service_name"},
+                    {"name": "external_auth_type"},
+                    {"name": "ha_network_peers"},
+                    {"name": "ha_statefiles"},
+                    {"name": "hostname"},
+                    {"name": "memory_overhead"},
+                    {"name": "name_description"},
+                    {"name": "name_label"},
+                    {"name": "other_config"},
+                    {"name": "patches"},
+                    {"name": "power_on_mode"},
+                    {"name": "sched_policy"},
+                    {"name": "supported_bootloaders"},
+                    {"name": "suspend_image_sr"},
+                    {"name": "tags"},
+                    {"name": "uuid"}
+                ]
+            },
+            {
+                "name": "host_cpu", 
+                "properties": [
+                    {"name": "family"},
+                    {"name": "features"},
+                    {"name": "flags"},
+                    {"name": "host"},
+                    {"name": "model"},
+                    {"name": "modelname"},
+                    {"name": "number"},
+                    {"name": "speed"},
+                    {"name": "stepping"},
+                    {"name": "utilisation"},
+                    {"name": "uuid"},
+                    {"name": "vendor"}
+                ]
+            },
+            {
+                "name": "network", 
+                "properties": [
+                    {"name": "bridge"},
+                    {"name": "default_locking_mode"},
+                    {"name": "MTU"},
+                    {"name": "name_description"},
+                    {"name": "name_label"},
+                    {"name": "tags"},
+                    {"name": "uuid"}
+                ]
+            },
+            {
                 "name": "VM", 
                 "properties": [
                     {"name": "VCPUs_max"}, 
@@ -89,6 +146,51 @@
             }
         ]
     }], 
+
+    "relationships": [
+        {
+            "ComponentA": "SR",
+            "ComponentB": "VBD",
+            "Type": "1-M",
+            "Contained": true
+        },
+        {
+            "ComponentA": "VBD",
+            "ComponentB": "VDI",
+            "Type": "1-M",
+            "Contained": true
+        },
+        {
+            "ComponentA": "VM",
+            "ComponentB": "VDI",
+            "Type": "M-M",
+            "Contained": false
+        },
+        {
+            "ComponentA": "VM",
+            "ComponentB": "VIF",
+            "Type": "1-M",
+            "Contained": true
+        },
+        {
+            "ComponentA": "host",
+            "ComponentB": "PIF",
+            "Type": "1-M",
+            "Contained": true
+        },
+        {
+            "ComponentA": "PIF",
+            "ComponentB": "VIF",
+            "Type": "1-M",
+            "Contained": false
+        },
+        {
+            "ComponentA": "network",
+            "ComponentB": "PIF",
+            "Type": "1-M",
+            "Contained": false
+        }
+    ],
     
     "id": "ZenPacks.zenoss.XenServer"
 }
