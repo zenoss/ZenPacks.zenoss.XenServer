@@ -7,7 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from ZenPacks.zenoss.XenServer.utils import updateToMany
 
 class VM(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'VM'
@@ -48,6 +49,8 @@ class VM(DeviceComponent, ManagedEntity):
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vms',)),
+        ('vdis', ToMany(ToMany, 'ZenPacks.zenoss.XenServer.VDI', 'vms',)),
+        ('vifs', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VIF', 'vm',)),
         )
 
     factory_type_information = ({
@@ -77,7 +80,31 @@ class VM(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+    def getVDIIds(self):
+        '''
+        Return a sorted list of each vdi id related to this
+        Aggregate.
+
+        Used by modeling.
+        '''
+
+        return sorted([vdi.id for vdi in self.vdis.objectValuesGen()])
+
+    def setVDIIds(self, ids):
+        '''
+        Update VDI relationship given ids.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.vdis,
+            root=self.device(),
+            type_=ZenPacks.zenoss.XenServer.VDI,
+            ids=ids)
+
 class IVMInfo(IComponentInfo):
+    vdi_count = schema.Int(title=_t(u'Number of VDIS))
+    vif_count = schema.Int(title=_t(u'Number of VIFS))
 
     memory_static_min = schema.TextLine(title=_t(u'memory_static_mins'))
     name_label = schema.TextLine(title=_t(u'name_labels'))
@@ -105,4 +132,23 @@ class VMInfo(ComponentInfo):
     name_description = ProxyProperty('name_description')
     memory_dynamic_min = ProxyProperty('memory_dynamic_min')
     memory_overhead = ProxyProperty('memory_overhead')
+
+
+    @property
+    def vdi_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.vdis.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.vdis())
+
+    @property
+    def vif_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.vifs.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.vifs())
 

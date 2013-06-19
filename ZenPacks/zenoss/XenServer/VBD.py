@@ -40,6 +40,8 @@ class VBD(DeviceComponent, ManagedEntity):
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vbds',)),
+        ('sr', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.SR', 'vbds',)),
+        ('vdis', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VDI', 'vbd',)),
         )
 
     factory_type_information = ({
@@ -70,6 +72,7 @@ class VBD(DeviceComponent, ManagedEntity):
                         obj, exc, self))
 
 class IVBDInfo(IComponentInfo):
+    vdi_count = schema.Int(title=_t(u'Number of VDIS))
 
     uuid = schema.TextLine(title=_t(u'uuids'))
     bootable = schema.TextLine(title=_t(u'bootables'))
@@ -89,4 +92,14 @@ class VBDInfo(ComponentInfo):
     current_attached = ProxyProperty('current_attached')
     type = ProxyProperty('type')
     empty = ProxyProperty('empty')
+
+
+    @property
+    def vdi_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.vdis.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.vdis())
 

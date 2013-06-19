@@ -7,7 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from ZenPacks.zenoss.XenServer.utils import updateToMany
 
 class VDI(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'VDI'
@@ -48,6 +49,8 @@ class VDI(DeviceComponent, ManagedEntity):
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vdis',)),
+        ('vbd', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VBD', 'vdis',)),
+        ('vms', ToMany(ToMany, 'ZenPacks.zenoss.XenServer.VM', 'vdis',)),
         )
 
     factory_type_information = ({
@@ -76,6 +79,28 @@ class VDI(DeviceComponent, ManagedEntity):
                     'Unable to determine parent at %s (%s) '
                     'while getting device for %s' % (
                         obj, exc, self))
+
+    def getVMIds(self):
+        '''
+        Return a sorted list of each vm id related to this
+        Aggregate.
+
+        Used by modeling.
+        '''
+
+        return sorted([vm.id for vm in self.vms.objectValuesGen()])
+
+    def setVMIds(self, ids):
+        '''
+        Update VM relationship given ids.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.vms,
+            root=self.device(),
+            type_=ZenPacks.zenoss.XenServer.VM,
+            ids=ids)
 
 class IVDIInfo(IComponentInfo):
 
@@ -106,3 +131,10 @@ class VDIInfo(ComponentInfo):
     virtual_size = ProxyProperty('virtual_size')
     type = ProxyProperty('type')
 
+class VDIPathReporter(DefaultPathReporter):
+    paths = super(VDIPathReporter, self).getPaths()
+
+    for obj in self.context.vms()
+        paths.extend(relPath(obj,'devices'))
+
+   return paths

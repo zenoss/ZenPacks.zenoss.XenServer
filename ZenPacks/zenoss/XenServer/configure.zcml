@@ -48,6 +48,44 @@
         factory=".VM.VMInfo"
         />
 
+    <adapter
+        provides=".host.IhostInfo"
+        for=".host.host"
+        factory=".host.hostInfo"
+        />
+
+    <adapter
+        provides=".host_cpu.Ihost_cpuInfo"
+        for=".host_cpu.host_cpu"
+        factory=".host_cpu.host_cpuInfo"
+        />
+
+    <adapter
+        provides=".network.InetworkInfo"
+        for=".network.network"
+        factory=".network.networkInfo"
+        />
+
+
+    <!-- Custom Path Reporters -->
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IPathReporter"
+        for=".VDI.VDI"
+        factory=".VDI.VDIPathReporter"
+        />
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IPathReporter"
+        for=".PIF.PIF"
+        factory=".PIF.PIFPathReporter"
+        />
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IPathReporter"
+        for=".VIF.VIF"
+        factory=".VIF.VIFPathReporter"
+        />
 
     <!-- Browser Resources -->
     <browser:resourceDirectory
@@ -68,7 +106,7 @@
 
     <!-- JavaScript needed only for NetApp devices. -->
 
-<zpg.lib.ComponentJS.ComponentJS object at 0x222fdd0>
+<zpg.lib.ComponentJS.ComponentJS object at 0x18a1fd0>
     <browser:viewlet
         name="js-ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device"
         paths="/++resource++ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device/js/ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device.js"

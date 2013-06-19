@@ -23,17 +23,23 @@ ZENPACK_NAME = 'ZenPacks.zenoss.XenServer'
 # Modules containing model classes. Used by zenchkschema to validate
 # bidirectional integrity of defined relationships.
 productNames = (
+    'host',
     'VDI',
+    'network',
+    'host_cpu',
     'PIF',
-    'VBD',
-    'Device',
     'VM',
+    'Device',
+    'VBD',
     'VIF',
     'SR',
     )
 
 # Define new device relations.
 NEW_DEVICE_RELATIONS = (
+    ('hosts', 'host')
+    ('host_cpus', 'host_cpu')
+    ('networks', 'network')
     ('vms', 'VM')
     ('vdis', 'VDI')
     ('vbds', 'VBD')
@@ -43,6 +49,9 @@ NEW_DEVICE_RELATIONS = (
     )
 
 NEW_COMPONENT_TYPES = (
+    'ZenPacks.zenoss.XenServer.host.host',
+    'ZenPacks.zenoss.XenServer.host_cpu.host_cpu',
+    'ZenPacks.zenoss.XenServer.network.network',
     'ZenPacks.zenoss.XenServer.VM.VM',
     'ZenPacks.zenoss.XenServer.VDI.VDI',
     'ZenPacks.zenoss.XenServer.VBD.VBD',
@@ -69,16 +78,16 @@ for product_name in productNames:
     CLASS_NAME[product_name]='.'.join([ZP_NAME, product_name, product_name])
 
 _PACK_Z_PROPS=[
-               (zXenPassword, 'zenoss', string)
-               (zXenUseSSL, True, boolean)
-               (zXenUserName, 'admin', string)
-               (zXenHostname, '', string)
+               (zXenServerUseSSL, True, boolean)
+               (zXenServerHostname, '', string)
+               (zXenServerUserName, 'admin', string)
+               (zXenServerPassword, 'zenoss', string)
                ]
 
-setzPropertyCategory(zXenPassword, 'XenServer')
-setzPropertyCategory(zXenUseSSL, 'XenServer')
-setzPropertyCategory(zXenUserName, 'XenServer')
-setzPropertyCategory(zXenHostname, 'XenServer')
+setzPropertyCategory(zXenServerUseSSL, 'XenServer')
+setzPropertyCategory(zXenServerHostname, 'XenServer')
+setzPropertyCategory(zXenServerUserName, 'XenServer')
+setzPropertyCategory(zXenServerPassword, 'XenServer')
 
 _plugins = (
     )

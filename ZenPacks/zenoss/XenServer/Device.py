@@ -17,6 +17,9 @@ class Device(Device):
         _relations = _relations + getattr(Klass, '_relations', None)
 
     _relations = _relations + (
+        ('host_cpus', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.host_cpu', 'device',)),
+        ('hosts', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.host', 'device',)),
+        ('networks', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.network', 'device',)),
         ('pifs', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.PIF', 'device',)),
         ('srs', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.SR', 'device',)),
         ('vbds', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VBD', 'device',)),
@@ -53,6 +56,9 @@ class Device(Device):
                         obj, exc, self))
 
 class IDeviceInfo(IDeviceInfo):
+    host_count = schema.Int(title=_t(u'Number of hosts))
+    host_cpu_count = schema.Int(title=_t(u'Number of host_cpus))
+    network_count = schema.Int(title=_t(u'Number of networks))
     vm_count = schema.Int(title=_t(u'Number of VMS))
     vdi_count = schema.Int(title=_t(u'Number of VDIS))
     vbd_count = schema.Int(title=_t(u'Number of VBDS))
@@ -61,6 +67,33 @@ class IDeviceInfo(IDeviceInfo):
     pif_count = schema.Int(title=_t(u'Number of PIFS))
 class DeviceInfo(DeviceInfo):
     implements(IDeviceInfo)
+
+    @property
+    def host_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.hosts.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.hosts())
+
+    @property
+    def host_cpu_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.host_cpus.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.host_cpus())
+
+    @property
+    def network_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.networks.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.networks())
 
     @property
     def vm_count:

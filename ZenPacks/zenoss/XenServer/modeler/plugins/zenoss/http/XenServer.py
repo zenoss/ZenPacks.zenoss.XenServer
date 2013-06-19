@@ -12,7 +12,7 @@
 ###########################################################################
 
 import logging
-LOG = logging.getLogger('zen.CloudStack')
+LOG = logging.getLogger('zen.XenServer')
 
 from twisted.internet import defer
 
@@ -28,6 +28,7 @@ addLocalLibPath()
 
 def fetch_from_xen(sx):
     all_hosts = sx.host.get_all_records()
+    all_host_cpus = sx.host_cpu.get_all_records()
     all_VMs = sx.VM.get_all_records()              # A dictionary of virtual machines
     all_VDIs = sx.VDI.get_all_records()              # A dictionary of virtual disk images
     all_VIFs = sx.VIF.get_all_records()              # A dictionary of virtual network interfaces
@@ -45,13 +46,12 @@ def fetch_from_xen(sx):
         'VIFs':     all_VIFs,
         'PIFs':     all_PIFs,
         'hosts':    all_hosts,
+        'host_cpus':    all_host_cpus,
         'SRs':      all_SRs,
     }
 
 
-
-
-class CloudStack(PythonPlugin):
+class XenServer(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zXenServerHostname',
         'zXenServerUsername',
@@ -60,12 +60,6 @@ class CloudStack(PythonPlugin):
         )
 
     def collect(self, device, unused):
-        """Collect model-related information using the txcloudstack library.
-
-        Note: This method is not currently unit tested because we haven't gone
-        to the trouble of creating mock results within txcloudstack.
-        """
-        
         # if not device.zXenServerHostname:
         #     LOG.error('zXenServerHostname is not set. Not discovering')
         #     return None
@@ -97,5 +91,28 @@ class CloudStack(PythonPlugin):
         return d
 
     def process(self, device, results, unused):
-        return results
+        # See https://dev.zenoss.com/tracint/browser/trunk/enterprise/zenpacks/ZenPacks.zenoss.EMC.base/ZenPacks/zenoss/EMC/base/modeler/emc.py
+    
+        pprint(results)
+        import pdb; pdb.set_trace()
 
+        log.info('Modeler %s processing data for server %s',
+            self.name(), device.id)
+
+        _om = ObjectMap()
+
+        maps = []
+
+        # ObjectMap lists.
+        hosts_oms = []
+
+        # ObjectMap lists in dictionaries with compname as key.
+        map_hosts_oms = collections.defaultdict(list)
+
+        maps.append(RelationshipMap(
+            relname="hosts",
+            compname="os",
+            modname="ZenPacks.zenoss.XenServer.base.host",
+            objmaps=hosts_oms))
+
+        return maps

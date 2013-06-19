@@ -7,7 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from ZenPacks.zenoss.XenServer.utils import updateToOne
 
 class VIF(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'VIF'
@@ -38,6 +39,8 @@ class VIF(DeviceComponent, ManagedEntity):
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vifs',)),
+        ('pif', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.PIF', 'vifs',)),
+        ('vm', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VM', 'vifs',)),
         )
 
     factory_type_information = ({
@@ -67,6 +70,28 @@ class VIF(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+    def getpifId(self):
+        '''
+        Return pif id or None.
+
+        Used by modeling.
+        '''
+        obj = self.pif()
+        if obj: 
+            return obj.id
+
+    def setpifId(self, id_):
+        '''
+        Set pif by id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.pif,
+            root=self.device(),
+            type_=ZenPacks.zenoss.XenServer.PIF,
+            id_=id_)
+
 class IVIFInfo(IComponentInfo):
 
     uuid = schema.TextLine(title=_t(u'uuids'))
@@ -86,3 +111,11 @@ class VIFInfo(ComponentInfo):
     MTU = ProxyProperty('MTU')
     qos_algorithm_type = ProxyProperty('qos_algorithm_type')
 
+class VIFPathReporter(DefaultPathReporter):
+    paths = super(VIFPathReporter, self).getPaths()
+
+    obj = self.context.pif()
+    if obj:
+        paths.extend(relPath(obj,'device'))
+
+   return paths

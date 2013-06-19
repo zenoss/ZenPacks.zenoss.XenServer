@@ -42,6 +42,7 @@ class SR(DeviceComponent, ManagedEntity):
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'srs',)),
+        ('vbds', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VBD', 'sr',)),
         )
 
     factory_type_information = ({
@@ -72,6 +73,7 @@ class SR(DeviceComponent, ManagedEntity):
                         obj, exc, self))
 
 class ISRInfo(IComponentInfo):
+    vbd_count = schema.Int(title=_t(u'Number of VBDS))
 
     uuid = schema.TextLine(title=_t(u'uuids'))
     physical_size = schema.TextLine(title=_t(u'physical_sizes'))
@@ -93,4 +95,14 @@ class SRInfo(ComponentInfo):
     shared = ProxyProperty('shared')
     name_description = ProxyProperty('name_description')
     virtual_allocation = ProxyProperty('virtual_allocation')
+
+
+    @property
+    def vbd_count:
+        # Using countObjects is fast.
+        try:
+            return self._object.vbds.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.vbds())
 
