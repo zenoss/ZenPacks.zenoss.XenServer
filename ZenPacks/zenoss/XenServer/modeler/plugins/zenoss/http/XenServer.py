@@ -94,7 +94,6 @@ class XenServer(PythonPlugin):
         # See https://dev.zenoss.com/tracint/browser/trunk/enterprise/zenpacks/ZenPacks.zenoss.EMC.base/ZenPacks/zenoss/EMC/base/modeler/emc.py
     
         pprint(results)
-        import pdb; pdb.set_trace()
 
         log.info('Modeler %s processing data for server %s',
             self.name(), device.id)
