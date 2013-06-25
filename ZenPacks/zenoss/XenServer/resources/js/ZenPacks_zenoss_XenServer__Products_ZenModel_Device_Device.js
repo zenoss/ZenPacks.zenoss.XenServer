@@ -124,7 +124,6 @@ ZC.PIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('PIFPanel', ZC.PIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6a90>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_pifs',
     text: _t('PIFS'),
@@ -232,7 +231,6 @@ ZC.PIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('PIFPanel', ZC.PIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6a90>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_pifs',
     text: _t('PIFS'),
@@ -340,7 +338,6 @@ ZC.PIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('PIFPanel', ZC.PIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6a90>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_pifs',
     text: _t('PIFS'),
@@ -812,7 +809,6 @@ ZC.VDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VDIPanel', ZC.VDIPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6cd0>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vdis',
     text: _t('VDIS'),
@@ -962,7 +958,6 @@ ZC.VDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VDIPanel', ZC.VDIPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6cd0>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vdis',
     text: _t('VDIS'),
@@ -1112,7 +1107,6 @@ ZC.VDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VDIPanel', ZC.VDIPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6cd0>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vdis',
     text: _t('VDIS'),
@@ -1262,7 +1256,6 @@ ZC.VDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VDIPanel', ZC.VDIPanel);
 
-[<zpg.lib.Component.Component object at 0x18f6cd0>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vdis',
     text: _t('VDIS'),
@@ -1377,7 +1370,6 @@ ZC.VIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VIFPanel', ZC.VIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18fbc10>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vifs',
     text: _t('VIFS'),
@@ -1492,7 +1484,6 @@ ZC.VIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VIFPanel', ZC.VIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18fbc10>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vifs',
     text: _t('VIFS'),
@@ -1607,7 +1598,6 @@ ZC.VIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VIFPanel', ZC.VIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18fbc10>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vifs',
     text: _t('VIFS'),
@@ -1722,7 +1712,6 @@ ZC.VIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VIFPanel', ZC.VIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18fbc10>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vifs',
     text: _t('VIFS'),
@@ -1837,7 +1826,6 @@ ZC.VIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer__Products_ZenModel_Device_
 
 Ext.reg('VIFPanel', ZC.VIFPanel);
 
-[<zpg.lib.Component.Component object at 0x18fbc10>]
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vifs',
     text: _t('VIFS'),

@@ -7,6 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
 class SR(DeviceComponent, ManagedEntity):
@@ -23,8 +25,9 @@ class SR(DeviceComponent, ManagedEntity):
     name_description = None
     virtual_allocation = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
@@ -37,8 +40,9 @@ class SR(DeviceComponent, ManagedEntity):
         {'id': 'virtual_allocation', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'srs',)),
@@ -73,7 +77,7 @@ class SR(DeviceComponent, ManagedEntity):
                         obj, exc, self))
 
 class ISRInfo(IComponentInfo):
-    vbd_count = schema.Int(title=_t(u'Number of VBDS))
+    vbd_count = schema.Int(title=_t(u'Number of VBDS'))
 
     uuid = schema.TextLine(title=_t(u'uuids'))
     physical_size = schema.TextLine(title=_t(u'physical_sizes'))
@@ -98,7 +102,7 @@ class SRInfo(ComponentInfo):
 
 
     @property
-    def vbd_count:
+    def vbd_count():
         # Using countObjects is fast.
         try:
             return self._object.vbds.countObjects()

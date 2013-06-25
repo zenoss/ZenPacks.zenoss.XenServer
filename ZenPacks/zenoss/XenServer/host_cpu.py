@@ -7,6 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
 class host_cpu(DeviceComponent, ManagedEntity):
@@ -27,8 +29,9 @@ class host_cpu(DeviceComponent, ManagedEntity):
     speed = None
     uuid = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'modelname', 'type': 'string', 'mode': 'w'},
@@ -45,8 +48,9 @@ class host_cpu(DeviceComponent, ManagedEntity):
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'host_cpus',)),

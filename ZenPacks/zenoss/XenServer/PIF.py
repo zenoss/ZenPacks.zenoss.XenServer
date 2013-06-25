@@ -7,6 +7,9 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany,updateToOne
 
@@ -21,8 +24,9 @@ class PIF(DeviceComponent, ManagedEntity):
     gateway = None
     uuid = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'IP', 'type': 'string', 'mode': 'w'},
@@ -32,8 +36,9 @@ class PIF(DeviceComponent, ManagedEntity):
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'pifs',)),
@@ -114,7 +119,7 @@ class PIF(DeviceComponent, ManagedEntity):
             ids=ids)
 
 class IPIFInfo(IComponentInfo):
-    vif_count = schema.Int(title=_t(u'Number of VIFS))
+    vif_count = schema.Int(title=_t(u'Number of VIFS'))
 
     IP = schema.TextLine(title=_t(u'IPS'))
     MAC = schema.TextLine(title=_t(u'MACS'))
@@ -133,7 +138,7 @@ class PIFInfo(ComponentInfo):
 
 
     @property
-    def vif_count:
+    def vif_count():
         # Using countObjects is fast.
         try:
             return self._object.vifs.countObjects()
@@ -142,10 +147,11 @@ class PIFInfo(ComponentInfo):
             return len(self._object.vifs())
 
 class PIFPathReporter(DefaultPathReporter):
-    paths = super(PIFPathReporter, self).getPaths()
+    def getPaths(self):
+        paths = super(PIFPathReporter, self).getPaths()
 
-    obj = self.context.network()
-    if obj:
-        paths.extend(relPath(obj,'device'))
+        obj = self.context.network()
+        if obj:
+            paths.extend(relPath(obj,'device'))
 
-   return paths
+        return paths

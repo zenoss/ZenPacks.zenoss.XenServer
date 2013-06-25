@@ -1,9 +1,9 @@
 {
     "zProperties": [
         {"Category": "XenServer", "default": "", "type": "string", "name": "zXenServerHostname"}, 
-        {"Category": "XenServer", "default": "admin", "type": "string", "name": "zXenServerUserName"}, 
+        {"Category": "XenServer", "default": "admin", "type": "string", "name": "zXenServerUsername"}, 
         {"Category": "XenServer", "default": "zenoss", "type": "string", "name": "zXenServerPassword"}, 
-        {"Category": "XenServer", "default": true, "type": "boolean", "name": "zXenServerUseSSL"}
+        {"Category": "XenServer", "default": true, "type": "bool", "name": "zXenServerUseSSL"}
     ], 
 
     "deviceClasses": [{

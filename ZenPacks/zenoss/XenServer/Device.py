@@ -1,11 +1,13 @@
 #LICENSE HEADER SAMPLE
 from zope.interface import implements
+from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.device import DeviceInfo
-from Products.Zuul.interface.device import IDeviceInfo
+from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.Device import Device
+from Products.Zuul.interfaces import IDeviceInfo
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
 class Device(Device):
@@ -13,8 +15,9 @@ class Device(Device):
 
     Klasses = [Device]
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('host_cpus', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.host_cpu', 'device',)),
@@ -56,20 +59,20 @@ class Device(Device):
                         obj, exc, self))
 
 class IDeviceInfo(IDeviceInfo):
-    host_count = schema.Int(title=_t(u'Number of hosts))
-    host_cpu_count = schema.Int(title=_t(u'Number of host_cpus))
-    network_count = schema.Int(title=_t(u'Number of networks))
-    vm_count = schema.Int(title=_t(u'Number of VMS))
-    vdi_count = schema.Int(title=_t(u'Number of VDIS))
-    vbd_count = schema.Int(title=_t(u'Number of VBDS))
-    sr_count = schema.Int(title=_t(u'Number of SRS))
-    vif_count = schema.Int(title=_t(u'Number of VIFS))
-    pif_count = schema.Int(title=_t(u'Number of PIFS))
+    host_count = schema.Int(title=_t(u'Number of hosts'))
+    host_cpu_count = schema.Int(title=_t(u'Number of host_cpus'))
+    network_count = schema.Int(title=_t(u'Number of networks'))
+    vm_count = schema.Int(title=_t(u'Number of VMS'))
+    vdi_count = schema.Int(title=_t(u'Number of VDIS'))
+    vbd_count = schema.Int(title=_t(u'Number of VBDS'))
+    sr_count = schema.Int(title=_t(u'Number of SRS'))
+    vif_count = schema.Int(title=_t(u'Number of VIFS'))
+    pif_count = schema.Int(title=_t(u'Number of PIFS'))
 class DeviceInfo(DeviceInfo):
     implements(IDeviceInfo)
 
     @property
-    def host_count:
+    def host_count():
         # Using countObjects is fast.
         try:
             return self._object.hosts.countObjects()
@@ -78,7 +81,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.hosts())
 
     @property
-    def host_cpu_count:
+    def host_cpu_count():
         # Using countObjects is fast.
         try:
             return self._object.host_cpus.countObjects()
@@ -87,7 +90,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.host_cpus())
 
     @property
-    def network_count:
+    def network_count():
         # Using countObjects is fast.
         try:
             return self._object.networks.countObjects()
@@ -96,7 +99,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.networks())
 
     @property
-    def vm_count:
+    def vm_count():
         # Using countObjects is fast.
         try:
             return self._object.vms.countObjects()
@@ -105,7 +108,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.vms())
 
     @property
-    def vdi_count:
+    def vdi_count():
         # Using countObjects is fast.
         try:
             return self._object.vdis.countObjects()
@@ -114,7 +117,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.vdis())
 
     @property
-    def vbd_count:
+    def vbd_count():
         # Using countObjects is fast.
         try:
             return self._object.vbds.countObjects()
@@ -123,7 +126,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.vbds())
 
     @property
-    def sr_count:
+    def sr_count():
         # Using countObjects is fast.
         try:
             return self._object.srs.countObjects()
@@ -132,7 +135,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.srs())
 
     @property
-    def vif_count:
+    def vif_count():
         # Using countObjects is fast.
         try:
             return self._object.vifs.countObjects()
@@ -141,7 +144,7 @@ class DeviceInfo(DeviceInfo):
             return len(self._object.vifs())
 
     @property
-    def pif_count:
+    def pif_count():
         # Using countObjects is fast.
         try:
             return self._object.pifs.countObjects()

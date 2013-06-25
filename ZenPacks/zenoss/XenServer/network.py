@@ -7,6 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
 
@@ -23,8 +25,9 @@ class network(DeviceComponent, ManagedEntity):
     default_locking_mode = None
     name_description = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'bridge', 'type': 'string', 'mode': 'w'},
@@ -36,8 +39,9 @@ class network(DeviceComponent, ManagedEntity):
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'networks',)),
@@ -94,7 +98,7 @@ class network(DeviceComponent, ManagedEntity):
             ids=ids)
 
 class InetworkInfo(IComponentInfo):
-    pif_count = schema.Int(title=_t(u'Number of PIFS))
+    pif_count = schema.Int(title=_t(u'Number of PIFS'))
 
     bridge = schema.TextLine(title=_t(u'bridges'))
     uuid = schema.TextLine(title=_t(u'uuids'))
@@ -117,7 +121,7 @@ class networkInfo(ComponentInfo):
 
 
     @property
-    def pif_count:
+    def pif_count():
         # Using countObjects is fast.
         try:
             return self._object.pifs.countObjects()

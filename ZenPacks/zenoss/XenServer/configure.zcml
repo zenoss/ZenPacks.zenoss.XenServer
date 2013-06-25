@@ -106,7 +106,6 @@
 
     <!-- JavaScript needed only for NetApp devices. -->
 
-<zpg.lib.ComponentJS.ComponentJS object at 0x18a1fd0>
     <browser:viewlet
         name="js-ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device"
         paths="/++resource++ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device/js/ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device.js"

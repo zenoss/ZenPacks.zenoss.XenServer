@@ -7,6 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
 
@@ -27,8 +29,9 @@ class VM(DeviceComponent, ManagedEntity):
     memory_dynamic_min = None
     memory_overhead = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'memory_static_min', 'type': 'string', 'mode': 'w'},
@@ -44,8 +47,9 @@ class VM(DeviceComponent, ManagedEntity):
         {'id': 'memory_overhead', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vms',)),
@@ -103,8 +107,8 @@ class VM(DeviceComponent, ManagedEntity):
             ids=ids)
 
 class IVMInfo(IComponentInfo):
-    vdi_count = schema.Int(title=_t(u'Number of VDIS))
-    vif_count = schema.Int(title=_t(u'Number of VIFS))
+    vdi_count = schema.Int(title=_t(u'Number of VDIS'))
+    vif_count = schema.Int(title=_t(u'Number of VIFS'))
 
     memory_static_min = schema.TextLine(title=_t(u'memory_static_mins'))
     name_label = schema.TextLine(title=_t(u'name_labels'))
@@ -135,7 +139,7 @@ class VMInfo(ComponentInfo):
 
 
     @property
-    def vdi_count:
+    def vdi_count():
         # Using countObjects is fast.
         try:
             return self._object.vdis.countObjects()
@@ -144,7 +148,7 @@ class VMInfo(ComponentInfo):
             return len(self._object.vdis())
 
     @property
-    def vif_count:
+    def vif_count():
         # Using countObjects is fast.
         try:
             return self._object.vifs.countObjects()

@@ -7,7 +7,7 @@ import Globals
 from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenPack import ZenPack as ZenPackBase
 from Products.ZenRelations.RelSchema import ToManyCont, ToOne
-from Products.ZenRelations.zPropertyCategory import setZPropertyCategory
+from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.CMFCore.DirectoryView import registerDirectory
 from Products.Zuul.interfaces import ICatalogTool
 from Products.ZenUtils.Utils import unused
@@ -37,15 +37,15 @@ productNames = (
 
 # Define new device relations.
 NEW_DEVICE_RELATIONS = (
-    ('hosts', 'host')
-    ('host_cpus', 'host_cpu')
-    ('networks', 'network')
-    ('vms', 'VM')
-    ('vdis', 'VDI')
-    ('vbds', 'VBD')
-    ('srs', 'SR')
-    ('vifs', 'VIF')
-    ('pifs', 'PIF')
+    ('host', 'host'),
+    ('host_cpu', 'host_cpu'),
+    ('network', 'network'),
+    ('vm', 'VM'),
+    ('vdi', 'VDI'),
+    ('vbd', 'VBD'),
+    ('sr', 'SR'),
+    ('vif', 'VIF'),
+    ('pif', 'PIF'),
     )
 
 NEW_COMPONENT_TYPES = (
@@ -61,12 +61,12 @@ NEW_COMPONENT_TYPES = (
     )
 
 # Add new relationships to Device if they don't already exist.
-for relname, modname, devrel in NEW_DEVICE_RELATIONS:
+for relname, modname in NEW_DEVICE_RELATIONS:
     if relname not in (x[0] for x in Device._relations):
         Device._relations += (
             (relname, ToManyCont(ToOne,
-             '.'.join(ZENPACK_NAME, modname)), devrel)),
-             )
+            '.'.join((ZENPACK_NAME, modname)), 'PIF_host')),
+            )
 
 # Useful to avoid making literal string references to module and class names
 # throughout the rest of the ZenPack.
@@ -78,16 +78,16 @@ for product_name in productNames:
     CLASS_NAME[product_name]='.'.join([ZP_NAME, product_name, product_name])
 
 _PACK_Z_PROPS=[
-               (zXenServerUseSSL, True, boolean)
-               (zXenServerHostname, '', string)
-               (zXenServerUserName, 'admin', string)
-               (zXenServerPassword, 'zenoss', string)
+               ('zXenServerUseSSL', True, 'bool'),
+               ('zXenServerHostname', '', 'string'),
+               ('zXenServerUsername', 'admin', 'string'),
+               ('zXenServerPassword', 'zenoss', 'string'),
                ]
 
-setzPropertyCategory(zXenServerUseSSL, 'XenServer')
-setzPropertyCategory(zXenServerHostname, 'XenServer')
-setzPropertyCategory(zXenServerUserName, 'XenServer')
-setzPropertyCategory(zXenServerPassword, 'XenServer')
+setzPropertyCategory('zXenServerUseSSL', 'XenServer')
+setzPropertyCategory('zXenServerHostname', 'XenServer')
+setzPropertyCategory('zXenServerUsername', 'XenServer')
+setzPropertyCategory('zXenServerPassword', 'XenServer')
 
 _plugins = (
     )
@@ -109,7 +109,7 @@ class ZenPack(ZenPackBase):
             # Stack installs might not have a $ZENHOME/libexec directory.
             os.mkdir(libexec)
 
-        for plugin in self._plugins:
+        for plugin in _plugins:
             LOG.info('Linking %s plugin into $ZENHOME/libexec/', plugin)
             plugin_path = zenPath('libexec', plugin)
             os.system('ln -sf "%s" "%s"' % (self.path(plugin), plugin_path))

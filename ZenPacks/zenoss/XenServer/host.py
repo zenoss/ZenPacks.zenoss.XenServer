@@ -7,6 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
 class host(DeviceComponent, ManagedEntity):
@@ -38,8 +40,9 @@ class host(DeviceComponent, ManagedEntity):
     API_version_major = None
     memory_overhead = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'supported_bootloaders', 'type': 'string', 'mode': 'w'},
@@ -67,8 +70,9 @@ class host(DeviceComponent, ManagedEntity):
         {'id': 'memory_overhead', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'hosts',)),
@@ -103,7 +107,7 @@ class host(DeviceComponent, ManagedEntity):
                         obj, exc, self))
 
 class IhostInfo(IComponentInfo):
-    pif_count = schema.Int(title=_t(u'Number of PIFS))
+    pif_count = schema.Int(title=_t(u'Number of PIFS'))
 
     supported_bootloaders = schema.TextLine(title=_t(u'supported_bootloader'))
     API_version_minor = schema.TextLine(title=_t(u'API_version_minors'))
@@ -158,7 +162,7 @@ class hostInfo(ComponentInfo):
 
 
     @property
-    def pif_count:
+    def pif_count():
         # Using countObjects is fast.
         try:
             return self._object.pifs.countObjects()

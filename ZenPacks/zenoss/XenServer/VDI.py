@@ -7,6 +7,9 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
 
@@ -27,8 +30,9 @@ class VDI(DeviceComponent, ManagedEntity):
     virtual_size = None
     type = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'read_only', 'type': 'string', 'mode': 'w'},
@@ -44,8 +48,9 @@ class VDI(DeviceComponent, ManagedEntity):
         {'id': 'type', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vdis',)),
@@ -132,9 +137,10 @@ class VDIInfo(ComponentInfo):
     type = ProxyProperty('type')
 
 class VDIPathReporter(DefaultPathReporter):
-    paths = super(VDIPathReporter, self).getPaths()
+    def getPaths(self):
+        paths = super(VDIPathReporter, self).getPaths()
 
-    for obj in self.context.vms()
-        paths.extend(relPath(obj,'devices'))
+        for obj in self.context.vms():
+            paths.extend(relPath(obj,'devices'))
 
-   return paths
+        return paths

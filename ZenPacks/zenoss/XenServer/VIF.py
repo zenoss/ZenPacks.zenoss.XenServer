@@ -7,6 +7,9 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToOne
 
@@ -22,8 +25,9 @@ class VIF(DeviceComponent, ManagedEntity):
     MTU = None
     qos_algorithm_type = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
@@ -34,8 +38,9 @@ class VIF(DeviceComponent, ManagedEntity):
         {'id': 'qos_algorithm_type', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vifs',)),
@@ -112,10 +117,11 @@ class VIFInfo(ComponentInfo):
     qos_algorithm_type = ProxyProperty('qos_algorithm_type')
 
 class VIFPathReporter(DefaultPathReporter):
-    paths = super(VIFPathReporter, self).getPaths()
+    def getPaths(self):
+        paths = super(VIFPathReporter, self).getPaths()
 
-    obj = self.context.pif()
-    if obj:
-        paths.extend(relPath(obj,'device'))
+        obj = self.context.pif()
+        if obj:
+            paths.extend(relPath(obj,'device'))
 
-   return paths
+        return paths

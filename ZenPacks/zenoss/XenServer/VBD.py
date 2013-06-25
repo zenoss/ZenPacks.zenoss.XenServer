@@ -7,6 +7,8 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
 class VBD(DeviceComponent, ManagedEntity):
@@ -22,8 +24,9 @@ class VBD(DeviceComponent, ManagedEntity):
     type = None
     empty = None
 
+    _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', None)
+        _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
@@ -35,8 +38,9 @@ class VBD(DeviceComponent, ManagedEntity):
         {'id': 'empty', 'type': 'string', 'mode': 'w'},
         )
 
+    _relations = ()
     for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', None)
+        _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
         ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vbds',)),
@@ -72,7 +76,7 @@ class VBD(DeviceComponent, ManagedEntity):
                         obj, exc, self))
 
 class IVBDInfo(IComponentInfo):
-    vdi_count = schema.Int(title=_t(u'Number of VDIS))
+    vdi_count = schema.Int(title=_t(u'Number of VDIS'))
 
     uuid = schema.TextLine(title=_t(u'uuids'))
     bootable = schema.TextLine(title=_t(u'bootables'))
@@ -95,7 +99,7 @@ class VBDInfo(ComponentInfo):
 
 
     @property
-    def vdi_count:
+    def vdi_count():
         # Using countObjects is fast.
         try:
             return self._object.vdis.countObjects()
