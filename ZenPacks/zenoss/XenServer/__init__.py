@@ -80,7 +80,7 @@ for product_name in productNames:
 _PACK_Z_PROPS=[
                ('zXenServerUseSSL', True, 'bool'),
                ('zXenServerHostname', '', 'string'),
-               ('zXenServerUsername', 'admin', 'string'),
+               ('zXenServerUsername', 'root', 'string'),
                ('zXenServerPassword', 'zenoss', 'string'),
                ]
 
