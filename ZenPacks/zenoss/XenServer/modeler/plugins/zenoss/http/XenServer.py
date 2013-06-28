@@ -54,34 +54,6 @@ def fetch_from_xen(sx):
     }
 
 
-    def get_pods_rel_maps(self, pods_response):
-        pod_maps = {}
-        for pod in pods_response.get('pod', []):
-            zone_id = self.prepId('zone%s' % pod['zoneid'])
-            pod_id = self.prepId('pod%s' % pod['id'])
-
-            compname = 'zones/%s' % zone_id
-            pod_maps.setdefault(compname, [])
-
-            pod_maps[compname].append(ObjectMap(data=dict(
-                id=pod_id,
-                title=pod.get('name', pod_id),
-                cloudstack_id=pod['id'],
-                allocation_state=pod.get('allocationstate', ''),
-                start_ip=pod.get('startip', ''),
-                end_ip=pod.get('endip', ''),
-                netmask=pod.get('netmask', ''),
-                gateway=pod.get('gateway', ''),
-                )))
-
-        for compname, obj_maps in pod_maps.items():
-            yield RelationshipMap(
-                compname=compname,
-                relname='pods',
-                modname='ZenPacks.zenoss.CloudStack.Pod',
-                objmaps=obj_maps)
-
-
 def fetch_from_records(records, sectionname, modname = None):
     records = records.get_all_records()
     if modname is None:
