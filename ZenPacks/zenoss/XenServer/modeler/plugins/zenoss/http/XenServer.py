@@ -14,6 +14,7 @@
 import logging
 LOG = logging.getLogger('zen.XenServer')
 
+from twisted.internet import defer
 from twisted.internet.defer import DeferredList
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
@@ -54,19 +55,6 @@ def fetch_from_xen(sx):
     }
 
 
-def fetch_from_records(records, sectionname, modname = None):
-    records = records.get_all_records()
-    if modname is None:
-        modname = 'ZenPacks.zenoss.XenServer.%ss' % sectionname
-    
-    for name, record in records.items():
-        yield RelationshipMap(
-            compname=name,
-            relname=sectionname,
-            modname=modname,
-            objmaps=records)
-
-
 class XenServer(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zXenServerHostname',
@@ -76,54 +64,45 @@ class XenServer(PythonPlugin):
         )
 
     def collect(self, device, unused):
-        if not device.zXenServerUsername:
-            LOG.error('zXenServerUsername is not set. Not discovering')
-            return None
+        LOG.info('*** Modeler %s collecting data for server %s', self.name(), device.id)
 
-        if not device.zXenServerPassword:
-            LOG.error('zXenServerPassword is not set. Not discovering')
-            return None
-
-        try:
-            if device.zXenServerHostname:
-                session = XenAPI.Session(device.zXenServerHostname)
-            else:
-                session = XenAPI.Session('http://%s' % device.manageIp)
-        except:
-            session = XenAPI.Session('http://%s' % device.manageIp)
-
-        session.xenapi.login_with_password(device.zXenServerUsername, device.zXenServerPassword)
-         
-        return DeferredList((
-            fetch_from_xen(session.xenapi),), 
-            consumeErrors=True).addCallback(self._combine)
-
-
-    def _combine(self, results):
-        """Combines all responses within results into a single data structure.
-
-        Note: This method is not currently unit tested because we haven't gone
-        to the trouble of creating mock results within txcloudstack.
-        """
-        all_data = {}
-
-        for success, result in results:
-            if not success:
-                LOG.error("API Error: %s", result.getErrorMessage())
+        if 1: # not hasattr(self, '_xenapi_session'):
+            if not device.zXenServerUsername:
+                LOG.error('zXenServerUsername is not set. Not discovering')
                 return None
 
-            all_data.update(result)
+            if not device.zXenServerPassword:
+                LOG.error('zXenServerPassword is not set. Not discovering')
+                return None
 
-        return all_data
+            try:
+                if device.zXenServerHostname:
+                    session = XenAPI.Session(device.zXenServerHostname)
+                else:
+                    session = XenAPI.Session('http://%s' % device.manageIp)
+            except:
+                session = XenAPI.Session('http://%s' % device.manageIp)
 
+            session.xenapi.login_with_password(device.zXenServerUsername, device.zXenServerPassword)
+            self._xenapi_session = session
+
+        LOG.info('*** Modeler %s collector fetching data for server %s', self.name(), device.id)
+        fetch = fetch_from_xen(session.xenapi)
+        LOG.info(pformat(fetch))
+
+        LOG.info('*** Modeler %s collector launching deferred for server %s', self.name(), device.id)
+        deferred = defer.Deferred()
+        deferred.addCallback(self._combine)
+        return deferred 
+
+    def _combine(self):
+        LOG.info('*** Modeler %s combining data for server %s', self.name(), device.id)
+        return fetch
 
 
     def process(self, results):
         # See https://dev.zenoss.com/tracint/browser/trunk/enterprise/zenpacks/ZenPacks.zenoss.EMC.base/ZenPacks/zenoss/EMC/base/modeler/emc.py
-        pprint(results)
-
-        log.info('Modeler %s processing data for server %s', self.name(), device.id)
+        LOG.info('*** Modeler %s processing data for server %s', self.name(), device.id)
 
         maps = []
         return maps
-        
