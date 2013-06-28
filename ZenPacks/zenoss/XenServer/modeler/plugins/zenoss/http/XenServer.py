@@ -26,8 +26,7 @@ from ZenPacks.zenoss.XenServer.lib import XenAPI
 from pprint import pprint, pformat
 add_local_lib_path()
 
-
-def fetch_from_xen(sx):
+def fetch_all_from_xen(sx):
     all_hosts = sx.host.get_all_records()
     all_host_cpus = sx.host_cpu.get_all_records()
     all_VMs = sx.VM.get_all_records()              # A dictionary of virtual machines
@@ -44,7 +43,7 @@ def fetch_from_xen(sx):
     for vm in real_VMs.values():
         del vm['last_booted_record']
     
-    return {
+    fetch = {
         'VMs':      real_VMs, 
         'VDIs':     all_VDIs, 
         'VIFs':     all_VIFs,
@@ -53,6 +52,17 @@ def fetch_from_xen(sx):
         'host_cpus':    all_host_cpus,
         'SRs':      all_SRs,
     }
+    LOG.info(pformat(fetch))
+    return fetch
+
+
+def fetch_hosts_from_xen(sx):
+    LOG.info('*** Fetching hosts from XenAPI')
+    fetch = sx.host.get_all_records()
+    for key, val in fetch.items():
+        val['RefID'] = key
+    LOG.info(pformat(fetch.values()))
+    return fetch.values()
 
 
 class XenServer(PythonPlugin):
@@ -84,15 +94,14 @@ class XenServer(PythonPlugin):
                 session = XenAPI.Session('http://%s' % device.manageIp)
 
             session.xenapi.login_with_password(device.zXenServerUsername, device.zXenServerPassword)
-            self._xenapi_session = session
+            self._session = session
 
-        LOG.info('*** Modeler %s collector fetching data for server %s', self.name(), device.id)
-        fetch = fetch_from_xen(session.xenapi)
-        LOG.info(pformat(fetch))
+        # LOG.info('*** Modeler %s collector fetching data for server %s', self.name(), device.id)
+        # fetch = fetch_hosts_from_xen(session.xenapi)
+        # LOG.info(pformat(fetch))
 
         LOG.info('*** Modeler %s collector launching deferred for server %s', self.name(), device.id)
-        deferred = defer.Deferred()
-        deferred.addCallback(self._combine)
+        deferred = defer.Deferred().addCallback(fetch_hosts_from_xen(self._session.xenapi))
         return deferred 
 
     def _combine(self):
