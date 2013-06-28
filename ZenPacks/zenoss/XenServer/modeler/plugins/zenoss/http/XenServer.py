@@ -65,6 +65,17 @@ def fetch_hosts_from_xen(sx):
     return fetch.values()
 
 
+def fetch_from_xen(function_ref, return_key):
+    LOG.info('*** Fetching from XenAPI')
+    fetch = function_ref()
+    for key, val in fetch.items():
+        val['RefID'] = key
+    LOG.info(pformat(fetch.values()))
+    
+    d = {}
+    d[return_key] = fetch.values()
+
+
 class XenServer(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zXenServerHostname',
@@ -76,7 +87,7 @@ class XenServer(PythonPlugin):
     def collect(self, device, unused):
         LOG.info('*** Modeler %s collecting data for server %s', self.name(), device.id)
 
-        if 1: # not hasattr(self, '_xenapi_session'):
+        if not hasattr(self, 'xenapi_session'):
             if not device.zXenServerUsername:
                 LOG.error('zXenServerUsername is not set. Not discovering')
                 return None
@@ -94,15 +105,23 @@ class XenServer(PythonPlugin):
                 session = XenAPI.Session('http://%s' % device.manageIp)
 
             session.xenapi.login_with_password(device.zXenServerUsername, device.zXenServerPassword)
-            self._session = session
+            self.xenapi_session = session
 
         # LOG.info('*** Modeler %s collector fetching data for server %s', self.name(), device.id)
         # fetch = fetch_hosts_from_xen(session.xenapi)
         # LOG.info(pformat(fetch))
 
-        LOG.info('*** Modeler %s collector launching deferred for server %s', self.name(), device.id)
-        deferred = defer.Deferred().addCallback(fetch_hosts_from_xen(self._session.xenapi))
-        return deferred 
+        # LOG.info('*** Modeler %s collector launching deferred for server %s', self.name(), device.id)
+        # deferred = defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records))
+        # return deferred 
+        
+	d = DeferredList((
+        	defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts')),
+        	defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.sr.get_all_records, 'SRs')),
+            ), consumeErrors=True).addCallback(self._combine)
+
+        return d        
+        
 
     def _combine(self):
         LOG.info('*** Modeler %s combining data for server %s', self.name(), device.id)
