@@ -89,25 +89,25 @@ class XenServer(PythonPlugin):
     def collect(self, device, unused):
         LOG.info('*** Modeler %s collecting data for server %s', self.name(), device.id)
 
-        if not hasattr(self, 'xenapi_session'):
-            if not device.zXenServerUsername:
-                LOG.error('zXenServerUsername is not set. Not discovering')
-                return None
+        # if not hasattr(self, 'xenapi_session'):
+        if not device.zXenServerUsername:
+            LOG.error('zXenServerUsername is not set. Not discovering')
+            return None
 
-            if not device.zXenServerPassword:
-                LOG.error('zXenServerPassword is not set. Not discovering')
-                return None
+        if not device.zXenServerPassword:
+            LOG.error('zXenServerPassword is not set. Not discovering')
+            return None
 
-            try:
-                if device.zXenServerHostname:
-                    session = XenAPI.Session(device.zXenServerHostname)
-                else:
-                    session = XenAPI.Session('http://%s' % device.manageIp)
-            except:
+        try:
+            if device.zXenServerHostname:
+                session = XenAPI.Session(device.zXenServerHostname)
+            else:
                 session = XenAPI.Session('http://%s' % device.manageIp)
+        except:
+            session = XenAPI.Session('http://%s' % device.manageIp)
 
-            session.xenapi.login_with_password(device.zXenServerUsername, device.zXenServerPassword)
-            self.xenapi_session = session
+        session.xenapi.login_with_password(device.zXenServerUsername, device.zXenServerPassword)
+        self.xenapi_session = session
 
         # LOG.info('*** Modeler %s collector fetching data for server %s', self.name(), device.id)
         # fetch = fetch_hosts_from_xen(session.xenapi)
@@ -117,8 +117,8 @@ class XenServer(PythonPlugin):
         # deferred = defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records))
         # return deferred 
         
-	d = DeferredList((
-                defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts')),
+        deferredList = DeferredList((
+            defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts')),
                 # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host_cpu.get_all_records, 'host_cpus')),
                 # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VM.get_all_records, 'VMs')),
                 # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VDI.get_all_records, 'VDIs')),
@@ -127,7 +127,7 @@ class XenServer(PythonPlugin):
                 # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.SR.get_all_records, 'SRs')),
             ), consumeErrors=True).addCallback(self._combine)
 
-        return d        
+        return deferredList
         
 
     def _combine(self):
