@@ -75,6 +75,8 @@ def fetch_from_xen(function_ref, return_key):
     d = {}
     d[return_key] = fetch.values()
 
+    return (True, d)
+
 
 class XenServer(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
@@ -116,8 +118,13 @@ class XenServer(PythonPlugin):
         # return deferred 
         
 	d = DeferredList((
-        	defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts')),
-        	defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.sr.get_all_records, 'SRs')),
+                defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts')),
+                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host_cpu.get_all_records, 'host_cpus')),
+                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VM.get_all_records, 'VMs')),
+                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VDI.get_all_records, 'VDIs')),
+                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VIF.get_all_records, 'VIFs')),
+                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.PIF.get_all_records, 'PIFs')),
+                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.SR.get_all_records, 'SRs')),
             ), consumeErrors=True).addCallback(self._combine)
 
         return d        
