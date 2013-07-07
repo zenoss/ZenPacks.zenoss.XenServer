@@ -56,26 +56,29 @@ def fetch_all_from_xen(sx):
     return fetch
 
 
-def fetch_hosts_from_xen(sx):
-    LOG.info('*** Fetching hosts from XenAPI')
-    fetch = sx.host.get_all_records()
-    for key, val in fetch.items():
-        val['RefID'] = key
-    LOG.info(pformat(fetch.values()))
-    return fetch.values()
-
-
-def fetch_from_xen(function_ref, return_key):
+def fetch_from_xen(function_ref, return_key, class_name):
     LOG.info('*** Fetching from XenAPI')
     fetch = function_ref()
-    for key, val in fetch.items():
-        val['RefID'] = key
-    LOG.info(pformat(fetch.values()))
     
-    d = {}
-    d[return_key] = fetch.values()
+    for key, val in fetch.items():
+        compname = 'FIXME/%s' % return_key,   # FIXME: uncertain of proper value in XenSever's context
 
-    return (True, d)
+        fetch_maps.setdefault(compname, [])
+            
+        fetch_maps[compname].append(ObjectMap(data=dict(
+            id=key,
+            title=val.get('name_label', id),
+            )))
+
+    LOG.info(pformat(fetch_maps)
+    # import pdb; pdb.set_trace()
+    
+    for compname, obj_maps in fetch_maps.items():
+        yield RelationshipMap(
+            compname=compname,
+            relname=return_key,
+            modname=class_name,
+            objmaps=obj_maps)
 
 
 class XenServer(PythonPlugin):
@@ -117,15 +120,17 @@ class XenServer(PythonPlugin):
         # deferred = defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records))
         # return deferred 
         
+        # fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts', 'ZenPacks.zenoss.XenServer.host')
+
         deferredList = DeferredList((
-            defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts')),
-                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host_cpu.get_all_records, 'host_cpus')),
-                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VM.get_all_records, 'VMs')),
-                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VDI.get_all_records, 'VDIs')),
-                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VIF.get_all_records, 'VIFs')),
-                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.PIF.get_all_records, 'PIFs')),
-                # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.SR.get_all_records, 'SRs')),
-            ), consumeErrors=True).addCallback(self._combine)
+            defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host.get_all_records, 'hosts', 'ZenPacks.zenoss.XenServer.host')),
+            # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.host_cpu.get_all_records, 'host_cpus')),
+            # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VM.get_all_records, 'VMs')),
+            # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VDI.get_all_records, 'VDIs')),
+            # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.VIF.get_all_records, 'VIFs')),
+            # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.PIF.get_all_records, 'PIFs')),
+            # defer.Deferred().addCallback(fetch_from_xen(self.xenapi_session.xenapi.SR.get_all_records, 'SRs')),
+        ), consumeErrors=True) #.addCallback(self._combine)
 
         return deferredList
         
