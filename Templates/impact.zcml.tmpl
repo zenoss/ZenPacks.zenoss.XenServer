@@ -1,0 +1,28 @@
+## Source Template /Volumes/Z/ZenPackGenerator/zpg/Templates/impact.zcml.tmpl 
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+##############################################################################
+#
+# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is installed.
+#
+##############################################################################
+-->
+
+<configure xmlns="http://namespaces.zope.org/zope">
+
+    <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
+
+#for $c in $components.values()
+#if $c.hasImpact
+    <subscriber
+        provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+        for=".${c.shortklass}.${c.shortklass}"
+        factory="impact.${zenpack.prepname}_${c.shortklass}RelationsProvider"
+        />
+
+#end if
+#end for
+</configure>
