@@ -7,15 +7,45 @@
     <!-- API: Info Adapters -->
 
     <adapter
-        provides=".Device.IDeviceInfo"
-        for=".Device.Device"
-        factory=".Device.DeviceInfo"
+        provides=".Endpoint.IEndpointInfo"
+        for=".Endpoint.Endpoint"
+        factory=".Endpoint.EndpointInfo"
+        />
+
+    <adapter
+        provides=".Host.IHostInfo"
+        for=".Host.Host"
+        factory=".Host.HostInfo"
+        />
+
+    <adapter
+        provides=".HostCPU.IHostCPUInfo"
+        for=".HostCPU.HostCPU"
+        factory=".HostCPU.HostCPUInfo"
+        />
+
+    <adapter
+        provides=".Network.INetworkInfo"
+        for=".Network.Network"
+        factory=".Network.NetworkInfo"
+        />
+
+    <adapter
+        provides=".PBD.IPBDInfo"
+        for=".PBD.PBD"
+        factory=".PBD.PBDInfo"
         />
 
     <adapter
         provides=".PIF.IPIFInfo"
         for=".PIF.PIF"
         factory=".PIF.PIFInfo"
+        />
+
+    <adapter
+        provides=".Pool.IPoolInfo"
+        for=".Pool.Pool"
+        factory=".Pool.PoolInfo"
         />
 
     <adapter
@@ -48,37 +78,31 @@
         factory=".VM.VMInfo"
         />
 
-    <adapter
-        provides=".host.IhostInfo"
-        for=".host.host"
-        factory=".host.hostInfo"
-        />
-
-    <adapter
-        provides=".host_cpu.Ihost_cpuInfo"
-        for=".host_cpu.host_cpu"
-        factory=".host_cpu.host_cpuInfo"
-        />
-
-    <adapter
-        provides=".network.InetworkInfo"
-        for=".network.network"
-        factory=".network.networkInfo"
-        />
-
 
     <!-- Custom Path Reporters -->
 
     <adapter
         provides="Products.Zuul.catalog.interfaces.IPathReporter"
-        for=".VDI.VDI"
-        factory=".VDI.VDIPathReporter"
+        for=".VBD.VBD"
+        factory=".VBD.VBDPathReporter"
+        />
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IPathReporter"
+        for=".PBD.PBD"
+        factory=".PBD.PBDPathReporter"
         />
 
     <adapter
         provides="Products.Zuul.catalog.interfaces.IPathReporter"
         for=".PIF.PIF"
         factory=".PIF.PIFPathReporter"
+        />
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IPathReporter"
+        for=".VM.VM"
+        factory=".VM.VMPathReporter"
         />
 
     <adapter
@@ -107,9 +131,9 @@
     <!-- JavaScript needed only for NetApp devices. -->
 
     <browser:viewlet
-        name="js-ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device"
-        paths="/++resource++ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device/js/ZenPacks_zenoss_XenServer__Products_ZenModel_Device_Device.js"
-        for="Products.ZenModel.Device.Device"
+        name="js-ZenPacks_zenoss_XenServer_Endpoint"
+        paths="/++resource++ZenPacks_zenoss_XenServer/js/ZenPacks_zenoss_XenServer_Endpoint.js"
+        for="ZenPacks.zenoss.XenServer.Endpoint.Endpoint"
         weight="20"
         manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
         class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"

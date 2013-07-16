@@ -22,31 +22,38 @@ from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
-from ZenPacks.zenoss.XenServer.utils import updateToOne
 
-class VIF(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'XenServerVIF'
+class Pool(DeviceComponent, ManagedEntity):
+    meta_type = portal_type = 'XenServerPool'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
+    vswitch_controller = None
+    ha_enabled = None
+    ha_plan_exists_for = None
+    name_label = None
+    ha_allow_overcommit = None
+    ha_host_failures_to_tolerate = None
+    name_description = None
+    ha_overcommitted = None
+    redo_log_enabled = None
     uuid = None
-    status_code = None
-    status_detail = None
-    MAC = None
-    MTU = None
-    qos_algorithm_type = None
 
     _properties = ()
     for Klass in Klasses:
         _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
+        {'id': 'vswitch_controller', 'type': 'string', 'mode': 'w'},
+        {'id': 'ha_enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ha_plan_exists_for', 'type': 'int', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'ha_allow_overcommit', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ha_host_failures_to_tolerate', 'type': 'int', 'mode': 'w'},
+        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'ha_overcommitted', 'type': 'bool', 'mode': 'w'},
+        {'id': 'redo_log_enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
-        {'id': 'status_code', 'type': 'string', 'mode': 'w'},
-        {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
-        {'id': 'MAC', 'type': 'string', 'mode': 'w'},
-        {'id': 'MTU', 'type': 'string', 'mode': 'w'},
-        {'id': 'qos_algorithm_type', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = ()
@@ -54,9 +61,7 @@ class VIF(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'vifs',)),
-        ('network', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.Network', 'vifs',)),
-        ('vm', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VM', 'vifs',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'pools',)),
         )
 
     factory_type_information = ({
@@ -86,53 +91,30 @@ class VIF(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
-    def getnetworkId(self):
-        '''
-        Return network id or None.
+class IPoolInfo(IComponentInfo):
 
-        Used by modeling.
-        '''
-        obj = self.network()
-        if obj: 
-            return obj.id
-
-    def setnetworkId(self, id_):
-        '''
-        Set network by id.
-
-        Used by modeling.
-        '''
-        updateToOne(
-            relationship=self.network,
-            root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.Network,
-            id_=id_)
-
-class IVIFInfo(IComponentInfo):
-
+    vswitch_controller = schema.TextLine(title=_t(u'vswitch_controllers'))
+    ha_enabled = schema.Bool(title=_t(u'ha_enableds'))
+    ha_plan_exists_for = schema.Int(title=_t(u'ha_plan_exists_fors'))
+    name_label = schema.TextLine(title=_t(u'name_labels'))
+    ha_allow_overcommit = schema.Bool(title=_t(u'ha_allow_overcommits'))
+    ha_host_failures_to_tolerate = schema.Int(title=_t(u'ha_host_failures_to_tolerates'))
+    name_description = schema.TextLine(title=_t(u'name_descriptions'))
+    ha_overcommitted = schema.Bool(title=_t(u'ha_overcommitteds'))
+    redo_log_enabled = schema.Bool(title=_t(u'redo_log_enableds'))
     uuid = schema.TextLine(title=_t(u'uuids'))
-    status_code = schema.TextLine(title=_t(u'status_codes'))
-    status_detail = schema.TextLine(title=_t(u'status_details'))
-    MAC = schema.TextLine(title=_t(u'MACS'))
-    MTU = schema.TextLine(title=_t(u'MTUS'))
-    qos_algorithm_type = schema.TextLine(title=_t(u'qos_algorithm_types'))
 
-class VIFInfo(ComponentInfo):
-    implements(IVIFInfo)
+class PoolInfo(ComponentInfo):
+    implements(IPoolInfo)
 
+    vswitch_controller = ProxyProperty('vswitch_controller')
+    ha_enabled = ProxyProperty('ha_enabled')
+    ha_plan_exists_for = ProxyProperty('ha_plan_exists_for')
+    name_label = ProxyProperty('name_label')
+    ha_allow_overcommit = ProxyProperty('ha_allow_overcommit')
+    ha_host_failures_to_tolerate = ProxyProperty('ha_host_failures_to_tolerate')
+    name_description = ProxyProperty('name_description')
+    ha_overcommitted = ProxyProperty('ha_overcommitted')
+    redo_log_enabled = ProxyProperty('redo_log_enabled')
     uuid = ProxyProperty('uuid')
-    status_code = ProxyProperty('status_code')
-    status_detail = ProxyProperty('status_detail')
-    MAC = ProxyProperty('MAC')
-    MTU = ProxyProperty('MTU')
-    qos_algorithm_type = ProxyProperty('qos_algorithm_type')
 
-class VIFPathReporter(DefaultPathReporter):
-    def getPaths(self):
-        paths = super(VIFPathReporter, self).getPaths()
-
-        obj = self.context.network()
-        if obj:
-            paths.extend(relPath(obj,'endpoint'))
-
-        return paths

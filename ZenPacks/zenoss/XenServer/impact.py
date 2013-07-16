@@ -1,14 +1,27 @@
-## Source Template /Volumes/Z/ZenPackGenerator/zpg/Templates/impact.tmpl 
-$zenpack.license.header
 
-#for $i in $imports
-$i
-#end for
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
+
+from zope.component import adapts
+from zope.interface import implements
+from Products.ZenUtils.guid.interfaces import IGlobalIdentifier
+from ZenPacks.zenoss.Impact.impactd import Trigger
+from ZenPacks.zenoss.Impact.impactd.relations import ImpactEdge
+from ZenPacks.zenoss.Impact.impactd.interfaces import                        IRelationshipDataProvider
+from ZenPacks.zenoss.Impact.impactd.interfaces import INodeTriggers
 
 AVAILABILITY = 'AVAILABILITY'
 PERCENT = 'policyPercentageTrigger'
 THRESHOLD = 'policyThresholdTrigger'
-RP = '${zenpack.id}'
+RP = 'ZenPacks.zenoss.XenServer'
 
 def GUID(obj):
     return IGlobalIdentifier(obj).getGUID()
@@ -66,43 +79,3 @@ class BaseTriggers(object):
 
     def __init__(self, adapted):
         self._object = adapted
-#for $c in $components.values()
-#if $c.hasImpact
-
-
-class ${zenpack.prepname}_${c.shortklass}RelationsProvider(BaseRelationsProvider):
-    adapts(${c.shortklass})
-
-    def getEdges(self):
-        my_guid = GUID(self._object)
-
-#for $impactedBy in $c.impactedBy
-        # Impacted by ${impactedBy.shortklass}
-#if $c.impactedBySingle($impactedBy)
-        obj = self._object.${impactedBy.relname}()
-        if obj:
-            yield ImpactEdge(GUID(obj), my_guid, RP)
-
-#else
-        for obj in self._object.${impactedBy.relnames}():
-            if isinstance(obj, ${impactedBy.shortklass}):
-                yield ImpactEdge(GUID(obj), my_guid, RP)
-
-#end if
-#end for
-#for $impact in $c.impacts
-        # Impacts ${impact.shortklass}
-#if $c.impactSingle($impact)
-        obj = self._object.${impact.relname}()
-        if obj:
-            yield ImpactEdge(my_guid, GUID(obj), RP)
-
-#else
-        for obj in self._object.${impact.relnames}():
-            if isinstance(obj, ${impact.shortklass}):
-                yield ImpactEdge(my_guid, GUID(obj), RP)
-
-#end if
-#end for
-#end if
-#end for

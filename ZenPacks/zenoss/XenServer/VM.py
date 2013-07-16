@@ -1,4 +1,14 @@
-#LICENSE HEADER SAMPLE
+
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
 from zope.interface import implements
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
@@ -7,13 +17,15 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from ZenPacks.zenoss.XenServer.utils import updateToMany
+from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from ZenPacks.zenoss.XenServer.utils import updateToOne
 
 class VM(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'VM'
+    meta_type = portal_type = 'XenServerVM'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
@@ -52,8 +64,9 @@ class VM(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vms',)),
-        ('vdis', ToMany(ToMany, 'ZenPacks.zenoss.XenServer.VDI', 'vms',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'vms',)),
+        ('host', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.Host', 'vms',)),
+        ('vbds', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VBD', 'vm',)),
         ('vifs', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VIF', 'vm',)),
         )
 
@@ -84,30 +97,30 @@ class VM(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
-    def getVDIIds(self):
+    def gethostId(self):
         '''
-        Return a sorted list of each vdi id related to this
-        Aggregate.
+        Return host id or None.
 
         Used by modeling.
         '''
+        obj = self.host()
+        if obj: 
+            return obj.id
 
-        return sorted([vdi.id for vdi in self.vdis.objectValuesGen()])
-
-    def setVDIIds(self, ids):
+    def sethostId(self, id_):
         '''
-        Update VDI relationship given ids.
+        Set host by id.
 
         Used by modeling.
         '''
-        updateToMany(
-            relationship=self.vdis,
+        updateToOne(
+            relationship=self.host,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VDI,
-            ids=ids)
+            type_=ZenPacks.zenoss.XenServer.Host,
+            id_=id_)
 
 class IVMInfo(IComponentInfo):
-    vdi_count = schema.Int(title=_t(u'Number of VDIS'))
+    vbd_count = schema.Int(title=_t(u'Number of VBDS'))
     vif_count = schema.Int(title=_t(u'Number of VIFS'))
 
     memory_static_min = schema.TextLine(title=_t(u'memory_static_mins'))
@@ -139,13 +152,13 @@ class VMInfo(ComponentInfo):
 
 
     @property
-    def vdi_count():
+    def vbd_count():
         # Using countObjects is fast.
         try:
-            return self._object.vdis.countObjects()
+            return self._object.vbds.countObjects()
         except:
             # Using len on the results of calling the relationship is slow.
-            return len(self._object.vdis())
+            return len(self._object.vbds())
 
     @property
     def vif_count():
@@ -156,3 +169,12 @@ class VMInfo(ComponentInfo):
             # Using len on the results of calling the relationship is slow.
             return len(self._object.vifs())
 
+class VMPathReporter(DefaultPathReporter):
+    def getPaths(self):
+        paths = super(VMPathReporter, self).getPaths()
+
+        obj = self.context.host()
+        if obj:
+            paths.extend(relPath(obj,'endpoint'))
+
+        return paths

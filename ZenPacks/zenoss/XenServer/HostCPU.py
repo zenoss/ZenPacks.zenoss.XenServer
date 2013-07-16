@@ -1,4 +1,14 @@
-#LICENSE HEADER SAMPLE
+
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
 from zope.interface import implements
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
@@ -7,12 +17,14 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
+from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
-class host_cpu(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'host_cpu'
+class HostCPU(DeviceComponent, ManagedEntity):
+    meta_type = portal_type = 'XenServerHostCPU'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
@@ -53,7 +65,8 @@ class host_cpu(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'host_cpus',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'hostcpus',)),
+        ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Host', 'hostcpus',)),
         )
 
     factory_type_information = ({
@@ -83,7 +96,7 @@ class host_cpu(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
-class Ihost_cpuInfo(IComponentInfo):
+class IHostCPUInfo(IComponentInfo):
 
     modelname = schema.TextLine(title=_t(u'modelnames'))
     vendor = schema.TextLine(title=_t(u'vendors'))
@@ -98,8 +111,8 @@ class Ihost_cpuInfo(IComponentInfo):
     speed = schema.TextLine(title=_t(u'speeds'))
     uuid = schema.TextLine(title=_t(u'uuids'))
 
-class host_cpuInfo(ComponentInfo):
-    implements(Ihost_cpuInfo)
+class HostCPUInfo(ComponentInfo):
+    implements(IHostCPUInfo)
 
     modelname = ProxyProperty('modelname')
     vendor = ProxyProperty('vendor')

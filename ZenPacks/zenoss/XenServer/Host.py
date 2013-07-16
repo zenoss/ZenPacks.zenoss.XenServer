@@ -1,4 +1,14 @@
-#LICENSE HEADER SAMPLE
+
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
 from zope.interface import implements
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
@@ -7,12 +17,14 @@ from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from ZenPacks.zenoss.XenServer.utils import updateToMany
 
-class host(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'host'
+class Host(DeviceComponent, ManagedEntity):
+    meta_type = portal_type = 'XenServerHost'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
@@ -75,8 +87,11 @@ class host(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'hosts',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'hosts',)),
+        ('hostcpus', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.HostCPU', 'host',)),
+        ('pbds', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.PBD', 'host',)),
         ('pifs', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.PIF', 'host',)),
+        ('vms', ToMany(ToOne, 'ZenPacks.zenoss.XenServer.VM', 'host',)),
         )
 
     factory_type_information = ({
@@ -106,8 +121,33 @@ class host(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
-class IhostInfo(IComponentInfo):
+    def getVMIds(self):
+        '''
+        Return a sorted list of each vm id related to this
+        Aggregate.
+
+        Used by modeling.
+        '''
+
+        return sorted([vm.id for vm in self.vms.objectValuesGen()])
+
+    def setVMIds(self, ids):
+        '''
+        Update VM relationship given ids.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.vms,
+            root=self.device(),
+            type_=ZenPacks.zenoss.XenServer.VM,
+            ids=ids)
+
+class IHostInfo(IComponentInfo):
+    pbd_count = schema.Int(title=_t(u'Number of PBDS'))
+    hostcpu_count = schema.Int(title=_t(u'Number of HostCPUs'))
     pif_count = schema.Int(title=_t(u'Number of PIFS'))
+    vm_count = schema.Int(title=_t(u'Number of VMS'))
 
     supported_bootloaders = schema.TextLine(title=_t(u'supported_bootloader'))
     API_version_minor = schema.TextLine(title=_t(u'API_version_minors'))
@@ -133,8 +173,8 @@ class IhostInfo(IComponentInfo):
     API_version_major = schema.TextLine(title=_t(u'API_version_majors'))
     memory_overhead = schema.TextLine(title=_t(u'memory_overheads'))
 
-class hostInfo(ComponentInfo):
-    implements(IhostInfo)
+class HostInfo(ComponentInfo):
+    implements(IHostInfo)
 
     supported_bootloaders = ProxyProperty('supported_bootloaders')
     API_version_minor = ProxyProperty('API_version_minor')
@@ -162,6 +202,24 @@ class hostInfo(ComponentInfo):
 
 
     @property
+    def pbd_count():
+        # Using countObjects is fast.
+        try:
+            return self._object.pbds.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.pbds())
+
+    @property
+    def hostcpu_count():
+        # Using countObjects is fast.
+        try:
+            return self._object.hostcpus.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.hostcpus())
+
+    @property
     def pif_count():
         # Using countObjects is fast.
         try:
@@ -169,4 +227,13 @@ class hostInfo(ComponentInfo):
         except:
             # Using len on the results of calling the relationship is slow.
             return len(self._object.pifs())
+
+    @property
+    def vm_count():
+        # Using countObjects is fast.
+        try:
+            return self._object.vms.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.vms())
 

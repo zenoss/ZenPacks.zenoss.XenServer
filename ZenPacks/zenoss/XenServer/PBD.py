@@ -21,32 +21,29 @@ from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToOne
 
-class VIF(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'XenServerVIF'
+class PBD(DeviceComponent, ManagedEntity):
+    meta_type = portal_type = 'XenServerPBD'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
+    dc_legacy_mode = None
+    current_attached = None
+    dc_location = None
     uuid = None
-    status_code = None
-    status_detail = None
-    MAC = None
-    MTU = None
-    qos_algorithm_type = None
+    dc_device = None
 
     _properties = ()
     for Klass in Klasses:
         _properties = _properties + getattr(Klass,'_properties', ())
 
     _properties = _properties + (
+        {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
+        {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
-        {'id': 'status_code', 'type': 'string', 'mode': 'w'},
-        {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
-        {'id': 'MAC', 'type': 'string', 'mode': 'w'},
-        {'id': 'MTU', 'type': 'string', 'mode': 'w'},
-        {'id': 'qos_algorithm_type', 'type': 'string', 'mode': 'w'},
+        {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = ()
@@ -54,9 +51,9 @@ class VIF(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'vifs',)),
-        ('network', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.Network', 'vifs',)),
-        ('vm', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VM', 'vifs',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'pbds',)),
+        ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Host', 'pbds',)),
+        ('sr', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.SR', 'pbds',)),
         )
 
     factory_type_information = ({
@@ -86,52 +83,50 @@ class VIF(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
-    def getnetworkId(self):
+    def getsrId(self):
         '''
-        Return network id or None.
+        Return sr id or None.
 
         Used by modeling.
         '''
-        obj = self.network()
+        obj = self.sr()
         if obj: 
             return obj.id
 
-    def setnetworkId(self, id_):
+    def setsrId(self, id_):
         '''
-        Set network by id.
+        Set sr by id.
 
         Used by modeling.
         '''
         updateToOne(
-            relationship=self.network,
+            relationship=self.sr,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.Network,
+            type_=ZenPacks.zenoss.XenServer.SR,
             id_=id_)
 
-class IVIFInfo(IComponentInfo):
+class IPBDInfo(IComponentInfo):
 
+    dc_legacy_mode = schema.Bool(title=_t(u'dc_legacy_modes'))
+    current_attached = schema.Bool(title=_t(u'current_attacheds'))
+    dc_location = schema.TextLine(title=_t(u'dc_locations'))
     uuid = schema.TextLine(title=_t(u'uuids'))
-    status_code = schema.TextLine(title=_t(u'status_codes'))
-    status_detail = schema.TextLine(title=_t(u'status_details'))
-    MAC = schema.TextLine(title=_t(u'MACS'))
-    MTU = schema.TextLine(title=_t(u'MTUS'))
-    qos_algorithm_type = schema.TextLine(title=_t(u'qos_algorithm_types'))
+    dc_device = schema.TextLine(title=_t(u'dc_devices'))
 
-class VIFInfo(ComponentInfo):
-    implements(IVIFInfo)
+class PBDInfo(ComponentInfo):
+    implements(IPBDInfo)
 
+    dc_legacy_mode = ProxyProperty('dc_legacy_mode')
+    current_attached = ProxyProperty('current_attached')
+    dc_location = ProxyProperty('dc_location')
     uuid = ProxyProperty('uuid')
-    status_code = ProxyProperty('status_code')
-    status_detail = ProxyProperty('status_detail')
-    MAC = ProxyProperty('MAC')
-    MTU = ProxyProperty('MTU')
-    qos_algorithm_type = ProxyProperty('qos_algorithm_type')
+    dc_device = ProxyProperty('dc_device')
 
-class VIFPathReporter(DefaultPathReporter):
+class PBDPathReporter(DefaultPathReporter):
     def getPaths(self):
-        paths = super(VIFPathReporter, self).getPaths()
+        paths = super(PBDPathReporter, self).getPaths()
 
-        obj = self.context.network()
+        obj = self.context.sr()
         if obj:
             paths.extend(relPath(obj,'endpoint'))
 

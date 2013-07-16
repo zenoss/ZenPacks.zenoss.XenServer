@@ -23,41 +23,25 @@ ZENPACK_NAME = 'ZenPacks.zenoss.XenServer'
 # Modules containing model classes. Used by zenchkschema to validate
 # bidirectional integrity of defined relationships.
 productNames = (
-    'host',
+    'Host',
     'VDI',
-    'network',
-    'host_cpu',
+    'VBD',
+    'PBD',
+    'HostCPU',
     'PIF',
     'VM',
-    'Device',
-    'VBD',
+    'Endpoint',
+    'Network',
+    'Pool',
     'VIF',
     'SR',
     )
 
 # Define new device relations.
 NEW_DEVICE_RELATIONS = (
-    ('host', 'host'),
-    ('host_cpu', 'host_cpu'),
-    ('network', 'network'),
-    ('vm', 'VM'),
-    ('vdi', 'VDI'),
-    ('vbd', 'VBD'),
-    ('sr', 'SR'),
-    ('vif', 'VIF'),
-    ('pif', 'PIF'),
     )
 
 NEW_COMPONENT_TYPES = (
-    'ZenPacks.zenoss.XenServer.host.host',
-    'ZenPacks.zenoss.XenServer.host_cpu.host_cpu',
-    'ZenPacks.zenoss.XenServer.network.network',
-    'ZenPacks.zenoss.XenServer.VM.VM',
-    'ZenPacks.zenoss.XenServer.VDI.VDI',
-    'ZenPacks.zenoss.XenServer.VBD.VBD',
-    'ZenPacks.zenoss.XenServer.SR.SR',
-    'ZenPacks.zenoss.XenServer.VIF.VIF',
-    'ZenPacks.zenoss.XenServer.PIF.PIF',
     )
 
 # Add new relationships to Device if they don't already exist.
@@ -65,29 +49,21 @@ for relname, modname in NEW_DEVICE_RELATIONS:
     if relname not in (x[0] for x in Device._relations):
         Device._relations += (
             (relname, ToManyCont(ToOne,
-            '.'.join((ZENPACK_NAME, modname)), 'PIF_host')),
+            '.'.join((ZENPACK_NAME, modname)), '%s_host' % modname )),
             )
 
 # Useful to avoid making literal string references to module and class names
 # throughout the rest of the ZenPack.
 MODULE_NAME={}
 CLASS_NAME={}
+ZP_NAME='ZenPacks.zenoss.XenServer'
 for product_name in productNames:
-    ZP_NAME='ZenPacks.zenoss.XenServer'
     MODULE_NAME[product_name]='.'.join([ZP_NAME, product_name])
     CLASS_NAME[product_name]='.'.join([ZP_NAME, product_name, product_name])
 
 _PACK_Z_PROPS=[
-               ('zXenServerUseSSL', True, 'bool'),
-               ('zXenServerHostname', '', 'string'),
-               ('zXenServerUsername', 'root', 'string'),
-               ('zXenServerPassword', 'zenoss', 'string'),
                ]
 
-setzPropertyCategory('zXenServerUseSSL', 'XenServer')
-setzPropertyCategory('zXenServerHostname', 'XenServer')
-setzPropertyCategory('zXenServerUsername', 'XenServer')
-setzPropertyCategory('zXenServerPassword', 'XenServer')
 
 _plugins = (
     )
@@ -116,7 +92,7 @@ class ZenPack(ZenPackBase):
             os.system('chmod 0755 %s' % plugin_path)
 
     def remove_plugin_symlinks(self):
-        for plugin in self._plugins:
+        for plugin in _plugins:
             LOG.info('Removing %s link from $ZENHOME/libexec/', plugin)
             os.system('rm -f "%s"' % zenPath('libexec', plugin))
 
@@ -128,9 +104,10 @@ class ZenPack(ZenPackBase):
             cat = ICatalogTool(app.zport.dmd)
 
             # Search the catalog for components of this zenpacks type.
-            for brain in cat.search(types=NEW_COMPONENT_TYPES):
-                component = brain.getObject()
-                component.getPrimaryParent()._delObject(component.id)
+            if NEW_COMPONENT_TYPES:
+                for brain in cat.search(types=NEW_COMPONENT_TYPES):
+                    component = brain.getObject()
+                    component.getPrimaryParent()._delObject(component.id)
 
             # Remove our Device relations additions.
             Device._relations = tuple(

@@ -1,4 +1,14 @@
-#LICENSE HEADER SAMPLE
+
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
 from zope.interface import implements
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
@@ -14,7 +24,7 @@ from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
 
 class VDI(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'VDI'
+    meta_type = portal_type = 'XenServerVDI'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
@@ -28,7 +38,7 @@ class VDI(DeviceComponent, ManagedEntity):
     on_boot = None
     name_description = None
     virtual_size = None
-    type = None
+    Type = None
 
     _properties = ()
     for Klass in Klasses:
@@ -45,7 +55,7 @@ class VDI(DeviceComponent, ManagedEntity):
         {'id': 'on_boot', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'virtual_size', 'type': 'string', 'mode': 'w'},
-        {'id': 'type', 'type': 'string', 'mode': 'w'},
+        {'id': 'Type', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = ()
@@ -53,9 +63,9 @@ class VDI(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'vdis',)),
-        ('vbd', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VBD', 'vdis',)),
-        ('vms', ToMany(ToMany, 'ZenPacks.zenoss.XenServer.VM', 'vdis',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'vdis',)),
+        ('sr', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.SR', 'vdis',)),
+        ('vbds', ToMany(ToOne, 'ZenPacks.zenoss.XenServer.VBD', 'vdi',)),
         )
 
     factory_type_information = ({
@@ -85,29 +95,30 @@ class VDI(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
-    def getVMIds(self):
+    def getVBDIds(self):
         '''
-        Return a sorted list of each vm id related to this
+        Return a sorted list of each vbd id related to this
         Aggregate.
 
         Used by modeling.
         '''
 
-        return sorted([vm.id for vm in self.vms.objectValuesGen()])
+        return sorted([vbd.id for vbd in self.vbds.objectValuesGen()])
 
-    def setVMIds(self, ids):
+    def setVBDIds(self, ids):
         '''
-        Update VM relationship given ids.
+        Update VBD relationship given ids.
 
         Used by modeling.
         '''
         updateToMany(
-            relationship=self.vms,
+            relationship=self.vbds,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VM,
+            type_=ZenPacks.zenoss.XenServer.VBD,
             ids=ids)
 
 class IVDIInfo(IComponentInfo):
+    vbd_count = schema.Int(title=_t(u'Number of VBDS'))
 
     read_only = schema.TextLine(title=_t(u'read_onlies'))
     sharable = schema.TextLine(title=_t(u'sharables'))
@@ -119,7 +130,7 @@ class IVDIInfo(IComponentInfo):
     on_boot = schema.TextLine(title=_t(u'on_boots'))
     name_description = schema.TextLine(title=_t(u'name_descriptions'))
     virtual_size = schema.TextLine(title=_t(u'virtual_sizes'))
-    type = schema.TextLine(title=_t(u'types'))
+    Type = schema.TextLine(title=_t(u'Types'))
 
 class VDIInfo(ComponentInfo):
     implements(IVDIInfo)
@@ -134,13 +145,15 @@ class VDIInfo(ComponentInfo):
     on_boot = ProxyProperty('on_boot')
     name_description = ProxyProperty('name_description')
     virtual_size = ProxyProperty('virtual_size')
-    type = ProxyProperty('type')
+    Type = ProxyProperty('Type')
 
-class VDIPathReporter(DefaultPathReporter):
-    def getPaths(self):
-        paths = super(VDIPathReporter, self).getPaths()
 
-        for obj in self.context.vms():
-            paths.extend(relPath(obj,'devices'))
+    @property
+    def vbd_count():
+        # Using countObjects is fast.
+        try:
+            return self._object.vbds.countObjects()
+        except:
+            # Using len on the results of calling the relationship is slow.
+            return len(self._object.vbds())
 
-        return paths

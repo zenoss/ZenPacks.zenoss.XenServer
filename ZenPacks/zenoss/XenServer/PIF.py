@@ -1,4 +1,14 @@
-#LICENSE HEADER SAMPLE
+
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
 from zope.interface import implements
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
@@ -11,10 +21,11 @@ from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from ZenPacks.zenoss.XenServer.utils import updateToMany,updateToOne
+from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from ZenPacks.zenoss.XenServer.utils import updateToOne
 
 class PIF(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'PIF'
+    meta_type = portal_type = 'XenServerPIF'
 
     Klasses = [DeviceComponent, ManagedEntity]
 
@@ -41,10 +52,9 @@ class PIF(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'pifs',)),
-        ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.host', 'pifs',)),
-        ('network', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.network', 'pifs',)),
-        ('vifs', ToMany(ToOne, 'ZenPacks.zenoss.XenServer.VIF', 'pif',)),
+        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'pifs',)),
+        ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Host', 'pifs',)),
+        ('network', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.Network', 'pifs',)),
         )
 
     factory_type_information = ({
@@ -93,33 +103,10 @@ class PIF(DeviceComponent, ManagedEntity):
         updateToOne(
             relationship=self.network,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.network,
+            type_=ZenPacks.zenoss.XenServer.Network,
             id_=id_)
 
-    def getVIFIds(self):
-        '''
-        Return a sorted list of each vif id related to this
-        Aggregate.
-
-        Used by modeling.
-        '''
-
-        return sorted([vif.id for vif in self.vifs.objectValuesGen()])
-
-    def setVIFIds(self, ids):
-        '''
-        Update VIF relationship given ids.
-
-        Used by modeling.
-        '''
-        updateToMany(
-            relationship=self.vifs,
-            root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VIF,
-            ids=ids)
-
 class IPIFInfo(IComponentInfo):
-    vif_count = schema.Int(title=_t(u'Number of VIFS'))
 
     IP = schema.TextLine(title=_t(u'IPS'))
     MAC = schema.TextLine(title=_t(u'MACS'))
@@ -136,22 +123,12 @@ class PIFInfo(ComponentInfo):
     gateway = ProxyProperty('gateway')
     uuid = ProxyProperty('uuid')
 
-
-    @property
-    def vif_count():
-        # Using countObjects is fast.
-        try:
-            return self._object.vifs.countObjects()
-        except:
-            # Using len on the results of calling the relationship is slow.
-            return len(self._object.vifs())
-
 class PIFPathReporter(DefaultPathReporter):
     def getPaths(self):
         paths = super(PIFPathReporter, self).getPaths()
 
         obj = self.context.network()
         if obj:
-            paths.extend(relPath(obj,'device'))
+            paths.extend(relPath(obj,'endpoint'))
 
         return paths
