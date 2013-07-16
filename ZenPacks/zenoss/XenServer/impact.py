@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -8,7 +7,6 @@
 # installed.
 #
 ######################################################################
-
 
 from zope.component import adapts
 from zope.interface import implements

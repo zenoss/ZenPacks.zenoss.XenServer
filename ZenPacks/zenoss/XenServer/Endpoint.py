@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -13,12 +12,12 @@ from zope.interface import implements
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
-from Products.Zuul.infos.device import DeviceInfo
-from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenModel.Device import Device
+from Products.Zuul.infos.device import DeviceInfo
 from Products.Zuul.interfaces import IDeviceInfo
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+
 
 class Endpoint(Device):
     meta_type = portal_type = 'Endpoint'
@@ -70,6 +69,7 @@ class Endpoint(Device):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+
 class IEndpointInfo(IDeviceInfo):
     pool_count = schema.Int(title=_t(u'Number of Pools'))
     host_count = schema.Int(title=_t(u'Number of Hosts'))
@@ -82,11 +82,13 @@ class IEndpointInfo(IDeviceInfo):
     vm_count = schema.Int(title=_t(u'Number of VMS'))
     vbd_count = schema.Int(title=_t(u'Number of VBDS'))
     vif_count = schema.Int(title=_t(u'Number of VIFS'))
+
+
 class EndpointInfo(DeviceInfo):
     implements(IEndpointInfo)
 
     @property
-    def pool_count():
+    def pool_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pools.countObjects()
@@ -95,7 +97,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.pools())
 
     @property
-    def host_count():
+    def host_count(self):
         # Using countObjects is fast.
         try:
             return self._object.hosts.countObjects()
@@ -104,7 +106,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.hosts())
 
     @property
-    def hostcpu_count():
+    def hostcpu_count(self):
         # Using countObjects is fast.
         try:
             return self._object.hostcpus.countObjects()
@@ -113,7 +115,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.hostcpus())
 
     @property
-    def pbd_count():
+    def pbd_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pbds.countObjects()
@@ -122,7 +124,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.pbds())
 
     @property
-    def pif_count():
+    def pif_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pifs.countObjects()
@@ -131,7 +133,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.pifs())
 
     @property
-    def sr_count():
+    def sr_count(self):
         # Using countObjects is fast.
         try:
             return self._object.srs.countObjects()
@@ -140,7 +142,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.srs())
 
     @property
-    def vdi_count():
+    def vdi_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vdis.countObjects()
@@ -149,7 +151,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.vdis())
 
     @property
-    def network_count():
+    def network_count(self):
         # Using countObjects is fast.
         try:
             return self._object.networks.countObjects()
@@ -158,7 +160,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.networks())
 
     @property
-    def vm_count():
+    def vm_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vms.countObjects()
@@ -167,7 +169,7 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.vms())
 
     @property
-    def vbd_count():
+    def vbd_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vbds.countObjects()
@@ -176,11 +178,10 @@ class EndpointInfo(DeviceInfo):
             return len(self._object.vbds())
 
     @property
-    def vif_count():
+    def vif_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vifs.countObjects()
         except:
             # Using len on the results of calling the relationship is slow.
             return len(self._object.vifs())
-

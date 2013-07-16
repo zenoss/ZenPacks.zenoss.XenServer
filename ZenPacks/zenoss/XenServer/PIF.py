@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,9 +20,10 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToOne
+
 
 class PIF(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerPIF'
@@ -37,7 +38,7 @@ class PIF(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'IP', 'type': 'string', 'mode': 'w'},
@@ -91,7 +92,7 @@ class PIF(DeviceComponent, ManagedEntity):
         Used by modeling.
         '''
         obj = self.network()
-        if obj: 
+        if obj:
             return obj.id
 
     def setnetworkId(self, id_):
@@ -103,8 +104,9 @@ class PIF(DeviceComponent, ManagedEntity):
         updateToOne(
             relationship=self.network,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.Network,
+            type_='ZenPacks.zenoss.XenServer.Network',
             id_=id_)
+
 
 class IPIFInfo(IComponentInfo):
 
@@ -113,6 +115,7 @@ class IPIFInfo(IComponentInfo):
     netmask = schema.TextLine(title=_t(u'netmasks'))
     gateway = schema.TextLine(title=_t(u'gateways'))
     uuid = schema.TextLine(title=_t(u'uuids'))
+
 
 class PIFInfo(ComponentInfo):
     implements(IPIFInfo)
@@ -123,12 +126,13 @@ class PIFInfo(ComponentInfo):
     gateway = ProxyProperty('gateway')
     uuid = ProxyProperty('uuid')
 
+
 class PIFPathReporter(DefaultPathReporter):
     def getPaths(self):
         paths = super(PIFPathReporter, self).getPaths()
 
         obj = self.context.network()
         if obj:
-            paths.extend(relPath(obj,'endpoint'))
+            paths.extend(relPath(obj, 'endpoint'))
 
         return paths

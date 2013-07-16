@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,8 +20,9 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
+
 
 class VDI(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerVDI'
@@ -42,7 +43,7 @@ class VDI(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'read_only', 'type': 'string', 'mode': 'w'},
@@ -114,8 +115,9 @@ class VDI(DeviceComponent, ManagedEntity):
         updateToMany(
             relationship=self.vbds,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VBD,
+            type_='ZenPacks.zenoss.XenServer.VBD',
             ids=ids)
+
 
 class IVDIInfo(IComponentInfo):
     vbd_count = schema.Int(title=_t(u'Number of VBDS'))
@@ -132,6 +134,7 @@ class IVDIInfo(IComponentInfo):
     virtual_size = schema.TextLine(title=_t(u'virtual_sizes'))
     Type = schema.TextLine(title=_t(u'Types'))
 
+
 class VDIInfo(ComponentInfo):
     implements(IVDIInfo)
 
@@ -147,13 +150,11 @@ class VDIInfo(ComponentInfo):
     virtual_size = ProxyProperty('virtual_size')
     Type = ProxyProperty('Type')
 
-
     @property
-    def vbd_count():
+    def vbd_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vbds.countObjects()
         except:
             # Using len on the results of calling the relationship is slow.
             return len(self._object.vbds())
-

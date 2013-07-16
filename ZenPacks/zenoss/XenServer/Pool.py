@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,8 +20,9 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+
 
 class Pool(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerPool'
@@ -41,7 +42,7 @@ class Pool(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'vswitch_controller', 'type': 'string', 'mode': 'w'},
@@ -91,6 +92,7 @@ class Pool(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+
 class IPoolInfo(IComponentInfo):
 
     vswitch_controller = schema.TextLine(title=_t(u'vswitch_controllers'))
@@ -103,6 +105,7 @@ class IPoolInfo(IComponentInfo):
     ha_overcommitted = schema.Bool(title=_t(u'ha_overcommitteds'))
     redo_log_enabled = schema.Bool(title=_t(u'redo_log_enableds'))
     uuid = schema.TextLine(title=_t(u'uuids'))
+
 
 class PoolInfo(ComponentInfo):
     implements(IPoolInfo)
@@ -117,4 +120,3 @@ class PoolInfo(ComponentInfo):
     ha_overcommitted = ProxyProperty('ha_overcommitted')
     redo_log_enabled = ProxyProperty('redo_log_enabled')
     uuid = ProxyProperty('uuid')
-

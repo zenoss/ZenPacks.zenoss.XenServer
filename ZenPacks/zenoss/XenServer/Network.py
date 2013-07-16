@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,9 +20,10 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
+
 
 class Network(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerNetwork'
@@ -39,7 +40,7 @@ class Network(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'bridge', 'type': 'string', 'mode': 'w'},
@@ -107,7 +108,7 @@ class Network(DeviceComponent, ManagedEntity):
         updateToMany(
             relationship=self.pifs,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.PIF,
+            type_='ZenPacks.zenoss.XenServer.PIF',
             ids=ids)
 
     def getVIFIds(self):
@@ -129,8 +130,9 @@ class Network(DeviceComponent, ManagedEntity):
         updateToMany(
             relationship=self.vifs,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VIF,
+            type_='ZenPacks.zenoss.XenServer.VIF',
             ids=ids)
+
 
 class INetworkInfo(IComponentInfo):
     pif_count = schema.Int(title=_t(u'Number of PIFS'))
@@ -144,6 +146,7 @@ class INetworkInfo(IComponentInfo):
     default_locking_mode = schema.TextLine(title=_t(u'default_locking_modes'))
     name_description = schema.TextLine(title=_t(u'name_descriptions'))
 
+
 class NetworkInfo(ComponentInfo):
     implements(INetworkInfo)
 
@@ -155,9 +158,8 @@ class NetworkInfo(ComponentInfo):
     default_locking_mode = ProxyProperty('default_locking_mode')
     name_description = ProxyProperty('name_description')
 
-
     @property
-    def pif_count():
+    def pif_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pifs.countObjects()
@@ -166,11 +168,10 @@ class NetworkInfo(ComponentInfo):
             return len(self._object.pifs())
 
     @property
-    def vif_count():
+    def vif_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vifs.countObjects()
         except:
             # Using len on the results of calling the relationship is slow.
             return len(self._object.vifs())
-

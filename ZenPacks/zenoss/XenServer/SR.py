@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,9 +20,10 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
+
 
 class SR(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerSR'
@@ -40,7 +41,7 @@ class SR(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
@@ -109,8 +110,9 @@ class SR(DeviceComponent, ManagedEntity):
         updateToMany(
             relationship=self.pbds,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.PBD,
+            type_='ZenPacks.zenoss.XenServer.PBD',
             ids=ids)
+
 
 class ISRInfo(IComponentInfo):
     vdi_count = schema.Int(title=_t(u'Number of VDIS'))
@@ -125,6 +127,7 @@ class ISRInfo(IComponentInfo):
     name_description = schema.TextLine(title=_t(u'name_descriptions'))
     virtual_allocation = schema.TextLine(title=_t(u'virtual_allocations'))
 
+
 class SRInfo(ComponentInfo):
     implements(ISRInfo)
 
@@ -137,9 +140,8 @@ class SRInfo(ComponentInfo):
     name_description = ProxyProperty('name_description')
     virtual_allocation = ProxyProperty('virtual_allocation')
 
-
     @property
-    def vdi_count():
+    def vdi_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vdis.countObjects()
@@ -148,11 +150,10 @@ class SRInfo(ComponentInfo):
             return len(self._object.vdis())
 
     @property
-    def pbd_count():
+    def pbd_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pbds.countObjects()
         except:
             # Using len on the results of calling the relationship is slow.
             return len(self._object.pbds())
-

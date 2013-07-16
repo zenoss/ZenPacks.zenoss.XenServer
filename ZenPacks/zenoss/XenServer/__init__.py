@@ -1,5 +1,15 @@
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
 import logging
-log = logging.getLogger('zen.ZenPacks.zenoss.XenServer')
+LOG = logging.getLogger('zen.ZenPacks.zenoss.XenServer')
 
 import os
 import Globals
@@ -10,7 +20,7 @@ from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.CMFCore.DirectoryView import registerDirectory
 from Products.Zuul.interfaces import ICatalogTool
-from Products.ZenUtils.Utils import unused
+from Products.ZenUtils.Utils import unused, zenPath
 
 unused(Globals)
 
@@ -48,33 +58,35 @@ NEW_COMPONENT_TYPES = (
 for relname, modname in NEW_DEVICE_RELATIONS:
     if relname not in (x[0] for x in Device._relations):
         Device._relations += (
-            (relname, ToManyCont(ToOne,
-            '.'.join((ZENPACK_NAME, modname)), '%s_host' % modname )),
+            (relname, ToManyCont(
+                ToOne,
+                '.'.join((ZENPACK_NAME, modname)),
+                '%s_host' % modname)),
             )
 
 # Useful to avoid making literal string references to module and class names
 # throughout the rest of the ZenPack.
-MODULE_NAME={}
-CLASS_NAME={}
-ZP_NAME='ZenPacks.zenoss.XenServer'
-for product_name in productNames:
-    MODULE_NAME[product_name]='.'.join([ZP_NAME, product_name])
-    CLASS_NAME[product_name]='.'.join([ZP_NAME, product_name, product_name])
+MODULE_NAME = {}
+CLASS_NAME = {}
 
-_PACK_Z_PROPS=[
-               ]
+for product_name in productNames:
+    MODULE_NAME[product_name] = '.'.join([ZENPACK_NAME, product_name])
+    CLASS_NAME[product_name] = '.'.join([ZENPACK_NAME, product_name, product_name])
+
+_PACK_Z_PROPS = [
+    ]
 
 
 _plugins = (
     )
 
-class ZenPack(ZenPackBase):
 
+class ZenPack(ZenPackBase):
     packZProperties = _PACK_Z_PROPS
 
-    def install(self,app):
+    def install(self, app):
         super(ZenPack, self).install(app)
-        log.info('Adding ZenPacks.zenoss.XenServer relationships to existing devices')
+        LOG.info('Adding ZenPacks.zenoss.XenServer relationships to existing devices')
 
         self._buildDeviceRelations()
         self.symlink_plugins()
@@ -100,7 +112,7 @@ class ZenPack(ZenPackBase):
         if not leaveObjects:
             self.remove_plugin_symlinks()
 
-            log.info('Removing ZenPacks.zenoss.XenServer components')
+            LOG.info('Removing ZenPacks.zenoss.XenServer components')
             cat = ICatalogTool(app.zport.dmd)
 
             # Search the catalog for components of this zenpacks type.
@@ -111,10 +123,10 @@ class ZenPack(ZenPackBase):
 
             # Remove our Device relations additions.
             Device._relations = tuple(
-                [x for x in Device._relations \
+                [x for x in Device._relations
                     if x[0] not in NEW_DEVICE_RELATIONS])
 
-            log.info('Removing ZenPacks.zenoss.XenServer relationships from existing devices')
+            LOG.info('Removing ZenPacks.zenoss.XenServer relationships from existing devices')
             self._buildDeviceRelations()
 
         super(ZenPack, self).remove(app, leaveObjects=leaveObjects)

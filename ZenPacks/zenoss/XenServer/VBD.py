@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,8 +20,9 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToOne
+
 
 class VBD(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerVBD'
@@ -38,7 +39,7 @@ class VBD(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'uuid', 'type': 'string', 'mode': 'w'},
@@ -94,7 +95,7 @@ class VBD(DeviceComponent, ManagedEntity):
         Used by modeling.
         '''
         obj = self.vdi()
-        if obj: 
+        if obj:
             return obj.id
 
     def setvdiId(self, id_):
@@ -106,8 +107,9 @@ class VBD(DeviceComponent, ManagedEntity):
         updateToOne(
             relationship=self.vdi,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VDI,
+            type_='ZenPacks.zenoss.XenServer.VDI',
             id_=id_)
+
 
 class IVBDInfo(IComponentInfo):
 
@@ -118,6 +120,7 @@ class IVBDInfo(IComponentInfo):
     current_attached = schema.TextLine(title=_t(u'current_attacheds'))
     Type = schema.TextLine(title=_t(u'Types'))
     empty = schema.TextLine(title=_t(u'empties'))
+
 
 class VBDInfo(ComponentInfo):
     implements(IVBDInfo)
@@ -130,12 +133,13 @@ class VBDInfo(ComponentInfo):
     Type = ProxyProperty('Type')
     empty = ProxyProperty('empty')
 
+
 class VBDPathReporter(DefaultPathReporter):
     def getPaths(self):
         paths = super(VBDPathReporter, self).getPaths()
 
         obj = self.context.vdi()
         if obj:
-            paths.extend(relPath(obj,'endpoint'))
+            paths.extend(relPath(obj, 'endpoint'))
 
         return paths

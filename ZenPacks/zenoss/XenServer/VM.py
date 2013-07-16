@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,9 +20,10 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToOne
+
 
 class VM(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerVM'
@@ -43,7 +44,7 @@ class VM(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'memory_static_min', 'type': 'string', 'mode': 'w'},
@@ -104,7 +105,7 @@ class VM(DeviceComponent, ManagedEntity):
         Used by modeling.
         '''
         obj = self.host()
-        if obj: 
+        if obj:
             return obj.id
 
     def sethostId(self, id_):
@@ -116,8 +117,9 @@ class VM(DeviceComponent, ManagedEntity):
         updateToOne(
             relationship=self.host,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.Host,
+            type_='ZenPacks.zenoss.XenServer.Host',
             id_=id_)
+
 
 class IVMInfo(IComponentInfo):
     vbd_count = schema.Int(title=_t(u'Number of VBDS'))
@@ -135,6 +137,7 @@ class IVMInfo(IComponentInfo):
     memory_dynamic_min = schema.TextLine(title=_t(u'memory_dynamic_mins'))
     memory_overhead = schema.TextLine(title=_t(u'memory_overheads'))
 
+
 class VMInfo(ComponentInfo):
     implements(IVMInfo)
 
@@ -150,9 +153,8 @@ class VMInfo(ComponentInfo):
     memory_dynamic_min = ProxyProperty('memory_dynamic_min')
     memory_overhead = ProxyProperty('memory_overhead')
 
-
     @property
-    def vbd_count():
+    def vbd_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vbds.countObjects()
@@ -161,7 +163,7 @@ class VMInfo(ComponentInfo):
             return len(self._object.vbds())
 
     @property
-    def vif_count():
+    def vif_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vifs.countObjects()
@@ -169,12 +171,13 @@ class VMInfo(ComponentInfo):
             # Using len on the results of calling the relationship is slow.
             return len(self._object.vifs())
 
+
 class VMPathReporter(DefaultPathReporter):
     def getPaths(self):
         paths = super(VMPathReporter, self).getPaths()
 
         obj = self.context.host()
         if obj:
-            paths.extend(relPath(obj,'endpoint'))
+            paths.extend(relPath(obj, 'endpoint'))
 
         return paths

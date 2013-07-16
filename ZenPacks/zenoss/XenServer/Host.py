@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,8 +20,9 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from ZenPacks.zenoss.XenServer.utils import updateToMany
+
 
 class Host(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerHost'
@@ -54,7 +55,7 @@ class Host(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'supported_bootloaders', 'type': 'string', 'mode': 'w'},
@@ -140,8 +141,9 @@ class Host(DeviceComponent, ManagedEntity):
         updateToMany(
             relationship=self.vms,
             root=self.device(),
-            type_=ZenPacks.zenoss.XenServer.VM,
+            type_='ZenPacks.zenoss.XenServer.VM',
             ids=ids)
+
 
 class IHostInfo(IComponentInfo):
     pbd_count = schema.Int(title=_t(u'Number of PBDS'))
@@ -173,6 +175,7 @@ class IHostInfo(IComponentInfo):
     API_version_major = schema.TextLine(title=_t(u'API_version_majors'))
     memory_overhead = schema.TextLine(title=_t(u'memory_overheads'))
 
+
 class HostInfo(ComponentInfo):
     implements(IHostInfo)
 
@@ -200,9 +203,8 @@ class HostInfo(ComponentInfo):
     API_version_major = ProxyProperty('API_version_major')
     memory_overhead = ProxyProperty('memory_overhead')
 
-
     @property
-    def pbd_count():
+    def pbd_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pbds.countObjects()
@@ -211,7 +213,7 @@ class HostInfo(ComponentInfo):
             return len(self._object.pbds())
 
     @property
-    def hostcpu_count():
+    def hostcpu_count(self):
         # Using countObjects is fast.
         try:
             return self._object.hostcpus.countObjects()
@@ -220,7 +222,7 @@ class HostInfo(ComponentInfo):
             return len(self._object.hostcpus())
 
     @property
-    def pif_count():
+    def pif_count(self):
         # Using countObjects is fast.
         try:
             return self._object.pifs.countObjects()
@@ -229,11 +231,10 @@ class HostInfo(ComponentInfo):
             return len(self._object.pifs())
 
     @property
-    def vm_count():
+    def vm_count(self):
         # Using countObjects is fast.
         try:
             return self._object.vms.countObjects()
         except:
             # Using len on the results of calling the relationship is slow.
             return len(self._object.vms())
-

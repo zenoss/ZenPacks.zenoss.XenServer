@@ -1,4 +1,3 @@
-
 ######################################################################
 #
 # Copyright (C) Zenoss, Inc. 2013, all rights reserved.
@@ -10,6 +9,7 @@
 ######################################################################
 
 from zope.interface import implements
+from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.Zuul.decorators import info
 from Products.Zuul.form import schema
@@ -20,8 +20,9 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany,ToManyCont,ToOne
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+
 
 class HostCPU(DeviceComponent, ManagedEntity):
     meta_type = portal_type = 'XenServerHostCPU'
@@ -43,7 +44,7 @@ class HostCPU(DeviceComponent, ManagedEntity):
 
     _properties = ()
     for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
+        _properties = _properties + getattr(Klass, '_properties', ())
 
     _properties = _properties + (
         {'id': 'modelname', 'type': 'string', 'mode': 'w'},
@@ -96,6 +97,7 @@ class HostCPU(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+
 class IHostCPUInfo(IComponentInfo):
 
     modelname = schema.TextLine(title=_t(u'modelnames'))
@@ -110,6 +112,7 @@ class IHostCPUInfo(IComponentInfo):
     model = schema.TextLine(title=_t(u'models'))
     speed = schema.TextLine(title=_t(u'speeds'))
     uuid = schema.TextLine(title=_t(u'uuids'))
+
 
 class HostCPUInfo(ComponentInfo):
     implements(IHostCPUInfo)
@@ -126,4 +129,3 @@ class HostCPUInfo(ComponentInfo):
     model = ProxyProperty('model')
     speed = ProxyProperty('speed')
     uuid = ProxyProperty('uuid')
-
