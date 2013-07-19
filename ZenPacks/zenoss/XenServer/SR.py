@@ -55,7 +55,7 @@ class SR(BaseComponent):
         ('pbds', ToMany(ToOne, MODULE_NAME['PBD'], 'sr',)),
         ('default_for', ToMany(ToOne, MODULE_NAME['Pool'], 'default_sr')),
         ('suspend_image_for', ToMany(ToOne, MODULE_NAME['Pool'], 'suspend_image_sr')),
-        ('crashdump_for', ToMany(ToOne, MODULE_NAME['Pool'], 'crashdump_sr')),
+        ('crash_dump_for', ToMany(ToOne, MODULE_NAME['Pool'], 'crash_dump_sr')),
         )
 
     def getPBDIds(self):
@@ -118,22 +118,22 @@ class SR(BaseComponent):
             type_=CLASS_NAME['Pool'],
             ids=pool_ids)
 
-    def getCrashdumpFor(self):
+    def getCrashDumpFor(self):
         '''
         Return a sorted list of related Pool ids.
 
         Used by modeling.
         '''
-        return sorted(x.id for x in self.crashdump_for.objectValuesGen())
+        return sorted(x.id for x in self.crash_dump_for.objectValuesGen())
 
-    def setCrashdumpFor(self, pool_ids):
+    def setCrashDumpFor(self, pool_ids):
         '''
-        Set crashdump_for relationship by Pool id.
+        Set crash_dump_for relationship by Pool id.
 
         Used by modeling.
         '''
         updateToMany(
-            relationship=self.crashdump_for,
+            relationship=self.crash_dump_for,
             root=self.device(),
             type_=CLASS_NAME['Pool'],
             ids=pool_ids)

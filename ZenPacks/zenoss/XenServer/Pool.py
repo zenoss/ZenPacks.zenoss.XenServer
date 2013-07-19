@@ -57,7 +57,7 @@ class Pool(BaseComponent):
         ('master', ToOne(ToOne, MODULE_NAME['Host'], 'master_for')),
         ('default_sr', ToOne(ToMany, MODULE_NAME['SR'], 'default_for')),
         ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for')),
-        ('crashdump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crashdump_for')),
+        ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for')),
         )
 
     def getMaster(self):
@@ -126,24 +126,24 @@ class Pool(BaseComponent):
             type_=CLASS_NAME['SR'],
             id_=sr_id)
 
-    def getCrashdumpSR(self):
+    def getCrashDumpSR(self):
         '''
         Return SR id or None.
 
         Used by modeling.
         '''
-        crashdump_sr = self.crashdump_sr()
-        if crashdump_sr:
-            return crashdump_sr
+        crash_dump_sr = self.crash_dump_sr()
+        if crash_dump_sr:
+            return crash_dump_sr
 
-    def setCrashdumpSR(self, sr_id):
+    def setCrashDumpSR(self, sr_id):
         '''
-        Set crashdump_sr relationship by SR id.
+        Set crash_dump_sr relationship by SR id.
 
         Used by modeling.
         '''
         updateToOne(
-            relationship=self.crashdump_sr,
+            relationship=self.crash_dump_sr,
             root=self.device(),
             type_=CLASS_NAME['SR'],
             id_=sr_id)
