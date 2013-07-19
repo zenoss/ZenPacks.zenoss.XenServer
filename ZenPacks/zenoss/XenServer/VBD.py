@@ -8,28 +8,29 @@
 #
 ######################################################################
 
+from zope.component import adapts
 from zope.interface import implements
-from Products.ZenModel.Device import Device
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.Zuul.decorators import info
+
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
-from ZenPacks.zenoss.XenServer.utils import updateToOne
+
+from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
+from ZenPacks.zenoss.XenServer.utils import (
+    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    updateToOne,
+    )
 
 
-class VBD(DeviceComponent, ManagedEntity):
+class VBD(BaseComponent):
+    '''
+    Model class for VBD (virtual block device.)
+    '''
+
     meta_type = portal_type = 'XenServerVBD'
 
-    Klasses = [DeviceComponent, ManagedEntity]
-
-    uuid = None
     bootable = None
     status_code = None
     status_detail = None
@@ -37,12 +38,7 @@ class VBD(DeviceComponent, ManagedEntity):
     Type = None
     empty = None
 
-    _properties = ()
-    for Klass in Klasses:
-        _properties = _properties + getattr(Klass, '_properties', ())
-
-    _properties = _properties + (
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
+    _properties = BaseComponent._properties + (
         {'id': 'bootable', 'type': 'string', 'mode': 'w'},
         {'id': 'status_code', 'type': 'string', 'mode': 'w'},
         {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
@@ -51,68 +47,39 @@ class VBD(DeviceComponent, ManagedEntity):
         {'id': 'empty', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = ()
-    for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', ())
-
-    _relations = _relations + (
-        ('vdi', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.VDI', 'vbds',)),
-        ('vm', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VM', 'vbds',)),
+    _relations = BaseComponent._relations + (
+        ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vbds')),
+        ('vdi', ToOne(ToMany, MODULE_NAME['VDI'], 'vbds')),
         )
 
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-            },),
-        },)
-
-    def device(self):
+    def getVDI(self):
         '''
-        Return device under which this component/device is contained.
-        '''
-        obj = self
-
-        for i in range(200):
-            if isinstance(obj, Device):
-                return obj
-
-            try:
-                obj = obj.getPrimaryParent()
-            except AttributeError as exc:
-                raise AttributeError(
-                    'Unable to determine parent at %s (%s) '
-                    'while getting device for %s' % (
-                        obj, exc, self))
-
-    def getvdiId(self):
-        '''
-        Return vdi id or None.
+        Return VDI id or None.
 
         Used by modeling.
         '''
-        obj = self.vdi()
-        if obj:
-            return obj.id
+        vdi = self.vdi()
+        if vdi:
+            return vdi.id
 
-    def setvdiId(self, id_):
+    def setVDI(self, vdi_id):
         '''
-        Set vdi by id.
+        Set VDI by id.
 
         Used by modeling.
         '''
         updateToOne(
             relationship=self.vdi,
             root=self.device(),
-            type_='ZenPacks.zenoss.XenServer.VDI',
-            id_=id_)
+            type_=CLASS_NAME['VDI'],
+            id_=vdi_id)
 
 
-class IVBDInfo(IComponentInfo):
+class IVBDInfo(IBaseComponentInfo):
+    '''
+    API Info interface for VBD.
+    '''
 
-    uuid = schema.TextLine(title=_t(u'uuids'))
     bootable = schema.TextLine(title=_t(u'bootables'))
     status_code = schema.TextLine(title=_t(u'status_codes'))
     status_detail = schema.TextLine(title=_t(u'status_details'))
@@ -121,10 +88,14 @@ class IVBDInfo(IComponentInfo):
     empty = schema.TextLine(title=_t(u'empties'))
 
 
-class VBDInfo(ComponentInfo):
-    implements(IVBDInfo)
+class VBDInfo(BaseComponentInfo):
+    '''
+    API Info adapter factory for VBD.
+    '''
 
-    uuid = ProxyProperty('uuid')
+    implements(IVBDInfo)
+    adapts(VBD)
+
     bootable = ProxyProperty('bootable')
     status_code = ProxyProperty('status_code')
     status_detail = ProxyProperty('status_detail')
@@ -134,11 +105,15 @@ class VBDInfo(ComponentInfo):
 
 
 class VBDPathReporter(DefaultPathReporter):
+    '''
+    Path reporter for VBD.
+    '''
+
     def getPaths(self):
         paths = super(VBDPathReporter, self).getPaths()
 
-        obj = self.context.vdi()
-        if obj:
-            paths.extend(relPath(obj, 'endpoint'))
+        vdi = self.context.vdi()
+        if vdi:
+            paths.extend(relPath(vdi, 'endpoint'))
 
         return paths
