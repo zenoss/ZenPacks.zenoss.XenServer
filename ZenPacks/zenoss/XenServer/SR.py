@@ -58,7 +58,7 @@ class SR(BaseComponent):
         ('crash_dump_for', ToMany(ToOne, MODULE_NAME['Pool'], 'crash_dump_sr')),
         )
 
-    def getPBDIds(self):
+    def getPBDs(self):
         '''
         Return a sorted list of related PBD ids.
 
@@ -66,9 +66,9 @@ class SR(BaseComponent):
         '''
         return sorted(x.id for x in self.pbds.objectValuesGen())
 
-    def setPBDIds(self, ids):
+    def setPBDs(self, pbd_ids):
         '''
-        Update PBD relationship given ids.
+        Update PBD relationship given PBD ids.
 
         Used by modeling.
         '''
@@ -76,7 +76,7 @@ class SR(BaseComponent):
             relationship=self.pbds,
             root=self.device(),
             type_=CLASS_NAME['PBD'],
-            ids=ids)
+            ids=pbd_ids)
 
     def getDefaultFor(self):
         '''
