@@ -378,7 +378,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             if properties.get('is_a_snapshot') or \
                     properties.get('is_snapshot_from_vmpp')or \
                     properties.get('is_a_template'):
-                    # properties.get('is_control_domain'):
 
                 continue
 
