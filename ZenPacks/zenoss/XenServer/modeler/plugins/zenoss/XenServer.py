@@ -32,12 +32,12 @@ import txxenapi
 
 
 XAPI_CLASSES = [
+    'SR',
+    'VDI',
     'host',
     'host_cpu',
     'PBD',
     'PIF',
-    'SR',
-    'VDI',
     'network',
     'VM',
     'VBD',
@@ -218,6 +218,50 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
         return maps
 
+    def sr_relmaps(self, results):
+        '''
+        Yield a single srs RelationshipMap.
+        '''
+        objmaps = []
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or properties['uuid']
+
+            objmaps.append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'setPBDs': ids_from_refs(properties.get('PBDs', []))
+                })
+
+        yield RelationshipMap(
+            relname='srs',
+            modname=MODULE_NAME['SR'],
+            objmaps=objmaps)
+
+    def vdi_relmaps(self, results):
+        '''
+        Yield a vdis RelationshipMap for each storage repository.
+        '''
+        objmaps = collections.defaultdict(list)
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or \
+                properties.get('location') or \
+                properties['uuid']
+
+            objmaps[properties['SR']].append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
+                })
+
+        for ref, ref_objmaps in objmaps.items():
+            yield RelationshipMap(
+                compname='srs/%s' % id_from_ref(ref),
+                relname='vdis',
+                modname=MODULE_NAME['VDI'],
+                objmaps=ref_objmaps)
+
     def host_relmaps(self, results):
         '''
         Yield a single hosts RelationshipMap.
@@ -231,6 +275,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'id': id_from_ref(ref),
                 'title': title,
                 'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
+                'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
+                'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
+                'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
                 'address': properties.get('address'),
                 })
 
@@ -310,50 +357,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 relname='pifs',
                 modname=MODULE_NAME['PIF'],
                 objmaps=grouped_objmaps)
-
-    def sr_relmaps(self, results):
-        '''
-        Yield a single srs RelationshipMap.
-        '''
-        objmaps = []
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or properties['uuid']
-
-            objmaps.append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setPBDs': ids_from_refs(properties.get('PBDs', []))
-                })
-
-        yield RelationshipMap(
-            relname='srs',
-            modname=MODULE_NAME['SR'],
-            objmaps=objmaps)
-
-    def vdi_relmaps(self, results):
-        '''
-        Yield a vdis RelationshipMap for each storage repository.
-        '''
-        objmaps = collections.defaultdict(list)
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or \
-                properties.get('location') or \
-                properties['uuid']
-
-            objmaps[properties['SR']].append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
-                })
-
-        for ref, ref_objmaps in objmaps.items():
-            yield RelationshipMap(
-                compname='srs/%s' % id_from_ref(ref),
-                relname='vdis',
-                modname=MODULE_NAME['VDI'],
-                objmaps=ref_objmaps)
 
     def network_relmaps(self, results):
         '''

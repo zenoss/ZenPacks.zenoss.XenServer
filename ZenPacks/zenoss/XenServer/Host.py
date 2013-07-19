@@ -88,6 +88,9 @@ class Host(BaseComponent):
         ('pifs', ToManyCont(ToOne, MODULE_NAME['PIF'], 'host')),
         ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'host')),
         ('master_for', ToOne(ToOne, MODULE_NAME['Pool'], 'master')),
+        ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for_hosts')),
+        ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for_hosts')),
+        ('local_cache_sr', ToOne(ToMany, MODULE_NAME['SR'], 'local_cache_for_hosts')),
         )
 
     def getVMs(self):
@@ -132,6 +135,72 @@ class Host(BaseComponent):
             root=self.device(),
             type_=CLASS_NAME['Pool'],
             id_=pool_id)
+
+    def getSuspendImageSR(self):
+        '''
+        Return SR id or None.
+
+        Used by modeling.
+        '''
+        suspend_image_sr = self.suspend_image_sr()
+        if suspend_image_sr:
+            return suspend_image_sr.id
+
+    def setSuspendImageSR(self, sr_id):
+        '''
+        Set suspend_image_sr relationship by SR id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.suspend_image_sr,
+            root=self.device(),
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
+
+    def getCrashDumpSR(self):
+        '''
+        Return SR id or None.
+
+        Used by modeling.
+        '''
+        crash_dump_sr = self.crash_dump_sr()
+        if crash_dump_sr:
+            return crash_dump_sr.id
+
+    def setCrashDumpSR(self, sr_id):
+        '''
+        Set crash_dump_sr relationship by SR id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.crash_dump_sr,
+            root=self.device(),
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
+
+    def getLocalCacheSR(self):
+        '''
+        Return SR id or None.
+
+        Used by modeling.
+        '''
+        local_cache_sr = self.local_cache_sr()
+        if local_cache_sr:
+            return local_cache_sr.id
+
+    def setLocalCacheSR(self, sr_id):
+        '''
+        Set local_cache_sr relationship by SR id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.local_cache_sr,
+            root=self.device(),
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
 
 
 class IHostInfo(IBaseComponentInfo):

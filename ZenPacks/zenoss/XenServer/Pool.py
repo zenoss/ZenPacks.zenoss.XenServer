@@ -55,9 +55,9 @@ class Pool(BaseComponent):
     _relations = BaseComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'pools',)),
         ('master', ToOne(ToOne, MODULE_NAME['Host'], 'master_for')),
-        ('default_sr', ToOne(ToMany, MODULE_NAME['SR'], 'default_for')),
-        ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for')),
-        ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for')),
+        ('default_sr', ToOne(ToMany, MODULE_NAME['SR'], 'default_for_pools')),
+        ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for_pools')),
+        ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for_pools')),
         )
 
     def getMaster(self):

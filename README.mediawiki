@@ -24,3 +24,24 @@ Tracking tasks here at least until the first revision is done.
 # Add bond interfaces. (Bond)
 # Targeted remodeling based on events.
 # Screencast.
+
+== Scratch Pad ==
+
+Tidbits that are useful to me while developing the ZenPack.
+
+;Add the XenServer endpoint.
+<console>
+d = dmd.Devices.XenServer.createInstance('xenserver1')
+d.setPerformanceMonitor('localhost')
+d.setZenProperty('zXenServerAddresses', ['192.168.66.72', '192.168.66.71'])
+d.setZenProperty('zXenServerUsername', 'root')
+d.setZenProperty('zXenServerPassword', 'zenoss')
+commit()
+
+import time; time.sleep(4)
+d.collectDevice()
+
+sync()
+d.setZenProperty('zCollectorLogChanges', True)
+commit()
+</console>

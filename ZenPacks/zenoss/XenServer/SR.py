@@ -53,9 +53,12 @@ class SR(BaseComponent):
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'srs',)),
         ('vdis', ToManyCont(ToOne, MODULE_NAME['VDI'], 'sr',)),
         ('pbds', ToMany(ToOne, MODULE_NAME['PBD'], 'sr',)),
-        ('default_for', ToMany(ToOne, MODULE_NAME['Pool'], 'default_sr')),
-        ('suspend_image_for', ToMany(ToOne, MODULE_NAME['Pool'], 'suspend_image_sr')),
-        ('crash_dump_for', ToMany(ToOne, MODULE_NAME['Pool'], 'crash_dump_sr')),
+        ('default_for_pools', ToMany(ToOne, MODULE_NAME['Pool'], 'default_sr')),
+        ('suspend_image_for_pools', ToMany(ToOne, MODULE_NAME['Pool'], 'suspend_image_sr')),
+        ('crash_dump_for_pools', ToMany(ToOne, MODULE_NAME['Pool'], 'crash_dump_sr')),
+        ('suspend_image_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'suspend_image_sr')),
+        ('crash_dump_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'crash_dump_sr')),
+        ('local_cache_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'local_cache_sr')),
         )
 
     def getPBDs(self):
@@ -78,64 +81,124 @@ class SR(BaseComponent):
             type_=CLASS_NAME['PBD'],
             ids=pbd_ids)
 
-    def getDefaultFor(self):
+    def getDefaultForPools(self):
         '''
         Return a sorted list of related Pool ids.
 
         Used by modeling.
         '''
-        return sorted(x.id for x in self.default_for.objectValuesGen())
+        return sorted(x.id for x in self.default_for_pools.objectValuesGen())
 
-    def setDefaultFor(self, pool_ids):
+    def setDefaultForPools(self, pool_ids):
         '''
-        Set default_for relationship by Pool id.
+        Set default_for_pools relationship by Pool id.
 
         Used by modeling.
         '''
         updateToMany(
-            relationship=self.default_for,
+            relationship=self.default_for_pools,
             root=self.device(),
             type_=CLASS_NAME['Pool'],
             ids=pool_ids)
 
-    def getSuspendImageFor(self):
+    def getSuspendImageForPools(self):
         '''
         Return a sorted list of related Pool ids.
 
         Used by modeling.
         '''
-        return sorted(x.id for x in self.suspend_image_for.objectValuesGen())
+        return sorted(x.id for x in self.suspend_image_for_pools.objectValuesGen())
 
-    def setSuspendImageFor(self, pool_ids):
+    def setSuspendImageForPools(self, pool_ids):
         '''
-        Set suspend_image_for relationship by Pool id.
+        Set suspend_image_for_pools relationship by Pool id.
 
         Used by modeling.
         '''
         updateToMany(
-            relationship=self.suspend_image_for,
+            relationship=self.suspend_image_for_pools,
             root=self.device(),
             type_=CLASS_NAME['Pool'],
             ids=pool_ids)
 
-    def getCrashDumpFor(self):
+    def getCrashDumpForPools(self):
         '''
         Return a sorted list of related Pool ids.
 
         Used by modeling.
         '''
-        return sorted(x.id for x in self.crash_dump_for.objectValuesGen())
+        return sorted(x.id for x in self.crash_dump_for_pools.objectValuesGen())
 
-    def setCrashDumpFor(self, pool_ids):
+    def setCrashDumpForPools(self, pool_ids):
         '''
-        Set crash_dump_for relationship by Pool id.
+        Set crash_dump_for_pools relationship by Pool id.
 
         Used by modeling.
         '''
         updateToMany(
-            relationship=self.crash_dump_for,
+            relationship=self.crash_dump_for_pools,
             root=self.device(),
             type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
+
+    def getSuspendImageForHosts(self):
+        '''
+        Return a sorted list of related Host ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.suspend_image_for_hosts.objectValuesGen())
+
+    def setSuspendImageForHosts(self, pool_ids):
+        '''
+        Set suspend_image_for_hosts relationship by Host id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.suspend_image_for_hosts,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
+            ids=pool_ids)
+
+    def getCrashDumpForHosts(self):
+        '''
+        Return a sorted list of related Host ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.crash_dump_for_hosts.objectValuesGen())
+
+    def setCrashDumpForHosts(self, pool_ids):
+        '''
+        Set crash_dump_for_hosts relationship by Host id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.crash_dump_for_hosts,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
+            ids=pool_ids)
+
+    def getLocalCacheForHosts(self):
+        '''
+        Return a sorted list of related Host ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.local_cache_for_hosts.objectValuesGen())
+
+    def setLocalCacheForHosts(self, pool_ids):
+        '''
+        Set local_cache_for_hosts relationship by Host id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.local_cache_for_hosts,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
             ids=pool_ids)
 
 
