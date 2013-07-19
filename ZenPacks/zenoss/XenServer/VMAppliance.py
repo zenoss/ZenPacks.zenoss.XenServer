@@ -26,7 +26,7 @@ from ZenPacks.zenoss.XenServer.utils import (
 
 class VMAppliance(BaseComponent):
     '''
-    Model class for VMAppliance.
+    Model class for VMAppliance. Also known as vApp.
     '''
 
     meta_type = portal_type = 'XenServerVMAppliance'
@@ -79,7 +79,7 @@ class IVMApplianceInfo(IBaseComponentInfo):
 
 class VMApplianceInfo(BaseComponentInfo):
     '''
-    API Info adapter factory for Datacenter.
+    API Info adapter factory for VMAppliance.
     '''
 
     implements(IVMApplianceInfo)
