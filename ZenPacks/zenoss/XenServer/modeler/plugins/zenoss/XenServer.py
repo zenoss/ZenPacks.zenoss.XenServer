@@ -340,6 +340,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['SR']].append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
                 })
 
         for ref, ref_objmaps in objmaps.items():
