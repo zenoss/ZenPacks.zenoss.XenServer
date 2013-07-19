@@ -8,41 +8,36 @@
 #
 ######################################################################
 
+from zope.component import adapts
 from zope.interface import implements
-from Products.ZenModel.Device import Device
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.Zuul.decorators import info
+
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
-from ZenPacks.zenoss.XenServer.utils import updateToOne
+
+from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
+from ZenPacks.zenoss.XenServer.utils import (
+    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    updateToOne,
+    )
 
 
-class VIF(DeviceComponent, ManagedEntity):
+class VIF(BaseComponent):
+    '''
+    Model class for VIF.
+    '''
+
     meta_type = portal_type = 'XenServerVIF'
 
-    Klasses = [DeviceComponent, ManagedEntity]
-
-    uuid = None
     status_code = None
     status_detail = None
     MAC = None
     MTU = None
     qos_algorithm_type = None
 
-    _properties = ()
-    for Klass in Klasses:
-        _properties = _properties + getattr(Klass, '_properties', ())
-
-    _properties = _properties + (
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
+    _properties = BaseComponent._properties + (
         {'id': 'status_code', 'type': 'string', 'mode': 'w'},
         {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
         {'id': 'MAC', 'type': 'string', 'mode': 'w'},
@@ -50,44 +45,12 @@ class VIF(DeviceComponent, ManagedEntity):
         {'id': 'qos_algorithm_type', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = ()
-    for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', ())
-
-    _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'vifs',)),
-        ('network', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.Network', 'vifs',)),
-        ('vm', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.VM', 'vifs',)),
+    _relations = BaseComponent._relations + (
+        ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vifs',)),
+        ('network', ToOne(ToMany, MODULE_NAME['Network'], 'vifs',)),
         )
 
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-            },),
-        },)
-
-    def device(self):
-        '''
-        Return device under which this component/device is contained.
-        '''
-        obj = self
-
-        for i in range(200):
-            if isinstance(obj, Device):
-                return obj
-
-            try:
-                obj = obj.getPrimaryParent()
-            except AttributeError as exc:
-                raise AttributeError(
-                    'Unable to determine parent at %s (%s) '
-                    'while getting device for %s' % (
-                        obj, exc, self))
-
-    def getnetworkId(self):
+    def getNetwork(self):
         '''
         Return network id or None.
 
@@ -97,7 +60,7 @@ class VIF(DeviceComponent, ManagedEntity):
         if obj:
             return obj.id
 
-    def setnetworkId(self, id_):
+    def setNetwork(self, network_id):
         '''
         Set network by id.
 
@@ -106,13 +69,15 @@ class VIF(DeviceComponent, ManagedEntity):
         updateToOne(
             relationship=self.network,
             root=self.device(),
-            type_='ZenPacks.zenoss.XenServer.Network',
-            id_=id_)
+            type_=CLASS_NAME['Network'],
+            id_=network_id)
 
 
-class IVIFInfo(IComponentInfo):
+class IVIFInfo(IBaseComponentInfo):
+    '''
+    API Info interface for VIF.
+    '''
 
-    uuid = schema.TextLine(title=_t(u'uuids'))
     status_code = schema.TextLine(title=_t(u'status_codes'))
     status_detail = schema.TextLine(title=_t(u'status_details'))
     MAC = schema.TextLine(title=_t(u'MACS'))
@@ -120,10 +85,14 @@ class IVIFInfo(IComponentInfo):
     qos_algorithm_type = schema.TextLine(title=_t(u'qos_algorithm_types'))
 
 
-class VIFInfo(ComponentInfo):
-    implements(IVIFInfo)
+class VIFInfo(BaseComponentInfo):
+    '''
+    API Info adapter factory for VIF.
+    '''
 
-    uuid = ProxyProperty('uuid')
+    implements(IVIFInfo)
+    adapts(VIF)
+
     status_code = ProxyProperty('status_code')
     status_detail = ProxyProperty('status_detail')
     MAC = ProxyProperty('MAC')
@@ -132,6 +101,10 @@ class VIFInfo(ComponentInfo):
 
 
 class VIFPathReporter(DefaultPathReporter):
+    '''
+    Path reporter for VIF.
+    '''
+
     def getPaths(self):
         paths = super(VIFPathReporter, self).getPaths()
 
