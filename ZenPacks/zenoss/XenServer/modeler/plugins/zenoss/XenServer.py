@@ -19,7 +19,7 @@ import collections
 from twisted.internet.defer import DeferredList, inlineCallbacks, returnValue
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
-from Products.DataCollector.plugins.DataMaps import RelationshipMap
+from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.XenServer import MODULE_NAME
@@ -214,6 +214,11 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 getattr(self, '%s_relmaps' % xapi_class.lower())(
                     results[i][1]))
 
+        # Pick up any other maps that can be built with data cached
+        # during the main process loop above. This allows for modeling
+        # object not represented 1-for-1 by XAPI_CLASSES.
+        maps.extend(self.other_maps())
+
         self.cache_clear()
 
         return maps
@@ -266,6 +271,27 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         '''
         Yield a single hosts RelationshipMap.
         '''
+
+        # Cache API version information for use in other_maps.
+        try:
+            properties = results.itervalues().next()
+        except StopIteration:
+            # Who cares if there aren't any hosts?
+            pass
+        else:
+            manufacturer = properties.get('API_version_vendor')
+            version_major = properties.get('API_version_major')
+            version_minor = properties.get('API_version_minor')
+
+            if manufacturer and version_major and version_minor:
+                model = 'XenAPI %s.%s' % (version_major, version_minor)
+
+                self.cache_set('api', 'product', {
+                    'manufacturer': manufacturer,
+                    'model': model,
+                    })
+
+        # Create host ObjectMaps.
         host_oms = []
 
         for ref, properties in results.items():
@@ -503,3 +529,16 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             relname='pools',
             modname=MODULE_NAME['Pool'],
             objmaps=objmaps)
+
+    def other_maps(self):
+        '''
+        Yield DataMaps that don't map directly to one of the
+        XAPI_CLASSES through their respective *_relmaps methods.
+        '''
+        # This information is gathered from the host call. So it should
+        # be cached in the host_relmaps method.
+        api = self.cache_get('api', 'product')
+        if api:
+            yield ObjectMap(compname='os', data={
+                'setProductKey': MultiArgs(api['model'], api['manufacturer']),
+                })
