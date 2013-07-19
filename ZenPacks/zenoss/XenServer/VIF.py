@@ -26,7 +26,7 @@ from ZenPacks.zenoss.XenServer.utils import (
 
 class VIF(BaseComponent):
     '''
-    Model class for VIF.
+    Model class for VIF (virtual interface.)
     '''
 
     meta_type = portal_type = 'XenServerVIF'
@@ -46,8 +46,8 @@ class VIF(BaseComponent):
         )
 
     _relations = BaseComponent._relations + (
-        ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vifs',)),
-        ('network', ToOne(ToMany, MODULE_NAME['Network'], 'vifs',)),
+        ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vifs')),
+        ('network', ToOne(ToMany, MODULE_NAME['Network'], 'vifs')),
         )
 
     def getNetwork(self):
@@ -108,8 +108,8 @@ class VIFPathReporter(DefaultPathReporter):
     def getPaths(self):
         paths = super(VIFPathReporter, self).getPaths()
 
-        obj = self.context.network()
-        if obj:
-            paths.extend(relPath(obj, 'endpoint'))
+        network = self.context.network()
+        if network:
+            paths.extend(relPath(network, 'endpoint'))
 
         return paths
