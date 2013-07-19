@@ -167,6 +167,12 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         if results is None:
             return None
 
+        # Check to see if all requests failed.
+        result_statuses = set(x[0] for x in results)
+        if len(result_statuses) == 1 and False in result_statuses:
+            log.error("No XenServer API response from %s", device.id)
+            return None
+
         log.info(
             "Modeler %s processing data for device %s",
             self.name(), device.id)
@@ -178,6 +184,13 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         # Call self.xxx_relmaps(self, respective_results) for each XAPI
         # class.
         for i, xapi_class in enumerate(XAPI_CLASSES):
+            if not results[i][0]:
+                log.error(
+                    "No XenServer API response for %s from %s",
+                    xapi_class, device.id)
+
+                continue
+
             maps.extend(
                 getattr(self, '%s_relmaps' % xapi_class.lower())(
                     results[i][1]))
