@@ -16,7 +16,7 @@ import collections
 from twisted.internet.defer import DeferredList, inlineCallbacks, returnValue
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
-from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
+from Products.DataCollector.plugins.DataMaps import RelationshipMap
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.XenServer import MODULE_NAME
