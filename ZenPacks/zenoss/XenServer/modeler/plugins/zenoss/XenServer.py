@@ -48,6 +48,9 @@ def id_from_ref(ref):
     '''
     Return a Zenoss component id given a XenAPI OpaqueRef.
     '''
+    if not ref or ref == 'OpaqueRef:NULL':
+        return None
+
     return prepId(ref.split(':', 1)[1])
 
 
