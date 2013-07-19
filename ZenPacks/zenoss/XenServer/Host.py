@@ -117,7 +117,7 @@ class Host(BaseComponent):
         '''
         master_for = self.master_for()
         if master_for:
-            return master_for
+            return master_for.id
 
     def setMasterFor(self, pool_id):
         '''

@@ -68,7 +68,7 @@ class Pool(BaseComponent):
         '''
         master = self.master()
         if master:
-            return master
+            return master.id
 
     def setMaster(self, host_id):
         '''
@@ -90,7 +90,7 @@ class Pool(BaseComponent):
         '''
         default_sr = self.default_sr()
         if default_sr:
-            return default_sr
+            return default_sr.id
 
     def setDefaultSR(self, sr_id):
         '''
@@ -112,7 +112,7 @@ class Pool(BaseComponent):
         '''
         suspend_image_sr = self.suspend_image_sr()
         if suspend_image_sr:
-            return suspend_image_sr
+            return suspend_image_sr.id
 
     def setSuspendImageSR(self, sr_id):
         '''
@@ -134,7 +134,7 @@ class Pool(BaseComponent):
         '''
         crash_dump_sr = self.crash_dump_sr()
         if crash_dump_sr:
-            return crash_dump_sr
+            return crash_dump_sr.id
 
     def setCrashDumpSR(self, sr_id):
         '''
