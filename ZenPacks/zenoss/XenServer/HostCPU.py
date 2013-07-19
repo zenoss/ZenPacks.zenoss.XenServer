@@ -56,7 +56,6 @@ class HostCPU(BaseComponent):
         )
 
     _relations = BaseComponent._relations + (
-        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'hostcpus')),
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'hostcpus')),
         )
 
