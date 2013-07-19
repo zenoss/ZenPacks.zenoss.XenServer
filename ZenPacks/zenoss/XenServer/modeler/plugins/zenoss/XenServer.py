@@ -401,7 +401,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         objmaps = collections.defaultdict(list)
 
         for ref, properties in results.items():
-            title = properties.get('device') or properties['uuid']
+            title = properties.get('device') or \
+                properties.get('userdevice') or \
+                properties['uuid']
 
             objmaps[properties['VM']].append({
                 'id': id_from_ref(ref),
