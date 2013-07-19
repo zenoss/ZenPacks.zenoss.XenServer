@@ -8,115 +8,84 @@
 #
 ######################################################################
 
+from zope.component import adapts
 from zope.interface import implements
-from Products.ZenModel.Device import Device
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.Zuul.decorators import info
+
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 
+from ZenPacks.zenoss.XenServer import MODULE_NAME
+from ZenPacks.zenoss.XenServer.utils import (
+    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    )
 
-class Pool(DeviceComponent, ManagedEntity):
+
+class Pool(BaseComponent):
+    '''
+    Model class for Pool.
+    '''
+
     meta_type = portal_type = 'XenServerPool'
 
-    Klasses = [DeviceComponent, ManagedEntity]
-
+    name_label = None
+    name_description = None
     vswitch_controller = None
     ha_enabled = None
     ha_plan_exists_for = None
-    name_label = None
     ha_allow_overcommit = None
     ha_host_failures_to_tolerate = None
-    name_description = None
     ha_overcommitted = None
     redo_log_enabled = None
-    uuid = None
 
-    _properties = ()
-    for Klass in Klasses:
-        _properties = _properties + getattr(Klass, '_properties', ())
-
-    _properties = _properties + (
+    _properties = BaseComponent._properties + (
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'vswitch_controller', 'type': 'string', 'mode': 'w'},
         {'id': 'ha_enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'ha_plan_exists_for', 'type': 'int', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'ha_allow_overcommit', 'type': 'bool', 'mode': 'w'},
         {'id': 'ha_host_failures_to_tolerate', 'type': 'int', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'ha_overcommitted', 'type': 'bool', 'mode': 'w'},
         {'id': 'redo_log_enabled', 'type': 'bool', 'mode': 'w'},
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = ()
-    for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', ())
-
-    _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'pools',)),
+    _relations = BaseComponent._relations + (
+        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'pools',)),
         )
 
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-            },),
-        },)
 
-    def device(self):
-        '''
-        Return device under which this component/device is contained.
-        '''
-        obj = self
+class IPoolInfo(IBaseComponentInfo):
+    '''
+    API Info interface for Pool.
+    '''
 
-        for i in range(200):
-            if isinstance(obj, Device):
-                return obj
-
-            try:
-                obj = obj.getPrimaryParent()
-            except AttributeError as exc:
-                raise AttributeError(
-                    'Unable to determine parent at %s (%s) '
-                    'while getting device for %s' % (
-                        obj, exc, self))
-
-
-class IPoolInfo(IComponentInfo):
-
+    name_label = schema.TextLine(title=_t(u'name_labels'))
+    name_description = schema.TextLine(title=_t(u'name_descriptions'))
     vswitch_controller = schema.TextLine(title=_t(u'vswitch_controllers'))
     ha_enabled = schema.Bool(title=_t(u'ha_enableds'))
     ha_plan_exists_for = schema.Int(title=_t(u'ha_plan_exists_fors'))
-    name_label = schema.TextLine(title=_t(u'name_labels'))
     ha_allow_overcommit = schema.Bool(title=_t(u'ha_allow_overcommits'))
     ha_host_failures_to_tolerate = schema.Int(title=_t(u'ha_host_failures_to_tolerates'))
-    name_description = schema.TextLine(title=_t(u'name_descriptions'))
     ha_overcommitted = schema.Bool(title=_t(u'ha_overcommitteds'))
     redo_log_enabled = schema.Bool(title=_t(u'redo_log_enableds'))
-    uuid = schema.TextLine(title=_t(u'uuids'))
 
 
-class PoolInfo(ComponentInfo):
+class PoolInfo(BaseComponentInfo):
+    '''
+    API Info adapter factory for Pool.
+    '''
+
     implements(IPoolInfo)
+    adapts(Pool)
 
+    name_label = ProxyProperty('name_label')
+    name_description = ProxyProperty('name_description')
     vswitch_controller = ProxyProperty('vswitch_controller')
     ha_enabled = ProxyProperty('ha_enabled')
     ha_plan_exists_for = ProxyProperty('ha_plan_exists_for')
-    name_label = ProxyProperty('name_label')
     ha_allow_overcommit = ProxyProperty('ha_allow_overcommit')
     ha_host_failures_to_tolerate = ProxyProperty('ha_host_failures_to_tolerate')
-    name_description = ProxyProperty('name_description')
     ha_overcommitted = ProxyProperty('ha_overcommitted')
     redo_log_enabled = ProxyProperty('redo_log_enabled')
-    uuid = ProxyProperty('uuid')
