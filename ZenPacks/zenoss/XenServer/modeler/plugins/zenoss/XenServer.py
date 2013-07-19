@@ -430,6 +430,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['VM']].append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setNetwork': id_from_ref(properties.get('network')),
                 })
 
         for parent_ref, grouped_objmaps in objmaps.items():
