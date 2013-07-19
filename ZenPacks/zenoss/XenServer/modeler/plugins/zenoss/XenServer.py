@@ -361,6 +361,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setPIFs': ids_from_refs(properties.get('PIFs', [])),
+                'setVIFs': ids_from_refs(properties.get('VIFs', [])),
                 })
 
         yield RelationshipMap(
