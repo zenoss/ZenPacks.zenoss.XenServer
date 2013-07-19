@@ -277,6 +277,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setSR': id_from_ref(properties.get('SR')),
                 })
 
         for parent_ref, grouped_objmaps in objmaps.items():
