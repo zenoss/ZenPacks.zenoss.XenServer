@@ -11,10 +11,10 @@
 from zope.component import adapts
 from zope.interface import implements
 
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
