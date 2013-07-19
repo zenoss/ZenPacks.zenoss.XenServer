@@ -8,17 +8,19 @@ Tracking tasks here at least until the first revision is done.
 # Model OS manufacturer and product on Endpoint.
 # Remove useless information from device overview screen.
 # Add useful information to device overview screen.
-# ToOne relationships from Pool to SR.
 # "Add XenServer" dialog.
 # Device loader.
 # XenAPI datasource type.
 # Monitoring templates.
 # Events.
+# Create model ERD.
+# Create Impact ERD.
 # Internal Impact adapters.
 # External Impact adapters.
 # Documentation.
 
 ;Niceties
+# zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
 # Order component types on device screen sensibly.
 # Add bond interfaces. (Bond)
 # Targeted remodeling based on events.
