@@ -46,12 +46,30 @@ XAPI_CLASSES = [
 
 def id_from_ref(ref):
     '''
-    Return a Zenoss component id given a XenAPI OpaqueRef.
+    Return a component id given a XenAPI OpaqueRef.
     '''
     if not ref or ref == 'OpaqueRef:NULL':
         return None
 
     return prepId(ref.split(':', 1)[1])
+
+
+def ids_from_refs(refs):
+    '''
+    Return list of component ids given a list of XenAPI OpaqueRefs.
+
+    Null references won't be included in the returned list. So it's
+    possible that the returned list will be shorter than the passed
+    list.
+    '''
+    ids = []
+
+    for ref in refs:
+        id_ = id_from_ref(ref)
+        if id_:
+            ids.append(id_)
+
+    return ids
 
 
 class ModelerPluginCacheMixin(object):
@@ -433,6 +451,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setVMs': ids_from_refs(properties.get('VMs', [])),
                 })
 
         yield RelationshipMap(

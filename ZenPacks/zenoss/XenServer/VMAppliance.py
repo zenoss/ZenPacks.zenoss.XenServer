@@ -44,7 +44,7 @@ class VMAppliance(BaseComponent):
         ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'vmappliance')),
         )
 
-    def getVMIds(self):
+    def getVMs(self):
         '''
         Return a sorted list of related VM ids.
         Aggregate.
@@ -53,7 +53,7 @@ class VMAppliance(BaseComponent):
         '''
         return sorted([vm.id for vm in self.vms.objectValuesGen()])
 
-    def setVMIds(self, ids):
+    def setVMs(self, vm_ids):
         '''
         Update VM relationship given ids.
 
@@ -63,7 +63,7 @@ class VMAppliance(BaseComponent):
             relationship=self.vms,
             root=self.device(),
             type_=CLASS_NAME['VM'],
-            ids=ids)
+            ids=vm_ids)
 
 
 class IVMApplianceInfo(IBaseComponentInfo):
