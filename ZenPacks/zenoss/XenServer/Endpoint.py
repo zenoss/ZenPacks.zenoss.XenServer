@@ -56,15 +56,9 @@ class IEndpointInfo(IDeviceInfo):
 
     pool_count = schema.Int(title=_t(u'Number of Pools'))
     host_count = schema.Int(title=_t(u'Number of Hosts'))
-    hostcpu_count = schema.Int(title=_t(u'Number of Host CPUs'))
-    pbd_count = schema.Int(title=_t(u'Number of PBDs'))
-    pif_count = schema.Int(title=_t(u'Number of PIFs'))
     sr_count = schema.Int(title=_t(u'Number of SRs'))
-    vdi_count = schema.Int(title=_t(u'Number of VDIs'))
     network_count = schema.Int(title=_t(u'Number of Networks'))
     vm_count = schema.Int(title=_t(u'Number of VMs'))
-    vbd_count = schema.Int(title=_t(u'Number of VBDs'))
-    vif_count = schema.Int(title=_t(u'Number of VIFs'))
     vmappliance_count = schema.Int(title=_t(u'Number of VM Appliances'))
 
 
@@ -78,13 +72,7 @@ class EndpointInfo(DeviceInfo):
 
     pool_count = RelationshipLengthProperty('pools')
     host_count = RelationshipLengthProperty('hosts')
-    hostcpu_count = RelationshipLengthProperty('hostcpus')
-    pbd_count = RelationshipLengthProperty('pbds')
-    pif_count = RelationshipLengthProperty('pifs')
     sr_count = RelationshipLengthProperty('srs')
-    vdi_count = RelationshipLengthProperty('vdis')
     network_count = RelationshipLengthProperty('networks')
     vm_count = RelationshipLengthProperty('vms')
-    vbd_count = RelationshipLengthProperty('vbds')
-    vif_count = RelationshipLengthProperty('vifs')
     vmappliance_count = RelationshipLengthProperty('vmappliances')
