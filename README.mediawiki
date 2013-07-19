@@ -29,7 +29,7 @@ Tracking tasks here at least until the first revision is done.
 Tidbits that are useful to me while developing the ZenPack.
 
 ;Add the XenServer endpoint.
-<console>
+<pre>
 d = dmd.Devices.XenServer.createInstance('xenserver1')
 d.setPerformanceMonitor('localhost')
 d.setZenProperty('zXenServerAddresses', ['192.168.66.72', '192.168.66.71'])
@@ -43,4 +43,4 @@ d.collectDevice()
 sync()
 d.setZenProperty('zCollectorLogChanges', True)
 commit()
-</console>
+</pre>
