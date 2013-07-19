@@ -33,6 +33,7 @@ class Host(BaseComponent):
 
     name_label = None
     name_description = None
+    address = None
     supported_bootloaders = None
     API_version_minor = None
     edition = None
@@ -57,6 +58,7 @@ class Host(BaseComponent):
     _properties = BaseComponent._properties + (
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'address', 'type': 'string', 'mode': 'w'},
         {'id': 'supported_bootloaders', 'type': 'string', 'mode': 'w'},
         {'id': 'API_version_minor', 'type': 'string', 'mode': 'w'},
         {'id': 'edition', 'type': 'string', 'mode': 'w'},
@@ -139,6 +141,7 @@ class IHostInfo(IBaseComponentInfo):
 
     name_label = schema.TextLine(title=_t(u'name_labels'))
     name_description = schema.TextLine(title=_t(u'name_descriptions'))
+    address = schema.TextLine(title=_t(u'Address'))
     supported_bootloaders = schema.TextLine(title=_t(u'supported_bootloader'))
     API_version_minor = schema.TextLine(title=_t(u'API_version_minors'))
     edition = schema.TextLine(title=_t(u'editions'))
@@ -176,6 +179,7 @@ class HostInfo(BaseComponentInfo):
 
     name_label = ProxyProperty('name_label')
     name_description = ProxyProperty('name_description')
+    address = ProxyProperty('address')
     supported_bootloaders = ProxyProperty('supported_bootloaders')
     API_version_minor = ProxyProperty('API_version_minor')
     edition = ProxyProperty('edition')

@@ -41,7 +41,7 @@ class Endpoint(Device):
         Prefer hostname discovered from the endpoint. Fall back to
         user-configured addresses that are less likely to be up to date.
         '''
-        addresses = [x.hostname for x in self.hosts() if x.hostname]
+        addresses = [x.address for x in self.hosts() if x.address]
 
         if not addresses:
             addresses = self.zXenServerAddresses

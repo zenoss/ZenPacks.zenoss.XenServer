@@ -230,6 +230,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             host_oms.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'address': properties.get('address'),
                 })
 
             # To be used as a default for containing pool with no name.
