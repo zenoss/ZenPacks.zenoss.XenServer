@@ -80,15 +80,15 @@ class Host(BaseComponent):
         )
 
     _relations = BaseComponent._relations + (
-        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'hosts',)),
-        ('hostcpus', ToManyCont(ToOne, MODULE_NAME['HostCPU'], 'host',)),
-        ('pbds', ToManyCont(ToOne, MODULE_NAME['PBD'], 'host',)),
-        ('pifs', ToManyCont(ToOne, MODULE_NAME['PIF'], 'host',)),
-        ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'host',)),
+        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'hosts')),
+        ('hostcpus', ToManyCont(ToOne, MODULE_NAME['HostCPU'], 'host')),
+        ('pbds', ToManyCont(ToOne, MODULE_NAME['PBD'], 'host')),
+        ('pifs', ToManyCont(ToOne, MODULE_NAME['PIF'], 'host')),
+        ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'host')),
         ('master_for', ToOne(ToOne, MODULE_NAME['Pool'], 'master')),
         )
 
-    def getVMIds(self):
+    def getVMs(self):
         '''
         Return a sorted list of each vm id related to this host.
 
@@ -97,7 +97,7 @@ class Host(BaseComponent):
 
         return sorted(vm.id for vm in self.vms.objectValuesGen())
 
-    def setVMIds(self, ids):
+    def setVMs(self, vm_ids):
         '''
         Update VM relationship given ids.
 
@@ -107,7 +107,7 @@ class Host(BaseComponent):
             relationship=self.vms,
             root=self.device(),
             type_=CLASS_NAME['VM'],
-            ids=ids)
+            ids=vm_ids)
 
     def getMasterFor(self):
         '''
