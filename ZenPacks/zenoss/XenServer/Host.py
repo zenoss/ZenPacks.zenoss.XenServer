@@ -20,7 +20,7 @@ from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
     RelationshipLengthProperty,
-    updateToMany,
+    updateToMany, updateToOne,
     )
 
 
@@ -85,6 +85,7 @@ class Host(BaseComponent):
         ('pbds', ToManyCont(ToOne, MODULE_NAME['PBD'], 'host',)),
         ('pifs', ToManyCont(ToOne, MODULE_NAME['PIF'], 'host',)),
         ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'host',)),
+        ('master_for', ToOne(ToOne, MODULE_NAME['Pool'], 'master')),
         )
 
     def getVMIds(self):
@@ -107,6 +108,28 @@ class Host(BaseComponent):
             root=self.device(),
             type_=CLASS_NAME['VM'],
             ids=ids)
+
+    def getMasterFor(self):
+        '''
+        Return Pool id or None.
+
+        Used by modeling.
+        '''
+        master_for = self.master_for()
+        if master_for:
+            return master_for
+
+    def setMasterFor(self, pool_id):
+        '''
+        Set master_for relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.master_for,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            id_=pool_id)
 
 
 class IHostInfo(IBaseComponentInfo):

@@ -54,10 +54,33 @@ class Pool(BaseComponent):
 
     _relations = BaseComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'pools',)),
+        ('master', ToOne(ToOne, MODULE_NAME['Host'], 'master_for')),
         ('default_sr', ToOne(ToMany, MODULE_NAME['SR'], 'default_for')),
         ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for')),
         ('crashdump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crashdump_for')),
         )
+
+    def getMaster(self):
+        '''
+        Return Host id or None.
+
+        Used by modeling.
+        '''
+        master = self.master()
+        if master:
+            return master
+
+    def setMaster(self, host_id):
+        '''
+        Set master relationship by host id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.master,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
+            id_=host_id)
 
     def getDefaultSR(self):
         '''
