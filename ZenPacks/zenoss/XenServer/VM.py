@@ -58,23 +58,23 @@ class VM(BaseComponent):
 
     _relations = BaseComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vms')),
-        ('host', ToOne(ToMany, MODULE_NAME['Host'], 'vms')),
-        ('vmappliance', ToOne(ToMany, MODULE_NAME['VMAppliance'], 'vms')),
         ('vbds', ToManyCont(ToOne, MODULE_NAME['VBD'], 'vm')),
         ('vifs', ToManyCont(ToOne, MODULE_NAME['VIF'], 'vm')),
+        ('host', ToOne(ToMany, MODULE_NAME['Host'], 'vms')),
+        ('vmappliance', ToOne(ToMany, MODULE_NAME['VMAppliance'], 'vms')),
         )
 
-    def getHostId(self):
+    def getHost(self):
         '''
         Return host id or None.
 
         Used by modeling.
         '''
-        obj = self.host()
-        if obj:
-            return obj.id
+        host = self.host()
+        if host:
+            return host.id
 
-    def setHostId(self, id_):
+    def setHost(self, host_id):
         '''
         Set host by id.
 
@@ -84,7 +84,29 @@ class VM(BaseComponent):
             relationship=self.host,
             root=self.device(),
             type_=CLASS_NAME['Host'],
-            id_=id_)
+            id_=host_id)
+
+    def getVMAppliance(self):
+        '''
+        Return VM appliance id or None.
+
+        Used by modeling.
+        '''
+        vmappliance = self.vmappliance()
+        if vmappliance:
+            return vmappliance.id
+
+    def setVMAppliance(self, vmappliance_id):
+        '''
+        Set VM appliance by id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.vmappliance,
+            root=self.device(),
+            type_=CLASS_NAME['VMAppliance'],
+            id_=vmappliance_id)
 
 
 class IVMInfo(IBaseComponentInfo):

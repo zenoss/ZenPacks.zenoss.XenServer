@@ -376,7 +376,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
         for ref, properties in results.items():
             if properties.get('is_a_snapshot') or \
-                    properties.get('is_snapshot_from_vmpp')or \
+                    properties.get('is_snapshot_from_vmpp') or \
                     properties.get('is_a_template'):
 
                 continue
@@ -386,6 +386,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setHost': id_from_ref(properties.get('resident_on')),
+                'setVMAppliance': id_from_ref(properties.get('appliance')),
                 })
 
         yield RelationshipMap(
