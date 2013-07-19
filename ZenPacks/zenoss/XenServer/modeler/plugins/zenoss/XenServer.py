@@ -11,6 +11,9 @@
 Model XenServer pools using XenAPI (a.k.a. XAPI).
 '''
 
+import logging
+LOG = logging.getLogger('zen.XenServer')
+
 import collections
 
 from twisted.internet.defer import DeferredList, inlineCallbacks, returnValue
@@ -130,24 +133,22 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         )
 
     @inlineCallbacks
-    def collect(self, device, log):
+    def collect(self, device, unused):
         '''
         Asynchronously collect data from device. Return a deferred.
         '''
-        log.info(
-            "Modeler %s collecting data for device %s",
-            self.name(), device.id)
+        LOG.info("Collecting data for device %s", device.id)
 
         if not device.xenserver_addresses:
-            log.warn("zXenServerAddresses not set. Modeling aborted")
+            LOG.warn("zXenServerAddresses not set. Modeling aborted")
             returnValue(None)
 
         if not device.zXenServerUsername:
-            log.warn("zXenServerUsername not set. Modeling aborted")
+            LOG.warn("zXenServerUsername not set. Modeling aborted")
             returnValue(None)
 
         if not device.zXenServerPassword:
-            log.warn("zXenServerPassword not set. Modeling aborted")
+            LOG.warn("zXenServerPassword not set. Modeling aborted")
             returnValue(None)
 
         client = txxenapi.Client(
@@ -163,13 +164,13 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         try:
             yield client.close()
         except Exception, ex:
-            log.warn(
+            LOG.warn(
                 "%s %s failed to logout: %s",
                 self.device, self.name(), ex)
 
         returnValue(results)
 
-    def process(self, device, results, log):
+    def process(self, device, results, unused):
         '''
         Process results of collect method.
 
@@ -189,14 +190,11 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             return None
 
         # Check to see if all requests failed.
-        result_statuses = set(x[0] for x in results)
-        if len(result_statuses) == 1 and False in result_statuses:
-            log.error("No XenServer API response from %s", device.id)
+        if set((x[0], x[1] is not None) for x in results) == [(False, False)]:
+            LOG.error("No XenServer API response from %s", device.id)
             return None
 
-        log.info(
-            "Modeler %s processing data for device %s",
-            self.name(), device.id)
+        LOG.info("Processing data for device %s", device.id)
 
         self.cache_prepare(device)
 
@@ -205,8 +203,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         # Call self.xxx_relmaps(self, respective_results) for each XAPI
         # class.
         for i, xapi_class in enumerate(XAPI_CLASSES):
-            if not results[i][0]:
-                log.error(
+            if not results[i][0] or results[i][1] is None:
+                LOG.error(
                     "No XenServer API response for %s from %s",
                     xapi_class, device.id)
 
