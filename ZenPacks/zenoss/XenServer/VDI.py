@@ -64,7 +64,6 @@ class VDI(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'vdis',)),
         ('sr', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.SR', 'vdis',)),
         ('vbds', ToMany(ToOne, 'ZenPacks.zenoss.XenServer.VBD', 'vdi',)),
         )

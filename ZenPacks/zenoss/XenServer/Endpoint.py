@@ -26,18 +26,12 @@ class Endpoint(Device):
     meta_type = portal_type = 'Endpoint'
 
     _relations = Device._relations + (
-        ('hostcpus', ToManyCont(ToOne, MODULE_NAME['HostCPU'], 'endpoint')),
         ('hosts', ToManyCont(ToOne, MODULE_NAME['Host'], 'endpoint')),
         ('networks', ToManyCont(ToOne, MODULE_NAME['Network'], 'endpoint')),
-        ('pbds', ToManyCont(ToOne, MODULE_NAME['PBD'], 'endpoint')),
-        ('pifs', ToManyCont(ToOne, MODULE_NAME['PIF'], 'endpoint')),
         ('pools', ToManyCont(ToOne, MODULE_NAME['Pool'], 'endpoint')),
         ('srs', ToManyCont(ToOne, MODULE_NAME['SR'], 'endpoint')),
-        ('vbds', ToManyCont(ToOne, MODULE_NAME['VBD'], 'endpoint')),
-        ('vdis', ToManyCont(ToOne, MODULE_NAME['VDI'], 'endpoint')),
-        ('vifs', ToManyCont(ToOne, MODULE_NAME['VIF'], 'endpoint')),
-        ('vms', ToManyCont(ToOne, MODULE_NAME['VM'], 'endpoint')),
         ('vmappliances', ToManyCont(ToOne, MODULE_NAME['VMAppliance'], 'endpoint')),
+        ('vms', ToManyCont(ToOne, MODULE_NAME['VM'], 'endpoint')),
         )
 
     def xenserver_addresses(self):

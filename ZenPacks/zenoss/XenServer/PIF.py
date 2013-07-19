@@ -53,7 +53,6 @@ class PIF(DeviceComponent, ManagedEntity):
         _relations = _relations + getattr(Klass, '_relations', ())
 
     _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'pifs',)),
         ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Host', 'pifs',)),
         ('network', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.Network', 'pifs',)),
         )
