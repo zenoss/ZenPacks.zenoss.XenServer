@@ -230,6 +230,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             host_oms.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
                 'address': properties.get('address'),
                 })
 
