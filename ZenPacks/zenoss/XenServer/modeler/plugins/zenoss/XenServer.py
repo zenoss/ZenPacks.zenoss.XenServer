@@ -460,6 +460,10 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': pool_title,
+                'setMaster': id_from_ref(properties.get('master')),
+                'setDefaultSR': id_from_ref(properties.get('default_SR')),
+                'setSuspendImageSR': id_from_ref(properties.get('suspend_image_SR')),
+                'setCrashDumpSR': id_from_ref(properties.get('crash_dump_SR')),
                 })
 
         yield RelationshipMap(
