@@ -3,7 +3,6 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# Model non-containing relationships between components.
 # Curate component properties, grid and details.
 # Model OS manufacturer and product on Endpoint.
 # Remove useless information from device overview screen.
