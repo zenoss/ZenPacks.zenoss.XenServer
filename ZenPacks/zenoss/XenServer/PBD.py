@@ -8,129 +8,104 @@
 #
 ######################################################################
 
+from zope.component import adapts
 from zope.interface import implements
-from Products.ZenModel.Device import Device
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.Zuul.decorators import info
+
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
-from ZenPacks.zenoss.XenServer.utils import updateToOne
+
+from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
+from ZenPacks.zenoss.XenServer.utils import (
+    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    updateToOne,
+    )
 
 
-class PBD(DeviceComponent, ManagedEntity):
+class PBD(BaseComponent):
+    '''
+    Model class for PBD (physical block device.)
+    '''
+
     meta_type = portal_type = 'XenServerPBD'
-
-    Klasses = [DeviceComponent, ManagedEntity]
 
     dc_legacy_mode = None
     current_attached = None
     dc_location = None
-    uuid = None
     dc_device = None
 
-    _properties = ()
-    for Klass in Klasses:
-        _properties = _properties + getattr(Klass, '_properties', ())
-
-    _properties = _properties + (
+    _properties = BaseComponent._properties + (
         {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
         {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
         {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
         {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = ()
-    for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', ())
-
-    _relations = _relations + (
-        ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Host', 'pbds',)),
-        ('sr', ToOne(ToMany, 'ZenPacks.zenoss.XenServer.SR', 'pbds',)),
+    _relations = BaseComponent._relations + (
+        ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'pbds')),
+        ('sr', ToOne(ToMany, MODULE_NAME['SR'], 'pbds')),
         )
 
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-            },),
-        },)
-
-    def device(self):
+    def getSR(self):
         '''
-        Return device under which this component/device is contained.
-        '''
-        obj = self
-
-        for i in range(200):
-            if isinstance(obj, Device):
-                return obj
-
-            try:
-                obj = obj.getPrimaryParent()
-            except AttributeError as exc:
-                raise AttributeError(
-                    'Unable to determine parent at %s (%s) '
-                    'while getting device for %s' % (
-                        obj, exc, self))
-
-    def getsrId(self):
-        '''
-        Return sr id or None.
+        Return SR id or None.
 
         Used by modeling.
         '''
-        obj = self.sr()
-        if obj:
-            return obj.id
+        sr = self.sr()
+        if sr:
+            return sr.id
 
-    def setsrId(self, id_):
+    def setSR(self, sr_id):
         '''
-        Set sr by id.
+        Set SR by id.
 
         Used by modeling.
         '''
         updateToOne(
             relationship=self.sr,
             root=self.device(),
-            type_='ZenPacks.zenoss.XenServer.SR',
-            id_=id_)
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
 
 
-class IPBDInfo(IComponentInfo):
+class IPBDInfo(IBaseComponentInfo):
+    '''
+    API Info interface for PBD.
+    '''
 
     dc_legacy_mode = schema.Bool(title=_t(u'dc_legacy_modes'))
     current_attached = schema.Bool(title=_t(u'current_attacheds'))
     dc_location = schema.TextLine(title=_t(u'dc_locations'))
-    uuid = schema.TextLine(title=_t(u'uuids'))
     dc_device = schema.TextLine(title=_t(u'dc_devices'))
 
 
-class PBDInfo(ComponentInfo):
+class PBDInfo(BaseComponentInfo):
+    '''
+    API Info adapter factory for PBD.
+    '''
+
     implements(IPBDInfo)
+    adapts(PBD)
 
     dc_legacy_mode = ProxyProperty('dc_legacy_mode')
     current_attached = ProxyProperty('current_attached')
     dc_location = ProxyProperty('dc_location')
-    uuid = ProxyProperty('uuid')
     dc_device = ProxyProperty('dc_device')
 
 
 class PBDPathReporter(DefaultPathReporter):
+    '''
+    Path reporter for PBD.
+    '''
+
     def getPaths(self):
         paths = super(PBDPathReporter, self).getPaths()
 
-        obj = self.context.sr()
-        if obj:
-            paths.extend(relPath(obj, 'endpoint'))
+        sr = self.context.sr()
+        if sr:
+            paths.extend(relPath(sr, 'endpoint'))
 
         return paths
