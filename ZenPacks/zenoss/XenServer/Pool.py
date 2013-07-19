@@ -14,11 +14,12 @@ from zope.interface import implements
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 
-from ZenPacks.zenoss.XenServer import MODULE_NAME
+from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    updateToOne,
     )
 
 
@@ -53,7 +54,76 @@ class Pool(BaseComponent):
 
     _relations = BaseComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'pools',)),
+        ('default_sr', ToOne(ToMany, MODULE_NAME['SR'], 'default_for')),
+        ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for')),
+        ('crashdump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crashdump_for')),
         )
+
+    def getDefaultSR(self):
+        '''
+        Return SR id or None.
+
+        Used by modeling.
+        '''
+        default_sr = self.default_sr()
+        if default_sr:
+            return default_sr
+
+    def setDefaultSR(self, sr_id):
+        '''
+        Set default_sr relationship by SR id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.default_sr,
+            root=self.device(),
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
+
+    def getSuspendImageSR(self):
+        '''
+        Return SR id or None.
+
+        Used by modeling.
+        '''
+        suspend_image_sr = self.suspend_image_sr()
+        if suspend_image_sr:
+            return suspend_image_sr
+
+    def setSuspendImageSR(self, sr_id):
+        '''
+        Set suspend_image_sr relationship by SR id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.suspend_image_sr,
+            root=self.device(),
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
+
+    def getCrashdumpSR(self):
+        '''
+        Return SR id or None.
+
+        Used by modeling.
+        '''
+        crashdump_sr = self.crashdump_sr()
+        if crashdump_sr:
+            return crashdump_sr
+
+    def setCrashdumpSR(self, sr_id):
+        '''
+        Set crashdump_sr relationship by SR id.
+
+        Used by modeling.
+        '''
+        updateToOne(
+            relationship=self.crashdump_sr,
+            root=self.device(),
+            type_=CLASS_NAME['SR'],
+            id_=sr_id)
 
 
 class IPoolInfo(IBaseComponentInfo):

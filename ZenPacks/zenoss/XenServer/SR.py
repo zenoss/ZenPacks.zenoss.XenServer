@@ -51,8 +51,11 @@ class SR(BaseComponent):
 
     _relations = BaseComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'srs',)),
-        ('pbds', ToMany(ToOne, MODULE_NAME['PBD'], 'sr',)),
         ('vdis', ToManyCont(ToOne, MODULE_NAME['VDI'], 'sr',)),
+        ('pbds', ToMany(ToOne, MODULE_NAME['PBD'], 'sr',)),
+        ('default_for', ToMany(ToOne, MODULE_NAME['Pool'], 'default_sr')),
+        ('suspend_image_for', ToMany(ToOne, MODULE_NAME['Pool'], 'suspend_image_sr')),
+        ('crashdump_for', ToMany(ToOne, MODULE_NAME['Pool'], 'crashdump_sr')),
         )
 
     def getPBDIds(self):
@@ -61,8 +64,7 @@ class SR(BaseComponent):
 
         Used by modeling.
         '''
-
-        return sorted([pbd.id for pbd in self.pbds.objectValuesGen()])
+        return sorted(x.id for x in self.pbds.objectValuesGen())
 
     def setPBDIds(self, ids):
         '''
@@ -75,6 +77,66 @@ class SR(BaseComponent):
             root=self.device(),
             type_=CLASS_NAME['PBD'],
             ids=ids)
+
+    def getDefaultFor(self):
+        '''
+        Return a sorted list of related Pool ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.default_for.objectValuesGen())
+
+    def setDefaultFor(self, pool_ids):
+        '''
+        Set default_for relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.default_for,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
+
+    def getSuspendImageFor(self):
+        '''
+        Return a sorted list of related Pool ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.suspend_image_for.objectValuesGen())
+
+    def setSuspendImageFor(self, pool_ids):
+        '''
+        Set suspend_image_for relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.suspend_image_for,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
+
+    def getCrashdumpFor(self):
+        '''
+        Return a sorted list of related Pool ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.crashdump_for.objectValuesGen())
+
+    def setCrashdumpFor(self, pool_ids):
+        '''
+        Set crashdump_for relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.crashdump_for,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
 
 
 class ISRInfo(IBaseComponentInfo):
