@@ -8,26 +8,26 @@
 #
 ######################################################################
 
+from zope.component import adapts
 from zope.interface import implements
-from Products.ZenModel.Device import Device
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.Zuul.decorators import info
+
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+
+from ZenPacks.zenoss.XenServer import MODULE_NAME
+from ZenPacks.zenoss.XenServer.utils import (
+    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    )
 
 
-class HostCPU(DeviceComponent, ManagedEntity):
+class HostCPU(BaseComponent):
+    '''
+    Model class for HostCPU.
+    '''
+
     meta_type = portal_type = 'XenServerHostCPU'
-
-    Klasses = [DeviceComponent, ManagedEntity]
 
     modelname = None
     vendor = None
@@ -40,13 +40,8 @@ class HostCPU(DeviceComponent, ManagedEntity):
     stepping = None
     model = None
     speed = None
-    uuid = None
 
-    _properties = ()
-    for Klass in Klasses:
-        _properties = _properties + getattr(Klass, '_properties', ())
-
-    _properties = _properties + (
+    _properties = BaseComponent._properties + (
         {'id': 'modelname', 'type': 'string', 'mode': 'w'},
         {'id': 'vendor', 'type': 'string', 'mode': 'w'},
         {'id': 'features', 'type': 'string', 'mode': 'w'},
@@ -58,47 +53,18 @@ class HostCPU(DeviceComponent, ManagedEntity):
         {'id': 'stepping', 'type': 'string', 'mode': 'w'},
         {'id': 'model', 'type': 'string', 'mode': 'w'},
         {'id': 'speed', 'type': 'string', 'mode': 'w'},
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = ()
-    for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', ())
-
-    _relations = _relations + (
-        ('endpoint', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Endpoint', 'hostcpus',)),
-        ('host', ToOne(ToManyCont, 'ZenPacks.zenoss.XenServer.Host', 'hostcpus',)),
+    _relations = BaseComponent._relations + (
+        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'hostcpus')),
+        ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'hostcpus')),
         )
 
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-            },),
-        },)
 
-    def device(self):
-        '''
-        Return device under which this component/device is contained.
-        '''
-        obj = self
-
-        for i in range(200):
-            if isinstance(obj, Device):
-                return obj
-
-            try:
-                obj = obj.getPrimaryParent()
-            except AttributeError as exc:
-                raise AttributeError(
-                    'Unable to determine parent at %s (%s) '
-                    'while getting device for %s' % (
-                        obj, exc, self))
-
-
-class IHostCPUInfo(IComponentInfo):
+class IHostCPUInfo(IBaseComponentInfo):
+    '''
+    API Info interface for HostCPU.
+    '''
 
     modelname = schema.TextLine(title=_t(u'modelnames'))
     vendor = schema.TextLine(title=_t(u'vendors'))
@@ -111,11 +77,15 @@ class IHostCPUInfo(IComponentInfo):
     stepping = schema.TextLine(title=_t(u'steppings'))
     model = schema.TextLine(title=_t(u'models'))
     speed = schema.TextLine(title=_t(u'speeds'))
-    uuid = schema.TextLine(title=_t(u'uuids'))
 
 
-class HostCPUInfo(ComponentInfo):
+class HostCPUInfo(BaseComponentInfo):
+    '''
+    API Info adapter factory for HostCPU.
+    '''
+
     implements(IHostCPUInfo)
+    adapts(HostCPU)
 
     modelname = ProxyProperty('modelname')
     vendor = ProxyProperty('vendor')
@@ -128,4 +98,3 @@ class HostCPUInfo(ComponentInfo):
     stepping = ProxyProperty('stepping')
     model = ProxyProperty('model')
     speed = ProxyProperty('speed')
-    uuid = ProxyProperty('uuid')
