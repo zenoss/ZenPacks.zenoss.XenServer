@@ -1,0 +1,25 @@
+== TODOs ==
+
+Tracking tasks here at least until the first revision is done.
+
+;Musts
+# Model non-containing relationships between components.
+# Curate component properties, grid and details.
+# Model OS manufacturer and product on Endpoint.
+# Remove useless information from device overview screen.
+# Add useful information to device overview screen.
+# ToOne relationships from Pool to SR.
+# "Add XenServer" dialog.
+# Device loader.
+# XenAPI datasource type.
+# Monitoring templates.
+# Events.
+# Internal Impact adapters.
+# External Impact adapters.
+# Documentation.
+
+;Niceties
+# Order component types on device screen sensibly.
+# Add bond interfaces. (Bond)
+# Targeted remodeling based on events.
+# Screencast.

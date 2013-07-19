@@ -12,10 +12,9 @@
             "name": "Endpoint",
 
             "properties": [
-                {"name": "xapi_hostname"},
+                {"name": "xapi_url"},
                 {"name": "xapi_username", "value": "root"},
-                {"name": "xapi_password", "value": "default", "Type": "password"},
-                {"name": "xapi_ssl", "value": true}
+                {"name": "xapi_password", "value": "default", "Type": "password"}
             ]
         },
 

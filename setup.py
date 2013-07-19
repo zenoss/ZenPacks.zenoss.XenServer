@@ -2,12 +2,12 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.XenServer"
-VERSION = "1.0.5"
+VERSION = "1.0.0dev1"
 AUTHOR = "Zenoss"
-LICENSE = "GPL"
-NAMESPACE_PACKAGES = [u'ZenPacks', u'ZenPacks.zenoss']
-PACKAGES = [u'ZenPacks', u'ZenPacks.zenoss', u'ZenPacks.zenoss.XenServer']
-INSTALL_REQUIRES = [u'ZenPacks.zenoss.PythonCollector']
+LICENSE = "GPLv2"
+NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss']
+PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.XenServer']
+INSTALL_REQUIRES = ['ZenPacks.zenoss.PythonCollector']
 COMPAT_ZENOSS_VERS = ">=4.2"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS

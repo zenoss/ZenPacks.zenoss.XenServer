@@ -8,13 +8,23 @@
 #
 ######################################################################
 
+from zope.event import notify
+
 from Products.AdvancedQuery import Eq, Or
 
+from Products.ZenModel.Device import Device
+from Products.ZenModel.DeviceComponent import DeviceComponent
+from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.ZenUtils.Utils import prepId
-from Products.Zuul.interfaces import ICatalogTool
-
-from zope.event import notify
 from Products.Zuul.catalog.events import IndexingEvent
+from Products.Zuul.form import schema
+from Products.Zuul.infos import ProxyProperty
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces import ICatalogTool
+from Products.Zuul.interfaces.component import IComponentInfo
+from Products.Zuul.utils import ZuulMessageFactory as _t
+
 
 def add_local_lib_path():
     '''
@@ -24,8 +34,6 @@ def add_local_lib_path():
     import site
 
     site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
-
-add_local_lib_path()
 
 
 def updateToMany(relationship, root, type_, ids):
@@ -107,3 +115,75 @@ def updateToOne(relationship, root, type_, id_):
 
     return
 
+
+def RelationshipLengthProperty(relationship_name):
+    '''
+    Return a read-only property with a value equal to the number of
+    objects in the relationship named relationship_name.
+    '''
+    def getter(self):
+        relationship = getattr(self._object, relationship_name)
+        try:
+            return relationship.countObjects()
+        except Exception:
+            return len(relationship())
+
+    return property(getter)
+
+
+class BaseComponent(DeviceComponent, ManagedEntity):
+    '''
+    Abstract base class for components.
+    '''
+
+    uuid = None
+
+    # Explicit inheritence.
+    _properties = ManagedEntity._properties + (
+        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
+        )
+
+    _relations = ManagedEntity._relations
+
+    factory_type_information = ({
+        'actions': ({
+            'id': 'perfConf',
+            'name': 'Template',
+            'action': 'objTemplates',
+            'permissions': (ZEN_CHANGE_DEVICE,),
+            },),
+        },)
+
+    def device(self):
+        '''
+        Return device under which this component/device is contained.
+        '''
+        obj = self
+
+        for i in range(200):
+            if isinstance(obj, Device):
+                return obj
+
+            try:
+                obj = obj.getPrimaryParent()
+            except AttributeError as exc:
+                raise AttributeError(
+                    'Unable to determine parent at %s (%s) '
+                    'while getting device for %s' % (
+                        obj, exc, self))
+
+
+class IBaseComponentInfo(IComponentInfo):
+    '''
+    Abstract base API Info interface for components.
+    '''
+
+    uuid = schema.TextLine(title=_t(u'UUID'))
+
+
+class BaseComponentInfo(ComponentInfo):
+    '''
+    Abstract base API Info adapter factory for components.
+    '''
+
+    uuid = ProxyProperty('uuid')

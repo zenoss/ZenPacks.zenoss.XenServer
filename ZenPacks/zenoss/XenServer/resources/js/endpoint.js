@@ -3,7 +3,7 @@
 var ZC = Ext.ns('Zenoss.component');
 
 Ext.apply(Zenoss.render, {
-    ZenPacks_zenoss_XenServer_Endpoint_entityLinkFromGrid: function(obj, col, record) {
+    xenserver_entityLinkFromGrid: function(obj, col, record) {
         if (!obj)
             return;
 
@@ -30,17 +30,67 @@ Ext.apply(Zenoss.render, {
         } else {
             return obj.title;
         }
-    },
+    }
 });
 
-ZC.XenServerHostPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    jumpToEntity: function(uid, meta_type) {
+        var tree = Ext.getCmp('deviceDetailNav').treepanel;
+        var tree_selection_model = tree.getSelectionModel();
+        var components_node = tree.getRootNode().findChildBy(
+            function(n) {
+                if (n.data) {
+                    // Zenoss >= 4.2 / ExtJS4
+                    return n.data.text == 'Components';
+                }
+
+                // Zenoss < 4.2 / ExtJS3
+                return n.text == 'Components';
+            });
+
+        var component_card = Ext.getCmp('component_card');
+
+        if (components_node.data) {
+            // Zenoss >= 4.2 / ExtJS4
+            component_card.setContext(components_node.data.id, meta_type);
+        } else {
+            // Zenoss < 4.2 / ExtJS3
+            component_card.setContext(components_node.id, meta_type);
+        }
+
+        component_card.selectByToken(uid);
+
+        var component_type_node = components_node.findChildBy(
+            function(n) {
+                if (n.data) {
+                    // Zenoss >= 4.2 / ExtJS4
+                    return n.data.id == meta_type;
+                }
+
+                // Zenoss < 4.2 / ExtJS3
+                return n.id == meta_type;
+            });
+
+        if (component_type_node.select) {
+            tree_selection_model.suspendEvents();
+            component_type_node.select();
+            tree_selection_model.resumeEvents();
+        } else {
+            tree_selection_model.select([component_type_node], false, true);
+        }
+    }
+});
+
+ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerHost',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -87,145 +137,145 @@ ZC.XenServerHostPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponen
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'API_version_major',
                 header: _t('API_version_major'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'API_version_major'
             },{
                 dataIndex: 'API_version_minor',
                 header: _t('API_version_minor'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'API_version_minor'
             },{
                 dataIndex: 'API_version_vendor',
                 header: _t('API_version_vendor'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'API_version_vendor'
             },{
                 dataIndex: 'capabilities',
                 header: _t('capabilities'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'capabilities'
             },{
                 dataIndex: 'crashdumps',
                 header: _t('crashdumps'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'crashdumps'
             },{
                 dataIndex: 'edition',
                 header: _t('edition'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'edition'
             },{
                 dataIndex: 'enabled',
                 header: _t('enabled'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'enabled'
             },{
                 dataIndex: 'external_auth_service_name',
                 header: _t('external_auth_service_name'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'external_auth_service_name'
             },{
                 dataIndex: 'external_auth_type',
                 header: _t('external_auth_type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'external_auth_type'
             },{
                 dataIndex: 'ha_network_peers',
                 header: _t('ha_network_peers'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_network_peers'
             },{
                 dataIndex: 'ha_statefiles',
                 header: _t('ha_statefiles'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_statefiles'
             },{
                 dataIndex: 'hostname',
                 header: _t('hostname'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'hostname'
             },{
                 dataIndex: 'memory_overhead',
                 header: _t('memory_overhead'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_overhead'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'other_config',
                 header: _t('other_config'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'other_config'
             },{
                 dataIndex: 'patches',
                 header: _t('patches'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'patches'
             },{
                 dataIndex: 'power_on_mode',
                 header: _t('power_on_mode'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'power_on_mode'
             },{
                 dataIndex: 'sched_policy',
                 header: _t('sched_policy'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'sched_policy'
             },{
                 dataIndex: 'supported_bootloaders',
                 header: _t('supported_bootloaders'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'supported_bootloaders'
             },{
                 dataIndex: 'suspend_image_sr',
                 header: _t('suspend_image_sr'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'suspend_image_sr'
             },{
                 dataIndex: 'tags',
                 header: _t('tags'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'tags'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -250,14 +300,14 @@ ZC.XenServerHostPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponen
 
 Ext.reg('XenServerHostPanel', ZC.XenServerHostPanel);
 
-ZC.XenServerHostCPUPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerHostCPU',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -293,79 +343,79 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointCompo
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'family',
                 header: _t('family'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'family'
             },{
                 dataIndex: 'features',
                 header: _t('features'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'features'
             },{
                 dataIndex: 'flags',
                 header: _t('flags'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'flags'
             },{
                 dataIndex: 'host',
                 header: _t('host'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'host'
             },{
                 dataIndex: 'model',
                 header: _t('model'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'model'
             },{
                 dataIndex: 'modelname',
                 header: _t('modelname'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'modelname'
             },{
                 dataIndex: 'number',
                 header: _t('number'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'number'
             },{
                 dataIndex: 'speed',
                 header: _t('speed'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'speed'
             },{
                 dataIndex: 'stepping',
                 header: _t('stepping'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'stepping'
             },{
                 dataIndex: 'utilisation',
                 header: _t('utilisation'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'utilisation'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 dataIndex: 'vendor',
                 header: _t('vendor'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'vendor'
             },{
                 id: 'monitored',
@@ -390,14 +440,14 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointCompo
 
 Ext.reg('XenServerHostCPUPanel', ZC.XenServerHostCPUPanel);
 
-ZC.XenServerHostCPUPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerHostCPU',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -433,79 +483,79 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointCompo
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'family',
                 header: _t('family'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'family'
             },{
                 dataIndex: 'features',
                 header: _t('features'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'features'
             },{
                 dataIndex: 'flags',
                 header: _t('flags'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'flags'
             },{
                 dataIndex: 'host',
                 header: _t('host'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'host'
             },{
                 dataIndex: 'model',
                 header: _t('model'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'model'
             },{
                 dataIndex: 'modelname',
                 header: _t('modelname'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'modelname'
             },{
                 dataIndex: 'number',
                 header: _t('number'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'number'
             },{
                 dataIndex: 'speed',
                 header: _t('speed'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'speed'
             },{
                 dataIndex: 'stepping',
                 header: _t('stepping'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'stepping'
             },{
                 dataIndex: 'utilisation',
                 header: _t('utilisation'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'utilisation'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 dataIndex: 'vendor',
                 header: _t('vendor'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'vendor'
             },{
                 id: 'monitored',
@@ -530,14 +580,14 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointCompo
 
 Ext.reg('XenServerHostCPUPanel', ZC.XenServerHostCPUPanel);
 
-ZC.XenServerNetworkPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerNetwork',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -568,49 +618,49 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointCompo
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'bridge',
                 header: _t('bridge'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'bridge'
             },{
                 dataIndex: 'default_locking_mode',
                 header: _t('default_locking_mode'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'default_locking_mode'
             },{
                 dataIndex: 'MTU',
                 header: _t('MTU'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MTU'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'tags',
                 header: _t('tags'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'tags'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -635,14 +685,14 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointCompo
 
 Ext.reg('XenServerNetworkPanel', ZC.XenServerNetworkPanel);
 
-ZC.XenServerPBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -671,37 +721,37 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'dc_legacy_mode',
                 header: _t('dc_legacy_mode'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_legacy_mode'
             },{
                 dataIndex: 'dc_location',
                 header: _t('dc_location'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_location'
             },{
                 dataIndex: 'dc_device',
                 header: _t('dc_device'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_device'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -742,14 +792,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerPBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -778,37 +828,37 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'dc_legacy_mode',
                 header: _t('dc_legacy_mode'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_legacy_mode'
             },{
                 dataIndex: 'dc_location',
                 header: _t('dc_location'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_location'
             },{
                 dataIndex: 'dc_device',
                 header: _t('dc_device'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_device'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -849,14 +899,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerPBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -885,37 +935,37 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'dc_legacy_mode',
                 header: _t('dc_legacy_mode'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_legacy_mode'
             },{
                 dataIndex: 'dc_location',
                 header: _t('dc_location'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_location'
             },{
                 dataIndex: 'dc_device',
                 header: _t('dc_device'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'dc_device'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -956,14 +1006,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerPIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -992,37 +1042,37 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'gateway',
                 header: _t('gateway'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'gateway'
             },{
                 dataIndex: 'IP',
                 header: _t('IP'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'IP'
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'netmask',
                 header: _t('netmask'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'netmask'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1063,14 +1113,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerPIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1099,37 +1149,37 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'gateway',
                 header: _t('gateway'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'gateway'
             },{
                 dataIndex: 'IP',
                 header: _t('IP'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'IP'
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'netmask',
                 header: _t('netmask'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'netmask'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1170,14 +1220,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerPIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1206,37 +1256,37 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'gateway',
                 header: _t('gateway'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'gateway'
             },{
                 dataIndex: 'IP',
                 header: _t('IP'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'IP'
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'netmask',
                 header: _t('netmask'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'netmask'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1277,14 +1327,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerPoolPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerPoolPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPool',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1318,67 +1368,67 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponen
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'ha_allow_overcommit',
                 header: _t('ha_allow_overcommit'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_allow_overcommit'
             },{
                 dataIndex: 'ha_enabled',
                 header: _t('ha_enabled'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_enabled'
             },{
                 dataIndex: 'ha_host_failures_to_tolerate',
                 header: _t('ha_host_failures_to_tolerate'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_host_failures_to_tolerate'
             },{
                 dataIndex: 'ha_overcommitted',
                 header: _t('ha_overcommitted'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_overcommitted'
             },{
                 dataIndex: 'ha_plan_exists_for',
                 header: _t('ha_plan_exists_for'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'ha_plan_exists_for'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'redo_log_enabled',
                 header: _t('redo_log_enabled'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'redo_log_enabled'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 dataIndex: 'vswitch_controller',
                 header: _t('vswitch_controller'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'vswitch_controller'
             },{
                 id: 'monitored',
@@ -1403,14 +1453,14 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponen
 
 Ext.reg('XenServerPoolPanel', ZC.XenServerPoolPanel);
 
-ZC.XenServerSRPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerSRPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerSR',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1442,55 +1492,55 @@ ZC.XenServerSRPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentG
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'content_type',
                 header: _t('content_type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'content_type'
             },{
                 dataIndex: 'physical_size',
                 header: _t('physical_size'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'physical_size'
             },{
                 dataIndex: 'physical_utilisation',
                 header: _t('physical_utilisation'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'physical_utilisation'
             },{
                 dataIndex: 'shared',
                 header: _t('shared'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'shared'
             },{
                 dataIndex: 'virtual_allocation',
                 header: _t('virtual_allocation'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'virtual_allocation'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1515,14 +1565,14 @@ ZC.XenServerSRPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentG
 
 Ext.reg('XenServerSRPanel', ZC.XenServerSRPanel);
 
-ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1553,49 +1603,49 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'bootable',
                 header: _t('bootable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'bootable'
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'empty',
                 header: _t('empty'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'empty'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1636,14 +1686,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1674,49 +1724,49 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'bootable',
                 header: _t('bootable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'bootable'
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'empty',
                 header: _t('empty'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'empty'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1757,14 +1807,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1795,49 +1845,49 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'bootable',
                 header: _t('bootable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'bootable'
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'empty',
                 header: _t('empty'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'empty'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1878,14 +1928,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -1916,49 +1966,49 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'bootable',
                 header: _t('bootable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'bootable'
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'empty',
                 header: _t('empty'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'empty'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -1999,14 +2049,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVBD',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2037,49 +2087,49 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'bootable',
                 header: _t('bootable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'bootable'
             },{
                 dataIndex: 'current_attached',
                 header: _t('current_attached'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'current_attached'
             },{
                 dataIndex: 'empty',
                 header: _t('empty'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'empty'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2120,14 +2170,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVDI',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2162,73 +2212,73 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'allow_caching',
                 header: _t('allow_caching'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'allow_caching'
             },{
                 dataIndex: 'missing',
                 header: _t('missing'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'missing'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'on_boot',
                 header: _t('on_boot'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'on_boot'
             },{
                 dataIndex: 'physical_utilisation',
                 header: _t('physical_utilisation'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'physical_utilisation'
             },{
                 dataIndex: 'read_only',
                 header: _t('read_only'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'read_only'
             },{
                 dataIndex: 'sharable',
                 header: _t('sharable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'sharable'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'virtual_size',
                 header: _t('virtual_size'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'virtual_size'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2253,14 +2303,14 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
 
 Ext.reg('XenServerVDIPanel', ZC.XenServerVDIPanel);
 
-ZC.XenServerVDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVDI',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2295,73 +2345,73 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'allow_caching',
                 header: _t('allow_caching'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'allow_caching'
             },{
                 dataIndex: 'missing',
                 header: _t('missing'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'missing'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'on_boot',
                 header: _t('on_boot'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'on_boot'
             },{
                 dataIndex: 'physical_utilisation',
                 header: _t('physical_utilisation'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'physical_utilisation'
             },{
                 dataIndex: 'read_only',
                 header: _t('read_only'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'read_only'
             },{
                 dataIndex: 'sharable',
                 header: _t('sharable'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'sharable'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'virtual_size',
                 header: _t('virtual_size'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'virtual_size'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2386,14 +2436,14 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
 
 Ext.reg('XenServerVDIPanel', ZC.XenServerVDIPanel);
 
-ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2423,43 +2473,43 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'MTU',
                 header: _t('MTU'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MTU'
             },{
                 dataIndex: 'qos_algorithm_type',
                 header: _t('qos_algorithm_type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'qos_algorithm_type'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2500,14 +2550,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2537,43 +2587,43 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'MTU',
                 header: _t('MTU'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MTU'
             },{
                 dataIndex: 'qos_algorithm_type',
                 header: _t('qos_algorithm_type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'qos_algorithm_type'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2614,14 +2664,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2651,43 +2701,43 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'MTU',
                 header: _t('MTU'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MTU'
             },{
                 dataIndex: 'qos_algorithm_type',
                 header: _t('qos_algorithm_type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'qos_algorithm_type'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2728,14 +2778,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVIF',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2765,43 +2815,43 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponent
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'MTU',
                 header: _t('MTU'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'MTU'
             },{
                 dataIndex: 'qos_algorithm_type',
                 header: _t('qos_algorithm_type'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'qos_algorithm_type'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2842,14 +2892,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVMPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVM',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -2884,73 +2934,73 @@ ZC.XenServerVMPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentG
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'VCPUs_max',
                 header: _t('VCPUs_max'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'VCPUs_max'
             },{
                 dataIndex: 'VCPUs_at_startup',
                 header: _t('VCPUs_at_startup'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'VCPUs_at_startup'
             },{
                 dataIndex: 'memory_dynamic_max',
                 header: _t('memory_dynamic_max'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_dynamic_max'
             },{
                 dataIndex: 'memory_dynamic_min',
                 header: _t('memory_dynamic_min'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_dynamic_min'
             },{
                 dataIndex: 'memory_overhead',
                 header: _t('memory_overhead'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_overhead'
             },{
                 dataIndex: 'memory_static_max',
                 header: _t('memory_static_max'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_static_max'
             },{
                 dataIndex: 'memory_static_min',
                 header: _t('memory_static_min'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_static_min'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'power_state',
                 header: _t('power_state'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'power_state'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -2991,14 +3041,14 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
-ZC.XenServerVMPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentGridPanel, {
+ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVM',
             autoExpandColumn: 'name',
             sortInfo: {
                 field: 'name',
-                direction: 'asc',
+                direction: 'asc'
             },
             fields: [
                 {name: 'uid'},
@@ -3033,73 +3083,73 @@ ZC.XenServerVMPanel = Ext.extend(ZC.ZenPacks_zenoss_XenServer_EndpointComponentG
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.NetBotz_entityLinkFromGrid,
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
                 dataIndex: 'VCPUs_max',
                 header: _t('VCPUs_max'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'VCPUs_max'
             },{
                 dataIndex: 'VCPUs_at_startup',
                 header: _t('VCPUs_at_startup'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'VCPUs_at_startup'
             },{
                 dataIndex: 'memory_dynamic_max',
                 header: _t('memory_dynamic_max'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_dynamic_max'
             },{
                 dataIndex: 'memory_dynamic_min',
                 header: _t('memory_dynamic_min'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_dynamic_min'
             },{
                 dataIndex: 'memory_overhead',
                 header: _t('memory_overhead'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_overhead'
             },{
                 dataIndex: 'memory_static_max',
                 header: _t('memory_static_max'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_static_max'
             },{
                 dataIndex: 'memory_static_min',
                 header: _t('memory_static_min'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'memory_static_min'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'power_state',
                 header: _t('power_state'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'power_state'
             },{
                 dataIndex: 'uuid',
                 header: _t('uuid'),
                 sortable: true,
-                width: 10,
+                width: 80,
                 id: 'uuid'
             },{
                 id: 'monitored',
@@ -3132,6 +3182,7 @@ Zenoss.nav.appendTo('Component', [{
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
             case 'XenServerHost': return true;
+            case 'XenServerVMAppliance': return true;
             default: return false;
         }
     },
@@ -3140,5 +3191,59 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
+ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            componentType: 'XenServerVMAppliance',
+            autoExpandColumn: 'name',
+            sortInfo: {
+                field: 'name',
+                direction: 'asc'
+            },
+            fields: [
+                {name: 'uid'},
+                {name: 'name'},
+                {name: 'meta_type'},
+                {name: 'status'},
+                {name: 'severity'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'monitored'},
+                {name: 'locking'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                sortable: true
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 70
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons,
+                width: 65
+            }]
+        });
+
+        ZC.XenServerVMAppliancePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('XenServerVMAppliancePanel', ZC.XenServerVMAppliancePanel);
 
 })();

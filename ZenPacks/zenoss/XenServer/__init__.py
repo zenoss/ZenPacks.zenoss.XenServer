@@ -9,15 +9,15 @@
 ######################################################################
 
 import logging
-LOG = logging.getLogger('zen.ZenPacks.zenoss.XenServer')
+LOG = logging.getLogger('zen.XenServer')
 
 import os
 import Globals
 
 from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenPack import ZenPack as ZenPackBase
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.CMFCore.DirectoryView import registerDirectory
 from Products.Zuul.interfaces import ICatalogTool
 from Products.ZenUtils.Utils import unused, zenPath
@@ -33,18 +33,19 @@ ZENPACK_NAME = 'ZenPacks.zenoss.XenServer'
 # Modules containing model classes. Used by zenchkschema to validate
 # bidirectional integrity of defined relationships.
 productNames = (
-    'Host',
-    'VDI',
-    'VBD',
-    'PBD',
-    'HostCPU',
-    'PIF',
-    'VM',
     'Endpoint',
+    'Host',
+    'HostCPU',
     'Network',
+    'PBD',
+    'PIF',
     'Pool',
-    'VIF',
     'SR',
+    'VBD',
+    'VDI',
+    'VIF',
+    'VM',
+    'VMAppliance',
     )
 
 # Define new device relations.
@@ -74,8 +75,14 @@ for product_name in productNames:
     CLASS_NAME[product_name] = '.'.join([ZENPACK_NAME, product_name, product_name])
 
 _PACK_Z_PROPS = [
+    ('zXenServerAddresses', [], 'lines'),
+    ('zXenServerUsername', 'root', 'string'),
+    ('zXenServerPassword', '', 'password'),
     ]
 
+setzPropertyCategory('zXenServerAddresses', 'XenServer')
+setzPropertyCategory('zXenServerUsername', 'XenServer')
+setzPropertyCategory('zXenServerPassword', 'XenServer')
 
 _plugins = (
     )
@@ -86,10 +93,39 @@ class ZenPack(ZenPackBase):
 
     def install(self, app):
         super(ZenPack, self).install(app)
-        LOG.info('Adding ZenPacks.zenoss.XenServer relationships to existing devices')
 
-        self._buildDeviceRelations()
-        self.symlink_plugins()
+        if NEW_DEVICE_RELATIONS:
+            LOG.info('Adding ZenPacks.zenoss.XenServer relationships to existing devices')
+            self._buildDeviceRelations()
+
+        if _plugins:
+            self.symlink_plugins()
+
+    def remove(self, app, leaveObjects=False):
+        if not leaveObjects:
+            if _plugins:
+                self.remove_plugin_symlinks()
+
+            if NEW_COMPONENT_TYPES:
+                LOG.info('Removing ZenPacks.zenoss.XenServer components')
+
+                # Search the catalog for components of this zenpacks type.
+                cat = ICatalogTool(app.zport.dmd)
+
+                for brain in cat.search(types=NEW_COMPONENT_TYPES):
+                    component = brain.getObject()
+                    component.getPrimaryParent()._delObject(component.id)
+
+            # Remove our Device relations additions.
+            if NEW_DEVICE_RELATIONS:
+                Device._relations = tuple(
+                    [x for x in Device._relations
+                        if x[0] not in NEW_DEVICE_RELATIONS])
+
+                LOG.info('Removing ZenPacks.zenoss.XenServer relationships from existing devices')
+                self._buildDeviceRelations()
+
+        super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
 
     def symlink_plugins(self):
         libexec = os.path.join(os.environ.get('ZENHOME'), 'libexec')
@@ -107,29 +143,6 @@ class ZenPack(ZenPackBase):
         for plugin in _plugins:
             LOG.info('Removing %s link from $ZENHOME/libexec/', plugin)
             os.system('rm -f "%s"' % zenPath('libexec', plugin))
-
-    def remove(self, app, leaveObjects=False):
-        if not leaveObjects:
-            self.remove_plugin_symlinks()
-
-            LOG.info('Removing ZenPacks.zenoss.XenServer components')
-            cat = ICatalogTool(app.zport.dmd)
-
-            # Search the catalog for components of this zenpacks type.
-            if NEW_COMPONENT_TYPES:
-                for brain in cat.search(types=NEW_COMPONENT_TYPES):
-                    component = brain.getObject()
-                    component.getPrimaryParent()._delObject(component.id)
-
-            # Remove our Device relations additions.
-            Device._relations = tuple(
-                [x for x in Device._relations
-                    if x[0] not in NEW_DEVICE_RELATIONS])
-
-            LOG.info('Removing ZenPacks.zenoss.XenServer relationships from existing devices')
-            self._buildDeviceRelations()
-
-        super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
 
     def _buildDeviceRelations(self):
         for d in self.dmd.Devices.getSubDevicesGen():

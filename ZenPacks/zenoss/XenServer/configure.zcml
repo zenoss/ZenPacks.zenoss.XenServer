@@ -78,6 +78,12 @@
         factory=".VM.VMInfo"
         />
 
+    <adapter
+        provides=".VMAppliance.IVMApplianceInfo"
+        for=".VMAppliance.VMAppliance"
+        factory=".VMAppliance.VMApplianceInfo"
+        />
+
 
     <!-- Custom Path Reporters -->
 
@@ -113,14 +119,14 @@
 
     <!-- Browser Resources -->
     <browser:resourceDirectory
-        name="ZenPacks_zenoss_XenServer"
+        name="xenserver"
         directory="resources"
         />
 
     <!-- JavaScript needed for all Zenoss pages. -->
     <browser:viewlet
-        name="js-ZenPacks_zenoss_XenServer"
-        paths="/++resource++ZenPacks_zenoss_XenServer/js/ZenPacks_zenoss_XenServer.js"
+        name="js-xenserver"
+        paths="/++resource++xenserver/js/global.js"
         for="*"
         weight="20"
         manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
@@ -131,8 +137,8 @@
     <!-- JavaScript needed only for NetApp devices. -->
 
     <browser:viewlet
-        name="js-ZenPacks_zenoss_XenServer_Endpoint"
-        paths="/++resource++ZenPacks_zenoss_XenServer/js/ZenPacks_zenoss_XenServer_Endpoint.js"
+        name="js-xenserver-endpoint"
+        paths="/++resource++xenserver/js/endpoint.js"
         for="ZenPacks.zenoss.XenServer.Endpoint.Endpoint"
         weight="20"
         manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"

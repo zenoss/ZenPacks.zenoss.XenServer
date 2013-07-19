@@ -1,3 +1,24 @@
 <?xml version="1.0"?>
 <objects>
+<!-- ('', 'zport', 'dmd', 'Devices', 'XenServer') -->
+<object id='/zport/dmd/Devices/XenServer' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property id='zendoc' type='string'>
+XenAPI (XAPI) Endpoints
+</property>
+<property type="string" id="description" mode="w" >
+XenAPI (XAPI) Endpoints
+</property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+['zenoss.XenServer']
+</property>
+<property visible="True" type="boolean" id="zSnmpMonitorIgnore" >
+True
+</property>
+<property visible="True" type="lines" id="zDeviceTemplates" >
+[]
+</property>
+<property visible="True" type="string" id="zPythonClass" >
+ZenPacks.zenoss.XenServer.Endpoint
+</property>
+</object>
 </objects>
