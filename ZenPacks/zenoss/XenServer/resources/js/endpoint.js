@@ -99,31 +99,16 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'status'},
                 {name: 'severity'},
                 {name: 'usesMonitorAttribute'},
+                {name: 'master_for'},
+                {name: 'suspend_image_sr'},
+                {name: 'crash_dump_sr'},
+                {name: 'local_cache_sr'},
+                {name: 'hostcpu_count'},
+                {name: 'pbd_count'},
+                {name: 'pif_count'},
+                {name: 'vm_count'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'API_version_major'},
-                {name: 'API_version_minor'},
-                {name: 'API_version_vendor'},
-                {name: 'capabilities'},
-                {name: 'crashdumps'},
-                {name: 'edition'},
-                {name: 'enabled'},
-                {name: 'external_auth_service_name'},
-                {name: 'external_auth_type'},
-                {name: 'ha_network_peers'},
-                {name: 'ha_statefiles'},
-                {name: 'hostname'},
-                {name: 'memory_overhead'},
-                {name: 'name_description'},
-                {name: 'name_label'},
-                {name: 'other_config'},
-                {name: 'patches'},
-                {name: 'power_on_mode'},
-                {name: 'sched_policy'},
-                {name: 'supported_bootloaders'},
-                {name: 'suspend_image_sr'},
-                {name: 'tags'},
-                {name: 'uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -140,143 +125,49 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
-                dataIndex: 'API_version_major',
-                header: _t('API_version_major'),
-                sortable: true,
-                width: 80,
-                id: 'API_version_major'
+                id: 'master_for',
+                dataIndex: 'master_for',
+                header: _t('Master For'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
-                dataIndex: 'API_version_minor',
-                header: _t('API_version_minor'),
-                sortable: true,
-                width: 80,
-                id: 'API_version_minor'
-            },{
-                dataIndex: 'API_version_vendor',
-                header: _t('API_version_vendor'),
-                sortable: true,
-                width: 80,
-                id: 'API_version_vendor'
-            },{
-                dataIndex: 'capabilities',
-                header: _t('capabilities'),
-                sortable: true,
-                width: 80,
-                id: 'capabilities'
-            },{
-                dataIndex: 'crashdumps',
-                header: _t('crashdumps'),
-                sortable: true,
-                width: 80,
-                id: 'crashdumps'
-            },{
-                dataIndex: 'edition',
-                header: _t('edition'),
-                sortable: true,
-                width: 80,
-                id: 'edition'
-            },{
-                dataIndex: 'enabled',
-                header: _t('enabled'),
-                sortable: true,
-                width: 80,
-                id: 'enabled'
-            },{
-                dataIndex: 'external_auth_service_name',
-                header: _t('external_auth_service_name'),
-                sortable: true,
-                width: 80,
-                id: 'external_auth_service_name'
-            },{
-                dataIndex: 'external_auth_type',
-                header: _t('external_auth_type'),
-                sortable: true,
-                width: 80,
-                id: 'external_auth_type'
-            },{
-                dataIndex: 'ha_network_peers',
-                header: _t('ha_network_peers'),
-                sortable: true,
-                width: 80,
-                id: 'ha_network_peers'
-            },{
-                dataIndex: 'ha_statefiles',
-                header: _t('ha_statefiles'),
-                sortable: true,
-                width: 80,
-                id: 'ha_statefiles'
-            },{
-                dataIndex: 'hostname',
-                header: _t('hostname'),
-                sortable: true,
-                width: 80,
-                id: 'hostname'
-            },{
-                dataIndex: 'memory_overhead',
-                header: _t('memory_overhead'),
-                sortable: true,
-                width: 80,
-                id: 'memory_overhead'
-            },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                sortable: true,
-                width: 80,
-                id: 'name_description'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                sortable: true,
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'other_config',
-                header: _t('other_config'),
-                sortable: true,
-                width: 80,
-                id: 'other_config'
-            },{
-                dataIndex: 'patches',
-                header: _t('patches'),
-                sortable: true,
-                width: 80,
-                id: 'patches'
-            },{
-                dataIndex: 'power_on_mode',
-                header: _t('power_on_mode'),
-                sortable: true,
-                width: 80,
-                id: 'power_on_mode'
-            },{
-                dataIndex: 'sched_policy',
-                header: _t('sched_policy'),
-                sortable: true,
-                width: 80,
-                id: 'sched_policy'
-            },{
-                dataIndex: 'supported_bootloaders',
-                header: _t('supported_bootloaders'),
-                sortable: true,
-                width: 80,
-                id: 'supported_bootloaders'
-            },{
+                id: 'suspend_image_sr',
                 dataIndex: 'suspend_image_sr',
-                header: _t('suspend_image_sr'),
-                sortable: true,
-                width: 80,
-                id: 'suspend_image_sr'
+                header: _t('Suspend SR'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
-                dataIndex: 'tags',
-                header: _t('tags'),
-                sortable: true,
-                width: 80,
-                id: 'tags'
+                id: 'crash_dump_sr',
+                dataIndex: 'crash_dump_sr',
+                header: _t('Crash SR'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
+                id: 'local_cache_sr',
+                dataIndex: 'local_cache_sr',
+                header: _t('Cache SR'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
+            },{
+                id: 'hostcpu_count',
+                dataIndex: 'hostcpu_count',
+                header: _t('CPUs'),
+                width: 60
+            },{
+                id: 'pbd_count',
+                dataIndex: 'pbd_count',
+                header: _t('PBDs'),
+                width: 60
+            },{
+                id: 'pif_count',
+                dataIndex: 'pif_count',
+                header: _t('PIFs'),
+                width: 60
+            },{
+                id: 'vm_count',
+                dataIndex: 'vm_count',
+                header: _t('VMs'),
+                width: 60
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -293,8 +184,7 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerHostPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerHostPanel.superclass.constructor.call(this, config);
     }
 });
 

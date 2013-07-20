@@ -300,11 +300,13 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             host_oms.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'name_label': properties.get('name_label'),
+                'name_description': properties.get('name_description'),
+                'address': properties.get('address'),
                 'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
                 'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
                 'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
                 'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
-                'address': properties.get('address'),
                 })
 
             # To be used as a default for containing pool with no name.

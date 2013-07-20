@@ -17,6 +17,7 @@ from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.ZenUtils.Utils import prepId
+from Products import Zuul
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -116,6 +117,20 @@ def updateToOne(relationship, root, type_, id_):
     return
 
 
+def RelationshipInfoProperty(relationship_name):
+    '''
+    Return a read-only property with the Infos for object(s) in the
+    relationship.
+
+    A list of Info objects is returned for ToMany relationships, and a
+    single Info object is returned for ToOne relationships.
+    '''
+    def getter(self):
+        return Zuul.info(getattr(self._object, relationship_name)())
+
+    return property(getter)
+
+
 def RelationshipLengthProperty(relationship_name):
     '''
     Return a read-only property with a value equal to the number of
@@ -178,12 +193,8 @@ class IBaseComponentInfo(IComponentInfo):
     Abstract base API Info interface for components.
     '''
 
-    uuid = schema.TextLine(title=_t(u'UUID'))
-
 
 class BaseComponentInfo(ComponentInfo):
     '''
     Abstract base API Info adapter factory for components.
     '''
-
-    uuid = ProxyProperty('uuid')
