@@ -300,6 +300,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             host_oms.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'uuid': properties.get('uuid'),
                 'name_label': properties.get('name_label'),
                 'name_description': properties.get('name_description'),
                 'address': properties.get('address'),
@@ -329,6 +330,15 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'uuid': properties.get('uuid'),
+                'number': properties.get('number'),
+                'speed': properties.get('speed'),
+                'stepping': properties.get('stepping'),
+                'family': properties.get('family'),
+                'vendor': properties.get('vendor'),
+                'modelname': properties.get('modelname'),
+                'features': properties.get('features'),
+                'flags': properties.get('flags'),
                 })
 
         for parent_ref, grouped_objmaps in objmaps.items():

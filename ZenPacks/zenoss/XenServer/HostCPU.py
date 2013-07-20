@@ -19,6 +19,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    RelationshipInfoProperty,
     )
 
 
@@ -29,30 +30,24 @@ class HostCPU(BaseComponent):
 
     meta_type = portal_type = 'XenServerHostCPU'
 
-    modelname = None
-    vendor = None
-    features = None
-    family = None
     number = None
-    utilisation = None
-    host = None
-    flags = None
-    stepping = None
-    model = None
     speed = None
+    stepping = None
+    family = None
+    vendor = None
+    modelname = None
+    features = None
+    flags = None
 
     _properties = BaseComponent._properties + (
-        {'id': 'modelname', 'type': 'string', 'mode': 'w'},
-        {'id': 'vendor', 'type': 'string', 'mode': 'w'},
-        {'id': 'features', 'type': 'string', 'mode': 'w'},
-        {'id': 'family', 'type': 'string', 'mode': 'w'},
-        {'id': 'number', 'type': 'string', 'mode': 'w'},
-        {'id': 'utilisation', 'type': 'string', 'mode': 'w'},
-        {'id': 'host', 'type': 'string', 'mode': 'w'},
-        {'id': 'flags', 'type': 'string', 'mode': 'w'},
+        {'id': 'number', 'type': 'int', 'mode': 'w'},
+        {'id': 'speed', 'type': 'int', 'mode': 'w'},
         {'id': 'stepping', 'type': 'string', 'mode': 'w'},
-        {'id': 'model', 'type': 'string', 'mode': 'w'},
-        {'id': 'speed', 'type': 'string', 'mode': 'w'},
+        {'id': 'family', 'type': 'int', 'mode': 'w'},
+        {'id': 'vendor', 'type': 'string', 'mode': 'w'},
+        {'id': 'modelname', 'type': 'string', 'mode': 'w'},
+        {'id': 'features', 'type': 'string', 'mode': 'w'},
+        {'id': 'flags', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = BaseComponent._relations + (
@@ -65,17 +60,15 @@ class IHostCPUInfo(IBaseComponentInfo):
     API Info interface for HostCPU.
     '''
 
-    modelname = schema.TextLine(title=_t(u'modelnames'))
-    vendor = schema.TextLine(title=_t(u'vendors'))
-    features = schema.TextLine(title=_t(u'feature'))
-    family = schema.TextLine(title=_t(u'families'))
-    number = schema.TextLine(title=_t(u'numbers'))
-    utilisation = schema.TextLine(title=_t(u'utilisations'))
-    host = schema.TextLine(title=_t(u'hosts'))
-    flags = schema.TextLine(title=_t(u'flag'))
-    stepping = schema.TextLine(title=_t(u'steppings'))
-    model = schema.TextLine(title=_t(u'models'))
-    speed = schema.TextLine(title=_t(u'speeds'))
+    host = schema.Entity(title=_t(u'Host'))
+    number = schema.Int(title=_t(u'Number'))
+    speed = schema.Int(title=_t(u'Speed'))
+    stepping = schema.TextLine(title=_t(u'Stepping'))
+    family = schema.Int(title=_t(u'Family'))
+    vendor = schema.TextLine(title=_t(u'Vender'))
+    modelname = schema.TextLine(title=_t(u'Model'))
+    features = schema.TextLine(title=_t(u'Features'))
+    flags = schema.TextLine(title=_t(u'Flags'))
 
 
 class HostCPUInfo(BaseComponentInfo):
@@ -86,14 +79,12 @@ class HostCPUInfo(BaseComponentInfo):
     implements(IHostCPUInfo)
     adapts(HostCPU)
 
-    modelname = ProxyProperty('modelname')
-    vendor = ProxyProperty('vendor')
-    features = ProxyProperty('features')
-    family = ProxyProperty('family')
+    host = RelationshipInfoProperty('host')
     number = ProxyProperty('number')
-    utilisation = ProxyProperty('utilisation')
-    host = ProxyProperty('host')
-    flags = ProxyProperty('flags')
-    stepping = ProxyProperty('stepping')
-    model = ProxyProperty('model')
     speed = ProxyProperty('speed')
+    stepping = ProxyProperty('stepping')
+    family = ProxyProperty('family')
+    vendor = ProxyProperty('vendor')
+    modelname = ProxyProperty('modelname')
+    features = ProxyProperty('features')
+    flags = ProxyProperty('flags')
