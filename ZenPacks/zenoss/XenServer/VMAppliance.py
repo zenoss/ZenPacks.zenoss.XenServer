@@ -31,12 +31,14 @@ class VMAppliance(PooledComponent):
 
     meta_type = portal_type = 'XenServerVMAppliance'
 
-    name_label = None
+    allowed_operations = None
     name_description = None
+    name_label = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -71,8 +73,9 @@ class IVMApplianceInfo(IPooledComponentInfo):
     API Info interface for VMAppliance.
     '''
 
-    name_label = schema.TextLine(title=_t(u'Name'))
+    allowed_operations = schema.Text(title=_t(u'Allowed Operations'))
     name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Name'))
 
     vm_count = schema.Int(title=_t(u'Number of VMs'))
 
@@ -85,7 +88,8 @@ class VMApplianceInfo(PooledComponentInfo):
     implements(IVMApplianceInfo)
     adapts(VMAppliance)
 
-    name_label = ProxyProperty('name_label')
+    allowed_operations = ProxyProperty('allowed_operations')
     name_description = ProxyProperty('name_description')
+    name_label = ProxyProperty('name_label')
 
     vm_count = RelationshipLengthProperty('vms')
