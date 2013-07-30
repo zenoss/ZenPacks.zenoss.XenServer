@@ -4,14 +4,12 @@ Tracking tasks here at least until the first revision is done.
 
 ;Musts
 # Curate component properties, grid and details.
-# Remove useless information from device overview screen.
 # Add useful information to device overview screen.
 # "Add XenServer" dialog.
 # Device loader.
 # XenAPI datasource type.
 # Monitoring templates.
 # Events.
-# Create model ERD.
 # Create Impact ERD.
 # Internal Impact adapters.
 # External Impact adapters.
