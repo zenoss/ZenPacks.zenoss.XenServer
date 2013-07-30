@@ -20,6 +20,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
+    RelationshipInfoProperty,
     updateToOne,
     )
 
@@ -31,16 +32,16 @@ class PBD(PooledComponent):
 
     meta_type = portal_type = 'XenServerPBD'
 
-    dc_legacy_mode = None
     current_attached = None
-    dc_location = None
     dc_device = None
+    dc_legacy_mode = None
+    dc_location = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
         {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
-        {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
         {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
+        {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
+        {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -76,10 +77,13 @@ class IPBDInfo(IPooledComponentInfo):
     API Info interface for PBD.
     '''
 
-    dc_legacy_mode = schema.Bool(title=_t(u'dc_legacy_modes'))
+    host = schema.Entity(title=_t(u'Host'))
+    sr = schema.Entity(title=_t(u'Storage Repository'))
+
     current_attached = schema.Bool(title=_t(u'current_attacheds'))
-    dc_location = schema.TextLine(title=_t(u'dc_locations'))
     dc_device = schema.TextLine(title=_t(u'dc_devices'))
+    dc_legacy_mode = schema.Bool(title=_t(u'dc_legacy_modes'))
+    dc_location = schema.TextLine(title=_t(u'dc_locations'))
 
 
 class PBDInfo(PooledComponentInfo):
@@ -90,10 +94,13 @@ class PBDInfo(PooledComponentInfo):
     implements(IPBDInfo)
     adapts(PBD)
 
-    dc_legacy_mode = ProxyProperty('dc_legacy_mode')
+    host = RelationshipInfoProperty('host')
+    sr = RelationshipInfoProperty('sr')
+
     current_attached = ProxyProperty('current_attached')
-    dc_location = ProxyProperty('dc_location')
     dc_device = ProxyProperty('dc_device')
+    dc_legacy_mode = ProxyProperty('dc_legacy_mode')
+    dc_location = ProxyProperty('dc_location')
 
 
 class PBDPathReporter(DefaultPathReporter):
