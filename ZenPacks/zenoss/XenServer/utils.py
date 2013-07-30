@@ -198,3 +198,34 @@ class BaseComponentInfo(ComponentInfo):
     '''
     Abstract base API Info adapter factory for components.
     '''
+
+
+class PooledComponent(BaseComponent):
+    '''
+    Abstract base class for all pooled components.
+    '''
+
+    def pool(self):
+        '''
+        Return the pool containing this component.
+
+        For a non-pooled resource return None.
+        '''
+        for pool in self.device().pools.objectValuesGen():
+            return pool
+
+
+class IPooledComponentInfo(IBaseComponentInfo):
+    '''
+    Abstract base API Info interface for pooled components.
+    '''
+
+    pool = schema.Entity(title=_t(u'Pool'))
+
+
+class PooledComponentInfo(BaseComponentInfo):
+    '''
+    Abstract base API Info adapter factory for pooled components.
+    '''
+
+    pool = RelationshipInfoProperty('pool')

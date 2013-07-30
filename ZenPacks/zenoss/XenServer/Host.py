@@ -18,13 +18,13 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToMany, updateToOne,
     )
 
 
-class Host(BaseComponent):
+class Host(PooledComponent):
     '''
     Model class for Host. Also known as Server.
     '''
@@ -35,13 +35,13 @@ class Host(BaseComponent):
     name_description = None
     address = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'address', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'hosts')),
         ('hostcpus', ToManyCont(ToOne, MODULE_NAME['HostCPU'], 'host')),
         ('pbds', ToManyCont(ToOne, MODULE_NAME['PBD'], 'host')),
@@ -163,7 +163,7 @@ class Host(BaseComponent):
             id_=sr_id)
 
 
-class IHostInfo(IBaseComponentInfo):
+class IHostInfo(IPooledComponentInfo):
     '''
     API Info interface for Host.
     '''
@@ -183,7 +183,7 @@ class IHostInfo(IBaseComponentInfo):
     vm_count = schema.Int(title=_t(u'Number of VMs'))
 
 
-class HostInfo(BaseComponentInfo):
+class HostInfo(PooledComponentInfo):
     '''
     API Info adapter factory for Host.
     '''

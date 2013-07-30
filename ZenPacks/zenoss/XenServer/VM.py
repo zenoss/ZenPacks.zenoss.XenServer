@@ -19,13 +19,13 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToOne,
     )
 
 
-class VM(BaseComponent):
+class VM(PooledComponent):
     '''
     Model class for VM.
     '''
@@ -43,7 +43,7 @@ class VM(BaseComponent):
     memory_dynamic_min = None
     memory_overhead = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'memory_static_min', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'VCPUs_max', 'type': 'string', 'mode': 'w'},
@@ -56,7 +56,7 @@ class VM(BaseComponent):
         {'id': 'memory_overhead', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vms')),
         ('vbds', ToManyCont(ToOne, MODULE_NAME['VBD'], 'vm')),
         ('vifs', ToManyCont(ToOne, MODULE_NAME['VIF'], 'vm')),
@@ -109,7 +109,7 @@ class VM(BaseComponent):
             id_=vmappliance_id)
 
 
-class IVMInfo(IBaseComponentInfo):
+class IVMInfo(IPooledComponentInfo):
     '''
     API Info interface for VM.
     '''
@@ -129,7 +129,7 @@ class IVMInfo(IBaseComponentInfo):
     vif_count = schema.Int(title=_t(u'Number of VIFS'))
 
 
-class VMInfo(BaseComponentInfo):
+class VMInfo(PooledComponentInfo):
     '''
     API Info adapter factory for VM.
     '''

@@ -18,13 +18,13 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
     )
 
 
-class VDI(BaseComponent):
+class VDI(PooledComponent):
     '''
     Model class for VDI (virtual disk image.)
     '''
@@ -41,7 +41,7 @@ class VDI(BaseComponent):
     virtual_size = None
     Type = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'read_only', 'type': 'string', 'mode': 'w'},
@@ -54,7 +54,7 @@ class VDI(BaseComponent):
         {'id': 'Type', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('sr', ToOne(ToManyCont, MODULE_NAME['SR'], 'vdis')),
         ('vbds', ToMany(ToOne, MODULE_NAME['VBD'], 'vdi')),
         )
@@ -81,7 +81,7 @@ class VDI(BaseComponent):
             ids=vbd_ids)
 
 
-class IVDIInfo(IBaseComponentInfo):
+class IVDIInfo(IPooledComponentInfo):
     '''
     API Info interface for VBD.
     '''
@@ -100,7 +100,7 @@ class IVDIInfo(IBaseComponentInfo):
     vbd_count = schema.Int(title=_t(u'Number of VBDS'))
 
 
-class VDIInfo(BaseComponentInfo):
+class VDIInfo(PooledComponentInfo):
     '''
     API Info adapter factory for VBD.
     '''

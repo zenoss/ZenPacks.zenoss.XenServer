@@ -19,12 +19,12 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     updateToOne,
     )
 
 
-class PIF(BaseComponent):
+class PIF(PooledComponent):
     '''
     Model class for PIF (physical interface.)
     '''
@@ -35,14 +35,14 @@ class PIF(BaseComponent):
     netmask = None
     gateway = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'IP', 'type': 'string', 'mode': 'w'},
         {'id': 'MAC', 'type': 'string', 'mode': 'w'},
         {'id': 'netmask', 'type': 'string', 'mode': 'w'},
         {'id': 'gateway', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'pifs')),
         ('network', ToOne(ToMany, MODULE_NAME['Network'], 'pifs')),
         )
@@ -70,7 +70,7 @@ class PIF(BaseComponent):
             id_=network_id)
 
 
-class IPIFInfo(IBaseComponentInfo):
+class IPIFInfo(IPooledComponentInfo):
     '''
     API Info interface for PIF.
     '''
@@ -81,7 +81,7 @@ class IPIFInfo(IBaseComponentInfo):
     gateway = schema.TextLine(title=_t(u'gateways'))
 
 
-class PIFInfo(BaseComponentInfo):
+class PIFInfo(PooledComponentInfo):
     '''
     API Info adapter factor for PIF.
     '''

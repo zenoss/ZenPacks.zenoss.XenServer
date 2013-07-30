@@ -19,12 +19,12 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     updateToOne,
     )
 
 
-class VIF(BaseComponent):
+class VIF(PooledComponent):
     '''
     Model class for VIF (virtual interface.)
     '''
@@ -37,7 +37,7 @@ class VIF(BaseComponent):
     MTU = None
     qos_algorithm_type = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'status_code', 'type': 'string', 'mode': 'w'},
         {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
         {'id': 'MAC', 'type': 'string', 'mode': 'w'},
@@ -45,7 +45,7 @@ class VIF(BaseComponent):
         {'id': 'qos_algorithm_type', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vifs')),
         ('network', ToOne(ToMany, MODULE_NAME['Network'], 'vifs')),
         )
@@ -73,7 +73,7 @@ class VIF(BaseComponent):
             id_=network_id)
 
 
-class IVIFInfo(IBaseComponentInfo):
+class IVIFInfo(IPooledComponentInfo):
     '''
     API Info interface for VIF.
     '''
@@ -85,7 +85,7 @@ class IVIFInfo(IBaseComponentInfo):
     qos_algorithm_type = schema.TextLine(title=_t(u'qos_algorithm_types'))
 
 
-class VIFInfo(BaseComponentInfo):
+class VIFInfo(PooledComponentInfo):
     '''
     API Info adapter factory for VIF.
     '''

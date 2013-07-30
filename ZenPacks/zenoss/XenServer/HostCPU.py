@@ -18,12 +18,12 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
     )
 
 
-class HostCPU(BaseComponent):
+class HostCPU(PooledComponent):
     '''
     Model class for HostCPU.
     '''
@@ -39,7 +39,7 @@ class HostCPU(BaseComponent):
     features = None
     flags = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'number', 'type': 'int', 'mode': 'w'},
         {'id': 'speed', 'type': 'int', 'mode': 'w'},
         {'id': 'stepping', 'type': 'string', 'mode': 'w'},
@@ -50,12 +50,12 @@ class HostCPU(BaseComponent):
         {'id': 'flags', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'hostcpus')),
         )
 
 
-class IHostCPUInfo(IBaseComponentInfo):
+class IHostCPUInfo(IPooledComponentInfo):
     '''
     API Info interface for HostCPU.
     '''
@@ -71,7 +71,7 @@ class IHostCPUInfo(IBaseComponentInfo):
     flags = schema.TextLine(title=_t(u'Flags'))
 
 
-class HostCPUInfo(BaseComponentInfo):
+class HostCPUInfo(PooledComponentInfo):
     '''
     API Info adapter factory for HostCPU.
     '''

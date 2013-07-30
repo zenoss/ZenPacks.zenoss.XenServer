@@ -18,13 +18,13 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
     )
 
 
-class VMAppliance(BaseComponent):
+class VMAppliance(PooledComponent):
     '''
     Model class for VMAppliance. Also known as vApp.
     '''
@@ -34,12 +34,12 @@ class VMAppliance(BaseComponent):
     name_label = None
     name_description = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vmappliances',)),
         ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'vmappliance')),
         )
@@ -66,7 +66,7 @@ class VMAppliance(BaseComponent):
             ids=vm_ids)
 
 
-class IVMApplianceInfo(IBaseComponentInfo):
+class IVMApplianceInfo(IPooledComponentInfo):
     '''
     API Info interface for VMAppliance.
     '''
@@ -77,7 +77,7 @@ class IVMApplianceInfo(IBaseComponentInfo):
     vm_count = schema.Int(title=_t(u'Number of VMs'))
 
 
-class VMApplianceInfo(BaseComponentInfo):
+class VMApplianceInfo(PooledComponentInfo):
     '''
     API Info adapter factory for VMAppliance.
     '''

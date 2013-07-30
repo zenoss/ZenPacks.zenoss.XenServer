@@ -19,12 +19,12 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     updateToOne,
     )
 
 
-class PBD(BaseComponent):
+class PBD(PooledComponent):
     '''
     Model class for PBD (physical block device.)
     '''
@@ -36,14 +36,14 @@ class PBD(BaseComponent):
     dc_location = None
     dc_device = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
         {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
         {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
         {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'pbds')),
         ('sr', ToOne(ToMany, MODULE_NAME['SR'], 'pbds')),
         )
@@ -71,7 +71,7 @@ class PBD(BaseComponent):
             id_=sr_id)
 
 
-class IPBDInfo(IBaseComponentInfo):
+class IPBDInfo(IPooledComponentInfo):
     '''
     API Info interface for PBD.
     '''
@@ -82,7 +82,7 @@ class IPBDInfo(IBaseComponentInfo):
     dc_device = schema.TextLine(title=_t(u'dc_devices'))
 
 
-class PBDInfo(BaseComponentInfo):
+class PBDInfo(PooledComponentInfo):
     '''
     API Info adapter factory for PBD.
     '''

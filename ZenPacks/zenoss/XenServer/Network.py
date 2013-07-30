@@ -18,13 +18,13 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
     )
 
 
-class Network(BaseComponent):
+class Network(PooledComponent):
     '''
     Model class for Network.
     '''
@@ -38,7 +38,7 @@ class Network(BaseComponent):
     MTU = None
     default_locking_mode = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'bridge', 'type': 'string', 'mode': 'w'},
@@ -47,7 +47,7 @@ class Network(BaseComponent):
         {'id': 'default_locking_mode', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'networks')),
         ('pifs', ToMany(ToOne, MODULE_NAME['PIF'], 'network')),
         ('vifs', ToMany(ToOne, MODULE_NAME['VIF'], 'network')),
@@ -96,7 +96,7 @@ class Network(BaseComponent):
             ids=vif_ids)
 
 
-class INetworkInfo(IBaseComponentInfo):
+class INetworkInfo(IPooledComponentInfo):
     '''
     API Info interface for Network.
     '''
@@ -112,7 +112,7 @@ class INetworkInfo(IBaseComponentInfo):
     vif_count = schema.Int(title=_t(u'Number of VIFS'))
 
 
-class NetworkInfo(BaseComponentInfo):
+class NetworkInfo(PooledComponentInfo):
     '''
     API Info adapter factory for Network.
     '''

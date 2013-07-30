@@ -19,12 +19,12 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
-    BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     updateToOne,
     )
 
 
-class VBD(BaseComponent):
+class VBD(PooledComponent):
     '''
     Model class for VBD (virtual block device.)
     '''
@@ -38,7 +38,7 @@ class VBD(BaseComponent):
     Type = None
     empty = None
 
-    _properties = BaseComponent._properties + (
+    _properties = PooledComponent._properties + (
         {'id': 'bootable', 'type': 'string', 'mode': 'w'},
         {'id': 'status_code', 'type': 'string', 'mode': 'w'},
         {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
@@ -47,7 +47,7 @@ class VBD(BaseComponent):
         {'id': 'empty', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseComponent._relations + (
+    _relations = PooledComponent._relations + (
         ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vbds')),
         ('vdi', ToOne(ToMany, MODULE_NAME['VDI'], 'vbds')),
         )
@@ -75,7 +75,7 @@ class VBD(BaseComponent):
             id_=vdi_id)
 
 
-class IVBDInfo(IBaseComponentInfo):
+class IVBDInfo(IPooledComponentInfo):
     '''
     API Info interface for VBD.
     '''
@@ -88,7 +88,7 @@ class IVBDInfo(IBaseComponentInfo):
     empty = schema.TextLine(title=_t(u'empties'))
 
 
-class VBDInfo(BaseComponentInfo):
+class VBDInfo(PooledComponentInfo):
     '''
     API Info adapter factory for VBD.
     '''
