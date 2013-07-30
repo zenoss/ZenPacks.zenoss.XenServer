@@ -30,24 +30,26 @@ class HostCPU(PooledComponent):
 
     meta_type = portal_type = 'XenServerHostCPU'
 
+    family = None
+    features = None
+    flags = None
+    model = None
+    modelname = None
     number = None
     speed = None
     stepping = None
-    family = None
     vendor = None
-    modelname = None
-    features = None
-    flags = None
 
     _properties = PooledComponent._properties + (
+        {'id': 'family', 'type': 'int', 'mode': 'w'},
+        {'id': 'features', 'type': 'string', 'mode': 'w'},
+        {'id': 'flags', 'type': 'string', 'mode': 'w'},
+        {'id': 'model', 'type': 'string', 'mode': 'w'},
+        {'id': 'modelname', 'type': 'string', 'mode': 'w'},
         {'id': 'number', 'type': 'int', 'mode': 'w'},
         {'id': 'speed', 'type': 'int', 'mode': 'w'},
         {'id': 'stepping', 'type': 'string', 'mode': 'w'},
-        {'id': 'family', 'type': 'int', 'mode': 'w'},
         {'id': 'vendor', 'type': 'string', 'mode': 'w'},
-        {'id': 'modelname', 'type': 'string', 'mode': 'w'},
-        {'id': 'features', 'type': 'string', 'mode': 'w'},
-        {'id': 'flags', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -61,14 +63,16 @@ class IHostCPUInfo(IPooledComponentInfo):
     '''
 
     host = schema.Entity(title=_t(u'Host'))
+
+    family = schema.Int(title=_t(u'Family'))
+    features = schema.TextLine(title=_t(u'Features'))
+    flags = schema.TextLine(title=_t(u'Flags'))
+    model = schema.TextLine(title=_t(u'Model'))
+    modelname = schema.TextLine(title=_t(u'Model Name'))
     number = schema.Int(title=_t(u'Number'))
     speed = schema.Int(title=_t(u'Speed'))
     stepping = schema.TextLine(title=_t(u'Stepping'))
-    family = schema.Int(title=_t(u'Family'))
     vendor = schema.TextLine(title=_t(u'Vender'))
-    modelname = schema.TextLine(title=_t(u'Model'))
-    features = schema.TextLine(title=_t(u'Features'))
-    flags = schema.TextLine(title=_t(u'Flags'))
 
 
 class HostCPUInfo(PooledComponentInfo):
@@ -80,11 +84,13 @@ class HostCPUInfo(PooledComponentInfo):
     adapts(HostCPU)
 
     host = RelationshipInfoProperty('host')
+
+    family = ProxyProperty('family')
+    features = ProxyProperty('features')
+    flags = ProxyProperty('flags')
+    model = ProxyProperty('model')
+    modelname = ProxyProperty('modelname')
     number = ProxyProperty('number')
     speed = ProxyProperty('speed')
     stepping = ProxyProperty('stepping')
-    family = ProxyProperty('family')
     vendor = ProxyProperty('vendor')
-    modelname = ProxyProperty('modelname')
-    features = ProxyProperty('features')
-    flags = ProxyProperty('flags')
