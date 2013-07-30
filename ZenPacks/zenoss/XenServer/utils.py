@@ -193,11 +193,17 @@ class IBaseComponentInfo(IComponentInfo):
     Abstract base API Info interface for components.
     '''
 
+    endpoint = schema.Entity(title=_t('Endpoint'))
+    uuid = schema.TextLine(title=_t(u'UUID'))
+
 
 class BaseComponentInfo(ComponentInfo):
     '''
     Abstract base API Info adapter factory for components.
     '''
+
+    endpoint = RelationshipInfoProperty('device')
+    uuid = ProxyProperty('uuid')
 
 
 class PooledComponent(BaseComponent):
