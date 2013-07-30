@@ -31,22 +31,22 @@ class SR(PooledComponent):
 
     meta_type = portal_type = 'XenServerSR'
 
-    name_label = None
-    name_description = None
-    physical_size = None
-    physical_utilisation = None
+    allowed_operations = None
     content_type = None
+    local_cache_enabled = None
+    name_description = None
+    name_label = None
     shared = None
-    virtual_allocation = None
+    sr_type = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'physical_size', 'type': 'string', 'mode': 'w'},
-        {'id': 'physical_utilisation', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'content_type', 'type': 'string', 'mode': 'w'},
+        {'id': 'local_cache_enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'shared', 'type': 'string', 'mode': 'w'},
-        {'id': 'virtual_allocation', 'type': 'string', 'mode': 'w'},
+        {'id': 'sr_type', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -207,13 +207,13 @@ class ISRInfo(IPooledComponentInfo):
     API Info interface for SR.
     '''
 
-    name_label = schema.TextLine(title=_t(u'name_labels'))
-    name_description = schema.TextLine(title=_t(u'name_descriptions'))
-    physical_size = schema.TextLine(title=_t(u'physical_sizes'))
-    physical_utilisation = schema.TextLine(title=_t(u'physical_utilisations'))
-    content_type = schema.TextLine(title=_t(u'content_types'))
-    shared = schema.TextLine(title=_t(u'shareds'))
-    virtual_allocation = schema.TextLine(title=_t(u'virtual_allocations'))
+    allowed_operations = schema.Text(title=_t(u'Allowed Operations'))
+    content_type = schema.TextLine(title=_t(u'Content Type'))
+    local_cache_enabled = schema.Bool(title=_t(u'Local Cache Enabled'))
+    name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Label'))
+    shared = schema.Bool(title=_t(u'Shared'))
+    sr_type = schema.TextLine(title=_t(u'Type'))
 
     vdi_count = schema.Int(title=_t(u'Number of VDIS'))
     pbd_count = schema.Int(title=_t(u'Number of PBDS'))
@@ -227,13 +227,13 @@ class SRInfo(PooledComponentInfo):
     implements(ISRInfo)
     adapts(SR)
 
-    name_label = ProxyProperty('name_label')
-    name_description = ProxyProperty('name_description')
-    physical_size = ProxyProperty('physical_size')
-    physical_utilisation = ProxyProperty('physical_utilisation')
+    allowed_operations = ProxyProperty('allowed_operations')
     content_type = ProxyProperty('content_type')
+    local_cache_enabled = ProxyProperty('local_cache_enabled')
+    name_description = ProxyProperty('name_description')
+    name_label = ProxyProperty('name_label')
     shared = ProxyProperty('shared')
-    virtual_allocation = ProxyProperty('virtual_allocation')
+    sr_type = ProxyProperty('sr_type')
 
     vdi_count = RelationshipLengthProperty('vdis')
     pbd_count = RelationshipLengthProperty('pbds')
