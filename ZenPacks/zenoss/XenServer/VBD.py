@@ -141,6 +141,6 @@ class VBDPathReporter(DefaultPathReporter):
 
         vdi = self.context.vdi()
         if vdi:
-            paths.extend(relPath(vdi, 'endpoint'))
+            paths.extend(relPath(vdi, 'sr'))
 
         return paths
