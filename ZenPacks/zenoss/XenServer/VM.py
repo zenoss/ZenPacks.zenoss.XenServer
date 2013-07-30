@@ -20,7 +20,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
-    RelationshipLengthProperty,
+    RelationshipInfoProperty, RelationshipLengthProperty,
     updateToOne,
     )
 
@@ -32,28 +32,56 @@ class VM(PooledComponent):
 
     meta_type = portal_type = 'XenServerVM'
 
-    memory_static_min = None
-    name_label = None
-    VCPUs_max = None
-    memory_static_max = None
-    VCPUs_at_startup = None
-    memory_dynamic_max = None
-    power_state = None
+    hvm_shadow_multiplier = None
+    vcpus_at_startup = None
+    vcpus_max = None
+    actions_after_crash = None
+    actions_after_reboot = None
+    actions_after_shutdown = None
+    allowed_operations = None
+    domarch = None
+    domid = None
+    guest_metrics = None
+    ha_always_run = None
+    ha_restart_priority = None
+    is_a_snapshot = None
+    is_a_template = None
+    is_control_domain = None
+    is_snapshot_from_vmpp = None
+    metrics = None
     name_description = None
-    memory_dynamic_min = None
-    memory_overhead = None
+    name_label = None
+    power_state = None
+    shutdown_delay = None
+    start_delay = None
+    user_version = None
+    version = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'memory_static_min', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'VCPUs_max', 'type': 'string', 'mode': 'w'},
-        {'id': 'memory_static_max', 'type': 'string', 'mode': 'w'},
-        {'id': 'VCPUs_at_startup', 'type': 'string', 'mode': 'w'},
-        {'id': 'memory_dynamic_max', 'type': 'string', 'mode': 'w'},
-        {'id': 'power_state', 'type': 'string', 'mode': 'w'},
+        {'id': 'hvm_shadow_multiplier', 'type': 'string', 'mode': 'w'},
+        {'id': 'vcpus_at_startup', 'type': 'string', 'mode': 'w'},
+        {'id': 'vcpus_max', 'type': 'string', 'mode': 'w'},
+        {'id': 'actions_after_crash', 'type': 'string', 'mode': 'w'},
+        {'id': 'actions_after_reboot', 'type': 'string', 'mode': 'w'},
+        {'id': 'actions_after_shutdown', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'domarch', 'type': 'string', 'mode': 'w'},
+        {'id': 'domid', 'type': 'string', 'mode': 'w'},
+        {'id': 'guest_metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'ha_always_run', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ha_restart_priority', 'type': 'string', 'mode': 'w'},
+        {'id': 'is_a_snapshot', 'type': 'bool', 'mode': 'w'},
+        {'id': 'is_a_template', 'type': 'bool', 'mode': 'w'},
+        {'id': 'is_control_domain', 'type': 'bool', 'mode': 'w'},
+        {'id': 'is_snapshot_from_vmpp', 'type': 'bool', 'mode': 'w'},
+        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'memory_dynamic_min', 'type': 'string', 'mode': 'w'},
-        {'id': 'memory_overhead', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'power_state', 'type': 'string', 'mode': 'w'},
+        {'id': 'shutdown_delay', 'type': 'string', 'mode': 'w'},
+        {'id': 'start_delay', 'type': 'string', 'mode': 'w'},
+        {'id': 'user_version', 'type': 'string', 'mode': 'w'},
+        {'id': 'version', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -114,19 +142,34 @@ class IVMInfo(IPooledComponentInfo):
     API Info interface for VM.
     '''
 
-    name_label = schema.TextLine(title=_t(u'Name'))
-    name_description = schema.TextLine(title=_t(u'Description'))
-    memory_static_min = schema.TextLine(title=_t(u'memory_static_mins'))
-    VCPUs_max = schema.TextLine(title=_t(u'VCPUs_maxes'))
-    memory_static_max = schema.TextLine(title=_t(u'memory_static_maxes'))
-    VCPUs_at_startup = schema.TextLine(title=_t(u'VCPUs_at_startups'))
-    memory_dynamic_max = schema.TextLine(title=_t(u'memory_dynamic_maxes'))
-    power_state = schema.TextLine(title=_t(u'power_states'))
-    memory_dynamic_min = schema.TextLine(title=_t(u'memory_dynamic_mins'))
-    memory_overhead = schema.TextLine(title=_t(u'memory_overheads'))
+    host = schema.Entity(title=_t(u'Host'))
+    vmappliance = schema.Entity(title=_t(u'vApp'))
 
-    vbd_count = schema.Int(title=_t(u'Number of VBDS'))
-    vif_count = schema.Int(title=_t(u'Number of VIFS'))
+    hvm_shadow_multiplier = schema.TextLine(title=_t(u'HVM Shadow Multiplier'))
+    vcpus_at_startup = schema.TextLine(title=_t(u'vCPUs at Startup'))
+    vcpus_max = schema.TextLine(title=_t(u'Maximum vCPUs'))
+    actions_after_crash = schema.TextLine(title=_t(u'Actions After Crash'))
+    actions_after_reboot = schema.TextLine(title=_t(u'Actions After Reboot'))
+    actions_after_shutdown = schema.TextLine(title=_t(u'Actions After Shutdown'))
+    allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
+    domarch = schema.TextLine(title=_t(u'Domain Architecture'))
+    domid = schema.TextLine(title=_t(u'Domain ID'))
+    ha_always_run = schema.TextLine(title=_t(u'HA Always Run'))
+    ha_restart_priority = schema.TextLine(title=_t(u'HA Restart Priority'))
+    is_a_snapshot = schema.TextLine(title=_t(u'Is a Snapshot'))
+    is_a_template = schema.TextLine(title=_t(u'Is a Template'))
+    is_control_domain = schema.TextLine(title=_t(u'Is a Control Domain'))
+    is_snapshot_from_vmpp = schema.TextLine(title=_t(u'Is a Snapshot from VMPP'))
+    name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Name'))
+    power_state = schema.TextLine(title=_t(u'Power State'))
+    shutdown_delay = schema.TextLine(title=_t(u'Shutdown Delay'))
+    start_delay = schema.TextLine(title=_t(u'Start Delay'))
+    user_version = schema.TextLine(title=_t(u'User Version'))
+    version = schema.TextLine(title=_t(u'Version'))
+
+    vbd_count = schema.Int(title=_t(u'Number of Virtual Block Devices'))
+    vif_count = schema.Int(title=_t(u'Number of Virtual Network Interfaces'))
 
 
 class VMInfo(PooledComponentInfo):
@@ -137,16 +180,31 @@ class VMInfo(PooledComponentInfo):
     implements(IVMInfo)
     adapts(VM)
 
-    memory_static_min = ProxyProperty('memory_static_min')
-    name_label = ProxyProperty('name_label')
-    VCPUs_max = ProxyProperty('VCPUs_max')
-    memory_static_max = ProxyProperty('memory_static_max')
-    VCPUs_at_startup = ProxyProperty('VCPUs_at_startup')
-    memory_dynamic_max = ProxyProperty('memory_dynamic_max')
-    power_state = ProxyProperty('power_state')
+    host = RelationshipInfoProperty('host')
+    vmappliance = RelationshipInfoProperty('vmappliance')
+
+    hvm_shadow_multiplier = ProxyProperty('hvm_shadow_multiplier')
+    vcpus_at_startup = ProxyProperty('vcpus_at_startup')
+    vcpus_max = ProxyProperty('vcpus_max')
+    actions_after_crash = ProxyProperty('actions_after_crash')
+    actions_after_reboot = ProxyProperty('actions_after_reboot')
+    actions_after_shutdown = ProxyProperty('actions_after_shutdown')
+    allowed_operations = ProxyProperty('allowed_operations')
+    domarch = ProxyProperty('domarch')
+    domid = ProxyProperty('domid')
+    ha_always_run = ProxyProperty('ha_always_run')
+    ha_restart_priority = ProxyProperty('ha_restart_priority')
+    is_a_snapshot = ProxyProperty('is_a_snapshot')
+    is_a_template = ProxyProperty('is_a_template')
+    is_control_domain = ProxyProperty('is_control_domain')
+    is_snapshot_from_vmpp = ProxyProperty('is_snapshot_from_vmpp')
     name_description = ProxyProperty('name_description')
-    memory_dynamic_min = ProxyProperty('memory_dynamic_min')
-    memory_overhead = ProxyProperty('memory_overhead')
+    name_label = ProxyProperty('name_label')
+    power_state = ProxyProperty('power_state')
+    shutdown_delay = ProxyProperty('shutdown_delay')
+    start_delay = ProxyProperty('start_delay')
+    user_version = ProxyProperty('user_version')
+    version = ProxyProperty('version')
 
     vbd_count = RelationshipLengthProperty('vbds')
     vif_count = RelationshipLengthProperty('vifs')
