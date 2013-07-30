@@ -20,6 +20,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
+    RelationshipInfoProperty,
     updateToOne,
     )
 
@@ -30,16 +31,44 @@ class PIF(PooledComponent):
     '''
     meta_type = portal_type = 'XenServerPIF'
 
-    IP = None
-    MAC = None
-    netmask = None
-    gateway = None
+    dns = None
+    ipv4_addresses = None
+    ipv6_addresses = None
+    macaddress = None
+    mtu = None
+    vlan = None
+    currently_attached = None
+    device = None
+    disallow_unplug = None
+    ipv4_gateway = None
+    ipv4_configuration_mode = None
+    ipv6_configuration_mode = None
+    ipv6_gateway = None
+    management = None
+    metrics = None
+    ipv4_netmask = None
+    physical = None
+    primary_address_type = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'IP', 'type': 'string', 'mode': 'w'},
-        {'id': 'MAC', 'type': 'string', 'mode': 'w'},
-        {'id': 'netmask', 'type': 'string', 'mode': 'w'},
-        {'id': 'gateway', 'type': 'string', 'mode': 'w'},
+        {'id': 'dns', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_addresses', 'type': 'lines', 'mode': 'w'},
+        {'id': 'ipv6_addresses', 'type': 'lines', 'mode': 'w'},
+        {'id': 'macaddress', 'type': 'string', 'mode': 'w'},
+        {'id': 'mtu', 'type': 'string', 'mode': 'w'},
+        {'id': 'vlan', 'type': 'string', 'mode': 'w'},
+        {'id': 'currently_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'device', 'type': 'string', 'mode': 'w'},
+        {'id': 'disallow_unplug', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ipv4_gateway', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_configuration_mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv6_configuration_mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv6_gateway', 'type': 'string', 'mode': 'w'},
+        {'id': 'management', 'type': 'bool', 'mode': 'w'},
+        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_netmask', 'type': 'string', 'mode': 'w'},
+        {'id': 'physical', 'type': 'bool', 'mode': 'w'},
+        {'id': 'primary_address_type', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -75,6 +104,27 @@ class IPIFInfo(IPooledComponentInfo):
     API Info interface for PIF.
     '''
 
+    host = schema.Entity(title=_t(u'Host'))
+    network = schema.Entity(title=_t(u'Network'))
+
+    dns = schema.TextLine(title=_t(u'DNS Server Address'))
+    ipv4_addresses = schema.TextLine(title=_t(u'IPv4 Addresses'))
+    ipv6_addresses = schema.TextLine(title=_t(u'IPv6 Addresses'))
+    macaddress = schema.TextLine(title=_t(u'MAC Address'))
+    mtu = schema.TextLine(title=_t(u'MTU'))
+    vlan = schema.TextLine(title=_t(u'VLAN'))
+    currently_attached = schema.Bool(title=_t(u'Currently Attached'))
+    device = schema.TextLine(title=_t(u'Network Device'))
+    disallow_unplug = schema.Bool(title=_t(u'Disallow Unplug'))
+    ipv4_gateway = schema.TextLine(title=_t(u'IPv4 Gateway'))
+    ipv4_configuration_mode = schema.TextLine(title=_t(u'IPv4 Configuration Mode'))
+    ipv6_configuration_mode = schema.TextLine(title=_t(u'IPv6 Configuration Mode'))
+    ipv6_gateway = schema.TextLine(title=_t(u'IPv6 Gateway'))
+    management = schema.Bool(title=_t(u'Management'))
+    ipv4_netmask = schema.TextLine(title=_t(u'IPv4 Netmask'))
+    physical = schema.Bool(title=_t(u'Physical'))
+    primary_address_type = schema.TextLine(title=_t(u'Primary Address Type'))
+
     IP = schema.TextLine(title=_t(u'IPS'))
     MAC = schema.TextLine(title=_t(u'MACS'))
     netmask = schema.TextLine(title=_t(u'netmasks'))
@@ -89,10 +139,26 @@ class PIFInfo(PooledComponentInfo):
     implements(IPIFInfo)
     adapts(PIF)
 
-    IP = ProxyProperty('IP')
-    MAC = ProxyProperty('MAC')
-    netmask = ProxyProperty('netmask')
-    gateway = ProxyProperty('gateway')
+    host = RelationshipInfoProperty('host')
+    network = RelationshipInfoProperty('network')
+
+    dns = ProxyProperty('dns')
+    ipv4_addresses = ProxyProperty('ipv4_addresses')
+    ipv6_addresses = ProxyProperty('ipv6_addresses')
+    macaddress = ProxyProperty('macaddress')
+    mtu = ProxyProperty('mtu')
+    vlan = ProxyProperty('vlan')
+    currently_attached = ProxyProperty('currently_attached')
+    device = ProxyProperty('device')
+    disallow_unplug = ProxyProperty('disallow_unplug')
+    ipv4_gateway = ProxyProperty('ipv4_gateway')
+    ipv4_configuration_mode = ProxyProperty('ipv4_configuration_mode')
+    ipv6_configuration_mode = ProxyProperty('ipv6_configuration_mode')
+    ipv6_gateway = ProxyProperty('ipv6_gateway')
+    management = ProxyProperty('management')
+    ipv4_netmask = ProxyProperty('ipv4_netmask')
+    physical = ProxyProperty('physical')
+    primary_address_type = ProxyProperty('primary_address_type')
 
 
 class PIFPathReporter(DefaultPathReporter):
