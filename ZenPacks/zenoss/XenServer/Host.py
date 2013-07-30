@@ -178,8 +178,8 @@ class IHostInfo(IPooledComponentInfo):
     local_cache_sr = schema.Entity(title=_t(u'Local Cache Storage Repository'))
 
     hostcpu_count = schema.Int(title=_t(u'Number of CPUs'))
-    pbd_count = schema.Int(title=_t(u'Number of PBDs'))
-    pif_count = schema.Int(title=_t(u'Number of PIFs'))
+    pbd_count = schema.Int(title=_t(u'Number of Block Devices'))
+    pif_count = schema.Int(title=_t(u'Number of Network Interfaces'))
     vm_count = schema.Int(title=_t(u'Number of VMs'))
 
 
