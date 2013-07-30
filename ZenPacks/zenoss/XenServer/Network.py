@@ -31,20 +31,18 @@ class Network(PooledComponent):
 
     meta_type = portal_type = 'XenServerNetwork'
 
-    name_label = None
-    name_description = None
+    mtu = None
     bridge = None
-    tags = None
-    MTU = None
     default_locking_mode = None
+    name_description = None
+    name_label = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'mtu', 'type': 'string', 'mode': 'w'},
         {'id': 'bridge', 'type': 'string', 'mode': 'w'},
-        {'id': 'tags', 'type': 'string', 'mode': 'w'},
-        {'id': 'MTU', 'type': 'string', 'mode': 'w'},
         {'id': 'default_locking_mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -101,15 +99,14 @@ class INetworkInfo(IPooledComponentInfo):
     API Info interface for Network.
     '''
 
-    name_label = schema.TextLine(title=_t(u'name_labels'))
-    name_description = schema.TextLine(title=_t(u'name_descriptions'))
+    mtu = schema.TextLine(title=_t(u'MTU'))
     bridge = schema.TextLine(title=_t(u'bridges'))
-    tags = schema.TextLine(title=_t(u'tag'))
-    MTU = schema.TextLine(title=_t(u'MTUS'))
     default_locking_mode = schema.TextLine(title=_t(u'default_locking_modes'))
+    name_description = schema.TextLine(title=_t(u'name_descriptions'))
+    name_label = schema.TextLine(title=_t(u'name_labels'))
 
-    pif_count = schema.Int(title=_t(u'Number of PIFS'))
-    vif_count = schema.Int(title=_t(u'Number of VIFS'))
+    pif_count = schema.Int(title=_t(u'Number of Physical Network Interfaces'))
+    vif_count = schema.Int(title=_t(u'Number of Virtual Network Interfaces'))
 
 
 class NetworkInfo(PooledComponentInfo):
@@ -120,12 +117,11 @@ class NetworkInfo(PooledComponentInfo):
     implements(INetworkInfo)
     adapts(Network)
 
-    name_label = ProxyProperty('name_label')
-    name_description = ProxyProperty('name_description')
+    mtu = ProxyProperty('mtu')
     bridge = ProxyProperty('bridge')
-    tags = ProxyProperty('tags')
-    MTU = ProxyProperty('MTU')
     default_locking_mode = ProxyProperty('default_locking_mode')
+    name_description = ProxyProperty('name_description')
+    name_label = ProxyProperty('name_label')
 
     pif_count = RelationshipLengthProperty('pifs')
     vif_count = RelationshipLengthProperty('vifs')
