@@ -31,14 +31,34 @@ class Host(PooledComponent):
 
     meta_type = portal_type = 'XenServerHost'
 
-    name_label = None
-    name_description = None
+    api_version_major = None
+    api_version_minor = None
+    api_version_vendor = None
     address = None
+    allowed_operations = None
+    capabilities = None
+    edition = None
+    enabled = None
+    hostname = None
+    metrics = None
+    name_description = None
+    name_label = None
+    sched_policy = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'api_version_major', 'type': 'string', 'mode': 'w'},
+        {'id': 'api_version_minor', 'type': 'string', 'mode': 'w'},
+        {'id': 'api_version_vendor', 'type': 'string', 'mode': 'w'},
         {'id': 'address', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'capabilities', 'type': 'lines', 'mode': 'w'},
+        {'id': 'edition', 'type': 'string', 'mode': 'w'},
+        {'id': 'enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'hostname', 'type': 'string', 'mode': 'w'},
+        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'sched_policy', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -168,9 +188,18 @@ class IHostInfo(IPooledComponentInfo):
     API Info interface for Host.
     '''
 
-    name_label = schema.TextLine(title=_t(u'Name'))
-    name_description = schema.TextLine(title=_t(u'Description'))
+    api_version_major = schema.TextLine(title=_t(u'API Version Major'))
+    api_version_minor = schema.TextLine(title=_t(u'API Version Minor'))
+    api_version_vendor = schema.TextLine(title=_t(u'API Version Vendor'))
     address = schema.TextLine(title=_t(u'Address'))
+    allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
+    capabilities = schema.TextLine(title=_t(u'Capabilities'))
+    edition = schema.TextLine(title=_t(u'Edition'))
+    enabled = schema.TextLine(title=_t(u'Enabled'))
+    hostname = schema.TextLine(title=_t(u'Hostname'))
+    name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Label'))
+    sched_policy = schema.TextLine(title=_t(u'Scheduling Policy'))
 
     master_for = schema.Entity(title=_t(u'Master for Pool'))
     suspend_image_sr = schema.Entity(title=_t(u'Suspend Image Storage Repository'))
@@ -191,9 +220,19 @@ class HostInfo(PooledComponentInfo):
     implements(IHostInfo)
     adapts(Host)
 
-    name_label = ProxyProperty('name_label')
-    name_description = ProxyProperty('name_description')
+    api_version_major = ProxyProperty('api_version_major')
+    api_version_minor = ProxyProperty('api_version_minor')
+    api_version_vendor = ProxyProperty('api_version_vendor')
     address = ProxyProperty('address')
+    allowed_operations = ProxyProperty('allowed_operations')
+    capabilities = ProxyProperty('capabilities')
+    edition = ProxyProperty('edition')
+    enabled = ProxyProperty('enabled')
+    hostname = ProxyProperty('hostname')
+    metrics = ProxyProperty('metrics')
+    name_description = ProxyProperty('name_description')
+    name_label = ProxyProperty('name_label')
+    sched_policy = ProxyProperty('sched_policy')
 
     master_for = RelationshipInfoProperty('master_for')
     suspend_image_sr = RelationshipInfoProperty('suspend_image_sr')

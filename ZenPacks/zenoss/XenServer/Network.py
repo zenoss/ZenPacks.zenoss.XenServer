@@ -100,10 +100,10 @@ class INetworkInfo(IPooledComponentInfo):
     '''
 
     mtu = schema.TextLine(title=_t(u'MTU'))
-    bridge = schema.TextLine(title=_t(u'bridges'))
-    default_locking_mode = schema.TextLine(title=_t(u'default_locking_modes'))
-    name_description = schema.TextLine(title=_t(u'name_descriptions'))
-    name_label = schema.TextLine(title=_t(u'name_labels'))
+    bridge = schema.TextLine(title=_t(u'Bridge'))
+    default_locking_mode = schema.TextLine(title=_t(u'Default Locking Mode'))
+    name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Label'))
 
     pif_count = schema.Int(title=_t(u'Number of Physical Network Interfaces'))
     vif_count = schema.Int(title=_t(u'Number of Virtual Network Interfaces'))

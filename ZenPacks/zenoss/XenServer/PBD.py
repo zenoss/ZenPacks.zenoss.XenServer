@@ -80,10 +80,10 @@ class IPBDInfo(IPooledComponentInfo):
     host = schema.Entity(title=_t(u'Host'))
     sr = schema.Entity(title=_t(u'Storage Repository'))
 
-    current_attached = schema.Bool(title=_t(u'current_attacheds'))
-    dc_device = schema.TextLine(title=_t(u'dc_devices'))
-    dc_legacy_mode = schema.Bool(title=_t(u'dc_legacy_modes'))
-    dc_location = schema.TextLine(title=_t(u'dc_locations'))
+    current_attached = schema.Bool(title=_t(u'Currently Attached'))
+    dc_device = schema.TextLine(title=_t(u'Device Name'))
+    dc_legacy_mode = schema.Bool(title=_t(u'Legacy Mode'))
+    dc_location = schema.TextLine(title=_t(u'Location'))
 
 
 class PBDInfo(PooledComponentInfo):
