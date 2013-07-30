@@ -19,6 +19,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
+    RelationshipInfoProperty,
     updateToOne,
     )
 
@@ -30,26 +31,30 @@ class Pool(BaseComponent):
 
     meta_type = portal_type = 'XenServerPool'
 
-    name_label = None
-    name_description = None
-    vswitch_controller = None
-    ha_enabled = None
-    ha_plan_exists_for = None
     ha_allow_overcommit = None
+    ha_enabled = None
     ha_host_failures_to_tolerate = None
     ha_overcommitted = None
-    redo_log_enabled = None
+    ha_plan_exists_for = None
+    name_description = None
+    name_label = None
+    oc_cpuid_feature_mask = None
+    oc_memory_ratio_hvm = None
+    oc_memory_ratio_pv = None
+    vswitch_controller = None
 
     _properties = BaseComponent._properties + (
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'vswitch_controller', 'type': 'string', 'mode': 'w'},
-        {'id': 'ha_enabled', 'type': 'bool', 'mode': 'w'},
-        {'id': 'ha_plan_exists_for', 'type': 'int', 'mode': 'w'},
         {'id': 'ha_allow_overcommit', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ha_enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'ha_host_failures_to_tolerate', 'type': 'int', 'mode': 'w'},
         {'id': 'ha_overcommitted', 'type': 'bool', 'mode': 'w'},
-        {'id': 'redo_log_enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ha_plan_exists_for', 'type': 'int', 'mode': 'w'},
+        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'oc_cpuid_feature_mask', 'type': 'string', 'mode': 'w'},
+        {'id': 'oc_memory_ratio_hvm', 'type': 'string', 'mode': 'w'},
+        {'id': 'oc_memory_ratio_pv', 'type': 'string', 'mode': 'w'},
+        {'id': 'vswitch_controller', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = BaseComponent._relations + (
@@ -154,15 +159,22 @@ class IPoolInfo(IBaseComponentInfo):
     API Info interface for Pool.
     '''
 
-    name_label = schema.TextLine(title=_t(u'name_labels'))
-    name_description = schema.TextLine(title=_t(u'name_descriptions'))
-    vswitch_controller = schema.TextLine(title=_t(u'vswitch_controllers'))
-    ha_enabled = schema.Bool(title=_t(u'ha_enableds'))
-    ha_plan_exists_for = schema.Int(title=_t(u'ha_plan_exists_fors'))
+    master = schema.Entity(title=_t(u'Master Host'))
+    default_sr = schema.Entity(title=_t(u'Default Storage Repository'))
+    suspend_image_sr = schema.Entity(title=_t(u'Suspend Image Storage Repository'))
+    crash_dump_sr = schema.Entity(title=_t(u'Crash Dump Storage Repository'))
+
     ha_allow_overcommit = schema.Bool(title=_t(u'ha_allow_overcommits'))
+    ha_enabled = schema.Bool(title=_t(u'ha_enableds'))
     ha_host_failures_to_tolerate = schema.Int(title=_t(u'ha_host_failures_to_tolerates'))
     ha_overcommitted = schema.Bool(title=_t(u'ha_overcommitteds'))
-    redo_log_enabled = schema.Bool(title=_t(u'redo_log_enableds'))
+    ha_plan_exists_for = schema.Int(title=_t(u'ha_plan_exists_fors'))
+    oc_cpuid_feature_mask = schema.TextLine(title=_t(u'CPU ID Feature Mask'))
+    oc_memory_ratio_hvm = schema.TextLine(title=_t(u'HVM Memory Ratio'))
+    oc_memory_ratio_pv = schema.TextLine(title=_t(u'PV Memory Ratio'))
+    name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Label'))
+    vswitch_controller = schema.TextLine(title=_t(u'vSwitch Controller'))
 
 
 class PoolInfo(BaseComponentInfo):
@@ -173,12 +185,19 @@ class PoolInfo(BaseComponentInfo):
     implements(IPoolInfo)
     adapts(Pool)
 
-    name_label = ProxyProperty('name_label')
-    name_description = ProxyProperty('name_description')
-    vswitch_controller = ProxyProperty('vswitch_controller')
-    ha_enabled = ProxyProperty('ha_enabled')
-    ha_plan_exists_for = ProxyProperty('ha_plan_exists_for')
+    master = RelationshipInfoProperty('master')
+    default_sr = RelationshipInfoProperty('default_sr')
+    suspend_image_sr = RelationshipInfoProperty('suspend_image_sr')
+    crash_dump_sr = RelationshipInfoProperty('crash_dump_sr')
+
     ha_allow_overcommit = ProxyProperty('ha_allow_overcommit')
+    ha_enabled = ProxyProperty('ha_enabled')
     ha_host_failures_to_tolerate = ProxyProperty('ha_host_failures_to_tolerate')
     ha_overcommitted = ProxyProperty('ha_overcommitted')
-    redo_log_enabled = ProxyProperty('redo_log_enabled')
+    ha_plan_exists_for = ProxyProperty('ha_plan_exists_for')
+    name_description = ProxyProperty('name_description')
+    name_label = ProxyProperty('name_label')
+    oc_cpuid_feature_mask = ProxyProperty('oc_cpuid_feature_mask')
+    oc_memory_ratio_hvm = ProxyProperty('oc_memory_ratio_hvm')
+    oc_memory_ratio_pv = ProxyProperty('oc_memory_ratio_pv')
+    vswitch_controller = ProxyProperty('vswitch_controller')
