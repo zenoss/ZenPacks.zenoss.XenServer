@@ -20,6 +20,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
+    RelationshipInfoProperty,
     updateToOne,
     )
 
@@ -31,20 +32,30 @@ class VBD(PooledComponent):
 
     meta_type = portal_type = 'XenServerVBD'
 
+    allowed_operations = None
     bootable = None
-    status_code = None
-    status_detail = None
     current_attached = None
-    Type = None
+    vbd_device = None
     empty = None
+    metrics = None
+    mode = None
+    storage_lock = None
+    vbd_type = None
+    unpluggable = None
+    userdevice = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'bootable', 'type': 'string', 'mode': 'w'},
-        {'id': 'status_code', 'type': 'string', 'mode': 'w'},
-        {'id': 'status_detail', 'type': 'string', 'mode': 'w'},
-        {'id': 'current_attached', 'type': 'string', 'mode': 'w'},
-        {'id': 'Type', 'type': 'string', 'mode': 'w'},
-        {'id': 'empty', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'bootable', 'type': 'bool', 'mode': 'w'},
+        {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'vbd_device', 'type': 'string', 'mode': 'w'},
+        {'id': 'empty', 'type': 'bool', 'mode': 'w'},
+        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'storage_lock', 'type': 'bool', 'mode': 'w'},
+        {'id': 'vbd_type', 'type': 'string', 'mode': 'w'},
+        {'id': 'unpluggable', 'type': 'bool', 'mode': 'w'},
+        {'id': 'userdevice', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -80,12 +91,20 @@ class IVBDInfo(IPooledComponentInfo):
     API Info interface for VBD.
     '''
 
-    bootable = schema.TextLine(title=_t(u'bootables'))
-    status_code = schema.TextLine(title=_t(u'status_codes'))
-    status_detail = schema.TextLine(title=_t(u'status_details'))
-    current_attached = schema.TextLine(title=_t(u'current_attacheds'))
-    Type = schema.TextLine(title=_t(u'Types'))
-    empty = schema.TextLine(title=_t(u'empties'))
+    vm = schema.Entity(title=_t(u'VM'))
+    vdi = schema.Entity(title=_t(u'VDI'))
+
+    allowed_operations = schema.TextLine(title=_t(u''))
+    bootable = schema.TextLine(title=_t(u''))
+    current_attached = schema.TextLine(title=_t(u''))
+    vbd_device = schema.TextLine(title=_t(u''))
+    empty = schema.TextLine(title=_t(u''))
+    metrics = schema.TextLine(title=_t(u''))
+    mode = schema.TextLine(title=_t(u''))
+    storage_lock = schema.TextLine(title=_t(u''))
+    vbd_type = schema.TextLine(title=_t(u''))
+    unpluggable = schema.TextLine(title=_t(u''))
+    userdevice = schema.TextLine(title=_t(u''))
 
 
 class VBDInfo(PooledComponentInfo):
@@ -96,12 +115,20 @@ class VBDInfo(PooledComponentInfo):
     implements(IVBDInfo)
     adapts(VBD)
 
+    vm = RelationshipInfoProperty('vm')
+    vdi = RelationshipInfoProperty('vdi')
+
+    allowed_operations = ProxyProperty('allowed_operations')
     bootable = ProxyProperty('bootable')
-    status_code = ProxyProperty('status_code')
-    status_detail = ProxyProperty('status_detail')
     current_attached = ProxyProperty('current_attached')
-    Type = ProxyProperty('Type')
+    vbd_device = ProxyProperty('vbd_device')
     empty = ProxyProperty('empty')
+    metrics = ProxyProperty('metrics')
+    mode = ProxyProperty('mode')
+    storage_lock = ProxyProperty('storage_lock')
+    vbd_type = ProxyProperty('vbd_type')
+    unpluggable = ProxyProperty('unpluggable')
+    userdevice = ProxyProperty('userdevice')
 
 
 class VBDPathReporter(DefaultPathReporter):
