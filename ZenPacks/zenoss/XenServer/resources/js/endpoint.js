@@ -285,12 +285,27 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerHostCPUPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerHostCPUPanel.superclass.constructor.call(this, config);
     }
 });
 
 Ext.reg('XenServerHostCPUPanel', ZC.XenServerHostCPUPanel);
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_hostcpus',
+    text: _t('Host CPUs'),
+    xtype: 'XenServerHostCPUPanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        switch (navpanel.refOwner.componentType) {
+            case 'XenServerHost': return true;
+            default: return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.XenServerHostCPUPanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
 
 ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
@@ -390,8 +405,7 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerNetworkPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerNetworkPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -481,8 +495,7 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerPBDPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerPBDPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -490,225 +503,12 @@ Ext.reg('XenServerPBDPanel', ZC.XenServerPBDPanel);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_pbds',
-    text: _t('PBDS'),
+    text: _t('PBDs'),
     xtype: 'XenServerPBDPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
-            case 'XenServerSR': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerPBDPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerPBD',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'current_attached'},
-                {name: 'dc_legacy_mode'},
-                {name: 'dc_location'},
-                {name: 'dc_device'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
-            },{
-                dataIndex: 'dc_legacy_mode',
-                header: _t('dc_legacy_mode'),
-                sortable: true,
-                width: 80,
-                id: 'dc_legacy_mode'
-            },{
-                dataIndex: 'dc_location',
-                header: _t('dc_location'),
-                sortable: true,
-                width: 80,
-                id: 'dc_location'
-            },{
-                dataIndex: 'dc_device',
-                header: _t('dc_device'),
-                sortable: true,
-                width: 80,
-                id: 'dc_device'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerPBDPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerPBDPanel', ZC.XenServerPBDPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_pbds',
-    text: _t('PBDS'),
-    xtype: 'XenServerPBDPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerSR': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerPBDPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerPBD',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'current_attached'},
-                {name: 'dc_legacy_mode'},
-                {name: 'dc_location'},
-                {name: 'dc_device'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
-            },{
-                dataIndex: 'dc_legacy_mode',
-                header: _t('dc_legacy_mode'),
-                sortable: true,
-                width: 80,
-                id: 'dc_legacy_mode'
-            },{
-                dataIndex: 'dc_location',
-                header: _t('dc_location'),
-                sortable: true,
-                width: 80,
-                id: 'dc_location'
-            },{
-                dataIndex: 'dc_device',
-                header: _t('dc_device'),
-                sortable: true,
-                width: 80,
-                id: 'dc_device'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerPBDPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerPBDPanel', ZC.XenServerPBDPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_pbds',
-    text: _t('PBDS'),
-    xtype: 'XenServerPBDPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
+            case 'XenServerHost': return true;
             case 'XenServerSR': return true;
             default: return false;
         }
@@ -802,8 +602,7 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerPIFPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerPIFPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -811,225 +610,12 @@ Ext.reg('XenServerPIFPanel', ZC.XenServerPIFPanel);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_pifs',
-    text: _t('PIFS'),
+    text: _t('PIFs'),
     xtype: 'XenServerPIFPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
-            case 'XenServerNetwork': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerPIFPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerPIF',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'gateway'},
-                {name: 'IP'},
-                {name: 'MAC'},
-                {name: 'netmask'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'gateway',
-                header: _t('gateway'),
-                sortable: true,
-                width: 80,
-                id: 'gateway'
-            },{
-                dataIndex: 'IP',
-                header: _t('IP'),
-                sortable: true,
-                width: 80,
-                id: 'IP'
-            },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                sortable: true,
-                width: 80,
-                id: 'MAC'
-            },{
-                dataIndex: 'netmask',
-                header: _t('netmask'),
-                sortable: true,
-                width: 80,
-                id: 'netmask'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerPIFPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerPIFPanel', ZC.XenServerPIFPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_pifs',
-    text: _t('PIFS'),
-    xtype: 'XenServerPIFPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerNetwork': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerPIFPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerPIF',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'gateway'},
-                {name: 'IP'},
-                {name: 'MAC'},
-                {name: 'netmask'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'gateway',
-                header: _t('gateway'),
-                sortable: true,
-                width: 80,
-                id: 'gateway'
-            },{
-                dataIndex: 'IP',
-                header: _t('IP'),
-                sortable: true,
-                width: 80,
-                id: 'IP'
-            },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                sortable: true,
-                width: 80,
-                id: 'MAC'
-            },{
-                dataIndex: 'netmask',
-                header: _t('netmask'),
-                sortable: true,
-                width: 80,
-                id: 'netmask'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerPIFPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerPIFPanel', ZC.XenServerPIFPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_pifs',
-    text: _t('PIFS'),
-    xtype: 'XenServerPIFPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
+            case 'XenServerHost': return true;
             case 'XenServerNetwork': return true;
             default: return false;
         }
@@ -1158,8 +744,7 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerPoolPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerPoolPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -1270,8 +855,7 @@ ZC.XenServerSRPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerSRPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerSRPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -1384,496 +968,13 @@ Ext.reg('XenServerVBDPanel', ZC.XenServerVBDPanel);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vbds',
-    text: _t('VBDS'),
+    text: _t('VBDs'),
     xtype: 'XenServerVBDPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
             case 'XenServerVDI': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVBDPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVBD',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'bootable'},
-                {name: 'current_attached'},
-                {name: 'empty'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'Type'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'bootable',
-                header: _t('bootable'),
-                sortable: true,
-                width: 80,
-                id: 'bootable'
-            },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
-            },{
-                dataIndex: 'empty',
-                header: _t('empty'),
-                sortable: true,
-                width: 80,
-                id: 'empty'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'Type',
-                header: _t('Type'),
-                sortable: true,
-                width: 80,
-                id: 'Type'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVBDPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVBDPanel', ZC.XenServerVBDPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vbds',
-    text: _t('VBDS'),
-    xtype: 'XenServerVBDPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerVDI': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVBDPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVBD',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'bootable'},
-                {name: 'current_attached'},
-                {name: 'empty'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'Type'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'bootable',
-                header: _t('bootable'),
-                sortable: true,
-                width: 80,
-                id: 'bootable'
-            },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
-            },{
-                dataIndex: 'empty',
-                header: _t('empty'),
-                sortable: true,
-                width: 80,
-                id: 'empty'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'Type',
-                header: _t('Type'),
-                sortable: true,
-                width: 80,
-                id: 'Type'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVBDPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVBDPanel', ZC.XenServerVBDPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vbds',
-    text: _t('VBDS'),
-    xtype: 'XenServerVBDPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerVDI': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVBDPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVBD',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'bootable'},
-                {name: 'current_attached'},
-                {name: 'empty'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'Type'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'bootable',
-                header: _t('bootable'),
-                sortable: true,
-                width: 80,
-                id: 'bootable'
-            },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
-            },{
-                dataIndex: 'empty',
-                header: _t('empty'),
-                sortable: true,
-                width: 80,
-                id: 'empty'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'Type',
-                header: _t('Type'),
-                sortable: true,
-                width: 80,
-                id: 'Type'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVBDPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVBDPanel', ZC.XenServerVBDPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vbds',
-    text: _t('VBDS'),
-    xtype: 'XenServerVBDPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerVDI': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVBDPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVBD',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'bootable'},
-                {name: 'current_attached'},
-                {name: 'empty'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'Type'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'bootable',
-                header: _t('bootable'),
-                sortable: true,
-                width: 80,
-                id: 'bootable'
-            },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
-            },{
-                dataIndex: 'empty',
-                header: _t('empty'),
-                sortable: true,
-                width: 80,
-                id: 'empty'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'Type',
-                header: _t('Type'),
-                sortable: true,
-                width: 80,
-                id: 'Type'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVBDPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVBDPanel', ZC.XenServerVBDPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vbds',
-    text: _t('VBDS'),
-    xtype: 'XenServerVBDPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerVDI': return true;
+            case 'XenServerVM': return true;
             default: return false;
         }
     },
@@ -2008,257 +1109,25 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerVDIPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerVDIPanel.superclass.constructor.call(this, config);
     }
 });
 
 Ext.reg('XenServerVDIPanel', ZC.XenServerVDIPanel);
 
-ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVDI',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'allow_caching'},
-                {name: 'missing'},
-                {name: 'name_description'},
-                {name: 'name_label'},
-                {name: 'on_boot'},
-                {name: 'physical_utilisation'},
-                {name: 'read_only'},
-                {name: 'sharable'},
-                {name: 'Type'},
-                {name: 'virtual_size'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'allow_caching',
-                header: _t('allow_caching'),
-                sortable: true,
-                width: 80,
-                id: 'allow_caching'
-            },{
-                dataIndex: 'missing',
-                header: _t('missing'),
-                sortable: true,
-                width: 80,
-                id: 'missing'
-            },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                sortable: true,
-                width: 80,
-                id: 'name_description'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                sortable: true,
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'on_boot',
-                header: _t('on_boot'),
-                sortable: true,
-                width: 80,
-                id: 'on_boot'
-            },{
-                dataIndex: 'physical_utilisation',
-                header: _t('physical_utilisation'),
-                sortable: true,
-                width: 80,
-                id: 'physical_utilisation'
-            },{
-                dataIndex: 'read_only',
-                header: _t('read_only'),
-                sortable: true,
-                width: 80,
-                id: 'read_only'
-            },{
-                dataIndex: 'sharable',
-                header: _t('sharable'),
-                sortable: true,
-                width: 80,
-                id: 'sharable'
-            },{
-                dataIndex: 'Type',
-                header: _t('Type'),
-                sortable: true,
-                width: 80,
-                id: 'Type'
-            },{
-                dataIndex: 'virtual_size',
-                header: _t('virtual_size'),
-                sortable: true,
-                width: 80,
-                id: 'virtual_size'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVDIPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVDIPanel', ZC.XenServerVDIPanel);
-
-ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVIF',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'MAC'},
-                {name: 'MTU'},
-                {name: 'qos_algorithm_type'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                sortable: true,
-                width: 80,
-                id: 'MAC'
-            },{
-                dataIndex: 'MTU',
-                header: _t('MTU'),
-                sortable: true,
-                width: 80,
-                id: 'MTU'
-            },{
-                dataIndex: 'qos_algorithm_type',
-                header: _t('qos_algorithm_type'),
-                sortable: true,
-                width: 80,
-                id: 'qos_algorithm_type'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVIFPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVIFPanel', ZC.XenServerVIFPanel);
-
 Zenoss.nav.appendTo('Component', [{
-    id: 'component_vifs',
-    text: _t('VIFS'),
-    xtype: 'XenServerVIFPanel',
+    id: 'component_vdis',
+    text: _t('VDIs'),
+    xtype: 'XenServerVDIPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
-            case 'XenServerNetwork': return true;
+            case 'XenServerSR': return true;
             default: return false;
         }
     },
     setContext: function(uid) {
-        ZC.XenServerVIFPanel.superclass.setContext.apply(this, [uid]);
+        ZC.XenServerVDIPanel.superclass.setContext.apply(this, [uid]);
     }
 }]);
 
@@ -2353,8 +1222,7 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerVIFPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerVIFPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -2362,240 +1230,13 @@ Ext.reg('XenServerVIFPanel', ZC.XenServerVIFPanel);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vifs',
-    text: _t('VIFS'),
+    text: _t('VIFs'),
     xtype: 'XenServerVIFPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
             case 'XenServerNetwork': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVIFPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVIF',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'MAC'},
-                {name: 'MTU'},
-                {name: 'qos_algorithm_type'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                sortable: true,
-                width: 80,
-                id: 'MAC'
-            },{
-                dataIndex: 'MTU',
-                header: _t('MTU'),
-                sortable: true,
-                width: 80,
-                id: 'MTU'
-            },{
-                dataIndex: 'qos_algorithm_type',
-                header: _t('qos_algorithm_type'),
-                sortable: true,
-                width: 80,
-                id: 'qos_algorithm_type'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVIFPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVIFPanel', ZC.XenServerVIFPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vifs',
-    text: _t('VIFS'),
-    xtype: 'XenServerVIFPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerNetwork': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVIFPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVIF',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'MAC'},
-                {name: 'MTU'},
-                {name: 'qos_algorithm_type'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                sortable: true,
-                width: 80,
-                id: 'MAC'
-            },{
-                dataIndex: 'MTU',
-                header: _t('MTU'),
-                sortable: true,
-                width: 80,
-                id: 'MTU'
-            },{
-                dataIndex: 'qos_algorithm_type',
-                header: _t('qos_algorithm_type'),
-                sortable: true,
-                width: 80,
-                id: 'qos_algorithm_type'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVIFPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVIFPanel', ZC.XenServerVIFPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vifs',
-    text: _t('VIFS'),
-    xtype: 'XenServerVIFPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerNetwork': return true;
+            case 'XenServerVM': return true;
             default: return false;
         }
     },
@@ -2730,8 +1371,7 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             }]
         });
 
-        ZC.XenServerVMPanel.superclass.constructor.call(
-            this, config);
+        ZC.XenServerVMPanel.superclass.constructor.call(this, config);
     }
 });
 
@@ -2739,156 +1379,7 @@ Ext.reg('XenServerVMPanel', ZC.XenServerVMPanel);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_vms',
-    text: _t('VMS'),
-    xtype: 'XenServerVMPanel',
-    subComponentGridPanel: true,
-    filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerHost': return true;
-            default: return false;
-        }
-    },
-    setContext: function(uid) {
-        ZC.XenServerVMPanel.superclass.setContext.apply(this, [uid]);
-    }
-}]);
-
-ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            componentType: 'XenServerVM',
-            autoExpandColumn: 'name',
-            sortInfo: {
-                field: 'name',
-                direction: 'asc'
-            },
-            fields: [
-                {name: 'uid'},
-                {name: 'name'},
-                {name: 'meta_type'},
-                {name: 'status'},
-                {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'monitored'},
-                {name: 'VCPUs_max'},
-                {name: 'VCPUs_at_startup'},
-                {name: 'memory_dynamic_max'},
-                {name: 'memory_dynamic_min'},
-                {name: 'memory_overhead'},
-                {name: 'memory_static_max'},
-                {name: 'memory_static_min'},
-                {name: 'name_label'},
-                {name: 'name_description'},
-                {name: 'power_state'},
-                {name: 'uuid'},
-                {name: 'locking'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
-                dataIndex: 'VCPUs_max',
-                header: _t('VCPUs_max'),
-                sortable: true,
-                width: 80,
-                id: 'VCPUs_max'
-            },{
-                dataIndex: 'VCPUs_at_startup',
-                header: _t('VCPUs_at_startup'),
-                sortable: true,
-                width: 80,
-                id: 'VCPUs_at_startup'
-            },{
-                dataIndex: 'memory_dynamic_max',
-                header: _t('memory_dynamic_max'),
-                sortable: true,
-                width: 80,
-                id: 'memory_dynamic_max'
-            },{
-                dataIndex: 'memory_dynamic_min',
-                header: _t('memory_dynamic_min'),
-                sortable: true,
-                width: 80,
-                id: 'memory_dynamic_min'
-            },{
-                dataIndex: 'memory_overhead',
-                header: _t('memory_overhead'),
-                sortable: true,
-                width: 80,
-                id: 'memory_overhead'
-            },{
-                dataIndex: 'memory_static_max',
-                header: _t('memory_static_max'),
-                sortable: true,
-                width: 80,
-                id: 'memory_static_max'
-            },{
-                dataIndex: 'memory_static_min',
-                header: _t('memory_static_min'),
-                sortable: true,
-                width: 80,
-                id: 'memory_static_min'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                sortable: true,
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                sortable: true,
-                width: 80,
-                id: 'name_description'
-            },{
-                dataIndex: 'power_state',
-                header: _t('power_state'),
-                sortable: true,
-                width: 80,
-                id: 'power_state'
-            },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
-                sortable: true,
-                width: 80,
-                id: 'uuid'
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 70
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons,
-                width: 65
-            }]
-        });
-
-        ZC.XenServerVMPanel.superclass.constructor.call(
-            this, config);
-    }
-});
-
-Ext.reg('XenServerVMPanel', ZC.XenServerVMPanel);
-
-Zenoss.nav.appendTo('Component', [{
-    id: 'component_vms',
-    text: _t('VMS'),
+    text: _t('VMs'),
     xtype: 'XenServerVMPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
