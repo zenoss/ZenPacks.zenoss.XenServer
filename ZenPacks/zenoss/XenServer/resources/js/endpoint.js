@@ -37,7 +37,7 @@ Ext.onReady(function(){
 });
 
 
-/*** Component Panels *******************************************************/
+/*** Component Panel Support ************************************************/
 
 var ZC = Ext.ns('Zenoss.component');
 
@@ -121,6 +121,9 @@ ZC.XenServerComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
         }
     }
 });
+
+
+/*** Component Panels *******************************************************/
 
 ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
