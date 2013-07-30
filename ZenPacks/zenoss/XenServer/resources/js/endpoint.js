@@ -973,6 +973,7 @@ Zenoss.nav.appendTo('Component', [{
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
         switch (navpanel.refOwner.componentType) {
+            case 'XenServerSR': return true;
             case 'XenServerVDI': return true;
             case 'XenServerVM': return true;
             default: return false;
