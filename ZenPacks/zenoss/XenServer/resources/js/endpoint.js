@@ -1,5 +1,44 @@
 (function(){
 
+/*** DeviceOverviewPanel Changes ********************************************/
+
+Ext.onReady(function(){
+    /* Summary Panel Override */
+    var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
+    Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
+        var summarypanel = Ext.getCmp(DEVICE_SUMMARY_PANEL);
+        summarypanel.removeField('uptime');
+        summarypanel.removeField('memory');
+    });
+
+    /* ID Panel Override */
+    var DEVICE_ID_PANEL = 'deviceoverviewpanel_idsummary';
+    Ext.ComponentMgr.onAvailable(DEVICE_ID_PANEL, function(){
+        var idpanel = Ext.getCmp(DEVICE_ID_PANEL);
+
+        idpanel.removeField('serialNumber');
+    });
+
+    /* Description Panel Override */
+    var DEVICE_DESCRIPTION_PANEL = 'deviceoverviewpanel_descriptionsummary';
+    Ext.ComponentMgr.onAvailable(DEVICE_DESCRIPTION_PANEL, function(){
+        var descriptionpanel = Ext.getCmp(DEVICE_DESCRIPTION_PANEL);
+        descriptionpanel.removeField('rackSlot');
+        descriptionpanel.removeField('hwManufacturer');
+        descriptionpanel.removeField('hwModel');
+    });
+
+    /* SNMP Panel Override */
+    var DEVICE_SNMP_PANEL = 'deviceoverviewpanel_snmpsummary';
+    Ext.ComponentMgr.onAvailable(DEVICE_SNMP_PANEL, function(){
+        var snmppanel = Ext.getCmp(DEVICE_SNMP_PANEL);
+        snmppanel.hide();
+    });
+});
+
+
+/*** Component Panels *******************************************************/
+
 var ZC = Ext.ns('Zenoss.component');
 
 Ext.apply(Zenoss.render, {
