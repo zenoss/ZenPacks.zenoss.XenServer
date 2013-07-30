@@ -38,7 +38,7 @@ class PIF(PooledComponent):
     mtu = None
     vlan = None
     currently_attached = None
-    device = None
+    pif_device = None
     disallow_unplug = None
     ipv4_gateway = None
     ipv4_configuration_mode = None
@@ -58,7 +58,7 @@ class PIF(PooledComponent):
         {'id': 'mtu', 'type': 'string', 'mode': 'w'},
         {'id': 'vlan', 'type': 'string', 'mode': 'w'},
         {'id': 'currently_attached', 'type': 'bool', 'mode': 'w'},
-        {'id': 'device', 'type': 'string', 'mode': 'w'},
+        {'id': 'pif_device', 'type': 'string', 'mode': 'w'},
         {'id': 'disallow_unplug', 'type': 'bool', 'mode': 'w'},
         {'id': 'ipv4_gateway', 'type': 'string', 'mode': 'w'},
         {'id': 'ipv4_configuration_mode', 'type': 'string', 'mode': 'w'},
@@ -114,7 +114,7 @@ class IPIFInfo(IPooledComponentInfo):
     mtu = schema.TextLine(title=_t(u'MTU'))
     vlan = schema.TextLine(title=_t(u'VLAN'))
     currently_attached = schema.Bool(title=_t(u'Currently Attached'))
-    device = schema.TextLine(title=_t(u'Network Device'))
+    pif_device = schema.TextLine(title=_t(u'Network Device'))
     disallow_unplug = schema.Bool(title=_t(u'Disallow Unplug'))
     ipv4_gateway = schema.TextLine(title=_t(u'IPv4 Gateway'))
     ipv4_configuration_mode = schema.TextLine(title=_t(u'IPv4 Configuration Mode'))
@@ -149,7 +149,7 @@ class PIFInfo(PooledComponentInfo):
     mtu = ProxyProperty('mtu')
     vlan = ProxyProperty('vlan')
     currently_attached = ProxyProperty('currently_attached')
-    device = ProxyProperty('device')
+    pif_device = ProxyProperty('device')
     disallow_unplug = ProxyProperty('disallow_unplug')
     ipv4_gateway = ProxyProperty('ipv4_gateway')
     ipv4_configuration_mode = ProxyProperty('ipv4_configuration_mode')
