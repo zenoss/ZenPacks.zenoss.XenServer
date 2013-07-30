@@ -143,4 +143,8 @@ class VBDPathReporter(DefaultPathReporter):
         if vdi:
             paths.extend(relPath(vdi, 'sr'))
 
+        vapp = self.context.vm().vmappliance()
+        if vapp:
+            paths.extend(relPath(vapp, 'endpoint'))
+
         return paths

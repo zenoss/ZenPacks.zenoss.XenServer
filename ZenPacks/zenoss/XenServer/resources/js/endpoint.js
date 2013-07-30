@@ -976,6 +976,7 @@ Zenoss.nav.appendTo('Component', [{
             case 'XenServerSR': return true;
             case 'XenServerVDI': return true;
             case 'XenServerVM': return true;
+            case 'XenServerVMAppliance': return true;
             default: return false;
         }
     },
@@ -1238,6 +1239,7 @@ Zenoss.nav.appendTo('Component', [{
         switch (navpanel.refOwner.componentType) {
             case 'XenServerNetwork': return true;
             case 'XenServerVM': return true;
+            case 'XenServerVMAppliance': return true;
             default: return false;
         }
     },
