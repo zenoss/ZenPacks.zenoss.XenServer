@@ -23,6 +23,10 @@ from ZenPacks.zenoss.XenServer.utils import RelationshipLengthProperty
 
 
 class Endpoint(Device):
+    '''
+    Model class for Endpoint.
+    '''
+
     meta_type = portal_type = 'Endpoint'
 
     _relations = Device._relations + (
@@ -56,10 +60,10 @@ class IEndpointInfo(IDeviceInfo):
 
     pool_count = schema.Int(title=_t(u'Number of Pools'))
     host_count = schema.Int(title=_t(u'Number of Hosts'))
-    sr_count = schema.Int(title=_t(u'Number of SRs'))
+    sr_count = schema.Int(title=_t(u'Number of Storage Repositories'))
     network_count = schema.Int(title=_t(u'Number of Networks'))
     vm_count = schema.Int(title=_t(u'Number of VMs'))
-    vmappliance_count = schema.Int(title=_t(u'Number of VM Appliances'))
+    vmappliance_count = schema.Int(title=_t(u'Number of vApps'))
 
 
 class EndpointInfo(DeviceInfo):
