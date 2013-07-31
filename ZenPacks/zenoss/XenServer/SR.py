@@ -44,11 +44,11 @@ class SR(PooledComponent):
     _properties = PooledComponent._properties + (
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'content_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'local_cache_enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'local_cache_enabled', 'type': 'boolean', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'physical_size', 'type': 'int', 'mode': 'w'},
-        {'id': 'shared', 'type': 'bool', 'mode': 'w'},
+        {'id': 'shared', 'type': 'boolean', 'mode': 'w'},
         {'id': 'sm_type', 'type': 'string', 'mode': 'w'},
         {'id': 'sr_type', 'type': 'string', 'mode': 'w'},
         )

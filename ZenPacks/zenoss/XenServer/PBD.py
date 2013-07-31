@@ -38,9 +38,9 @@ class PBD(PooledComponent):
     dc_location = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'currently_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
         {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
-        {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
+        {'id': 'dc_legacy_mode', 'type': 'boolean', 'mode': 'w'},
         {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
         )
 

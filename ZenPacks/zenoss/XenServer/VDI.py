@@ -46,18 +46,18 @@ class VDI(PooledComponent):
     virtual_size = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'allow_caching', 'type': 'bool', 'mode': 'w'},
+        {'id': 'allow_caching', 'type': 'boolean', 'mode': 'w'},
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'is_a_snapshot', 'type': 'bool', 'mode': 'w'},
+        {'id': 'is_a_snapshot', 'type': 'boolean', 'mode': 'w'},
         {'id': 'location', 'type': 'string', 'mode': 'w'},
-        {'id': 'managed', 'type': 'bool', 'mode': 'w'},
-        {'id': 'missing', 'type': 'bool', 'mode': 'w'},
+        {'id': 'managed', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'missing', 'type': 'boolean', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'on_boot', 'type': 'string', 'mode': 'w'},
-        {'id': 'read_only', 'type': 'bool', 'mode': 'w'},
-        {'id': 'sharable', 'type': 'bool', 'mode': 'w'},
-        {'id': 'storage_lock', 'type': 'bool', 'mode': 'w'},
+        {'id': 'read_only', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'sharable', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'storage_lock', 'type': 'boolean', 'mode': 'w'},
         {'id': 'vdi_type', 'type': 'string', 'mode': 'w'},
         {'id': 'virtual_size', 'type': 'int', 'mode': 'w'},
         )

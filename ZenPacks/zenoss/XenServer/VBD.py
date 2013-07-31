@@ -46,15 +46,15 @@ class VBD(PooledComponent):
 
     _properties = PooledComponent._properties + (
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'bootable', 'type': 'bool', 'mode': 'w'},
-        {'id': 'currently_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'bootable', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
         {'id': 'vbd_device', 'type': 'string', 'mode': 'w'},
-        {'id': 'empty', 'type': 'bool', 'mode': 'w'},
+        {'id': 'empty', 'type': 'boolean', 'mode': 'w'},
         {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'mode', 'type': 'string', 'mode': 'w'},
-        {'id': 'storage_lock', 'type': 'bool', 'mode': 'w'},
+        {'id': 'storage_lock', 'type': 'boolean', 'mode': 'w'},
         {'id': 'vbd_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'unpluggable', 'type': 'bool', 'mode': 'w'},
+        {'id': 'unpluggable', 'type': 'boolean', 'mode': 'w'},
         {'id': 'userdevice', 'type': 'string', 'mode': 'w'},
         )
 

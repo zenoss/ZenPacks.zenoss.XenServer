@@ -58,7 +58,7 @@ class Host(PooledComponent):
         {'id': 'cpu_count', 'type': 'int', 'mode': 'w'},
         {'id': 'cpu_speed', 'type': 'float', 'mode': 'w'},
         {'id': 'edition', 'type': 'string', 'mode': 'w'},
-        {'id': 'enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'enabled', 'type': 'boolean', 'mode': 'w'},
         {'id': 'hostname', 'type': 'string', 'mode': 'w'},
         {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},

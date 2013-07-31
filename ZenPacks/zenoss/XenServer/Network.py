@@ -52,8 +52,8 @@ class Network(PooledComponent):
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'ipv4_begin', 'type': 'string', 'mode': 'w'},
         {'id': 'ipv4_end', 'type': 'string', 'mode': 'w'},
-        {'id': 'is_guest_installer_network', 'type': 'bool', 'mode': 'w'},
-        {'id': 'is_host_internal_management_network', 'type': 'bool', 'mode': 'w'},
+        {'id': 'is_guest_installer_network', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_host_internal_management_network', 'type': 'boolean', 'mode': 'w'},
         {'id': 'ipv4_netmask', 'type': 'string', 'mode': 'w'},
         )
 

@@ -42,8 +42,8 @@ class Pool(BaseComponent):
     vswitch_controller = None
 
     _properties = BaseComponent._properties + (
-        {'id': 'ha_allow_overcommit', 'type': 'bool', 'mode': 'w'},
-        {'id': 'ha_enabled', 'type': 'bool', 'mode': 'w'},
+        {'id': 'ha_allow_overcommit', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ha_enabled', 'type': 'boolean', 'mode': 'w'},
         {'id': 'ha_host_failures_to_tolerate', 'type': 'int', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
