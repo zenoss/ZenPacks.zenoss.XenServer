@@ -48,7 +48,7 @@ class HostCPU(PooledComponent):
         {'id': 'modelname', 'type': 'string', 'mode': 'w'},
         {'id': 'number', 'type': 'int', 'mode': 'w'},
         {'id': 'speed', 'type': 'int', 'mode': 'w'},
-        {'id': 'stepping', 'type': 'string', 'mode': 'w'},
+        {'id': 'stepping', 'type': 'int', 'mode': 'w'},
         {'id': 'vendor', 'type': 'string', 'mode': 'w'},
         )
 
@@ -71,7 +71,7 @@ class IHostCPUInfo(IPooledComponentInfo):
     modelname = schema.TextLine(title=_t(u'Model Name'))
     number = schema.Int(title=_t(u'Number'))
     speed = schema.Int(title=_t(u'Speed'))
-    stepping = schema.TextLine(title=_t(u'Stepping'))
+    stepping = schema.Int(title=_t(u'Stepping'))
     vendor = schema.TextLine(title=_t(u'Vender'))
 
 

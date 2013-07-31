@@ -244,50 +244,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
         return maps
 
-    def sr_relmaps(self, results):
-        '''
-        Yield a single srs RelationshipMap.
-        '''
-        objmaps = []
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or properties['uuid']
-
-            objmaps.append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setPBDs': ids_from_refs(properties.get('PBDs', []))
-                })
-
-        yield RelationshipMap(
-            relname='srs',
-            modname=MODULE_NAME['SR'],
-            objmaps=objmaps)
-
-    def vdi_relmaps(self, results):
-        '''
-        Yield a vdis RelationshipMap for each storage repository.
-        '''
-        objmaps = collections.defaultdict(list)
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or \
-                properties.get('location') or \
-                properties['uuid']
-
-            objmaps[properties['SR']].append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
-                })
-
-        for ref, ref_objmaps in objmaps.items():
-            yield RelationshipMap(
-                compname='srs/%s' % id_from_ref(ref),
-                relname='vdis',
-                modname=MODULE_NAME['VDI'],
-                objmaps=ref_objmaps)
-
     def host_metrics_relmaps(self, results):
         '''
         Cache host_metrics data to later be used in host_relmaps.
@@ -380,18 +336,24 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         for ref, properties in results.items():
             title = properties.get('number') or properties['uuid']
 
+            cpu_speed = int_or_none(properties.get('speed'))
+            if cpu_speed:
+                cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
+
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'xapi_ref': ref,
                 'xapi_uuid': properties.get('uuid'),
-                'number': properties.get('number'),
-                'speed': properties.get('speed'),
-                'stepping': properties.get('stepping'),
-                'family': properties.get('family'),
-                'vendor': properties.get('vendor'),
-                'modelname': properties.get('modelname'),
+                'family': int_or_none(properties.get('family')),
                 'features': properties.get('features'),
                 'flags': properties.get('flags'),
+                'model': int_or_none(properties.get('model')),
+                'modelname': properties.get('modelname'),
+                'number': int_or_none(properties.get('number')),
+                'speed': cpu_speed,
+                'stepping': int_or_none(properties.get('stepping')),
+                'vendor': properties.get('vendor'),
                 })
 
         for parent_ref, grouped_objmaps in objmaps.items():
@@ -400,6 +362,86 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 relname='hostcpus',
                 modname=MODULE_NAME['HostCPU'],
                 objmaps=grouped_objmaps)
+
+    def network_relmaps(self, results):
+        '''
+        Yield a single networks RelationshipMap.
+        '''
+        objmaps = []
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or properties['uuid']
+
+            other_config = properties.get('other_config', {})
+
+            objmaps.append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'mtu': properties.get('MTU'),
+                'allowed_operations': properties.get('allowed_operations'),
+                'bridge': properties.get('bridge'),
+                'default_locking_mode': properties.get('default_locking_mode'),
+                'name_description': properties.get('name_description'),
+                'name_label': properties.get('name_label'),
+                'ipv4_begin': other_config.get('ip_begin'),
+                'ipv4_end': other_config.get('ip_end'),
+                'is_guest_installer_network': to_boolean(other_config.get('is_guest_installer_network')),
+                'is_host_internal_management_network': to_boolean(other_config.get('is_host_internal_management_network')),
+                'ipv4_netmask': other_config.get('ipv4_netmask'),
+                'setPIFs': ids_from_refs(properties.get('PIFs', [])),
+                'setVIFs': ids_from_refs(properties.get('VIFs', [])),
+                })
+
+        yield RelationshipMap(
+            relname='networks',
+            modname=MODULE_NAME['Network'],
+            objmaps=objmaps)
+
+    def sr_relmaps(self, results):
+        '''
+        Yield a single srs RelationshipMap.
+        '''
+        objmaps = []
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or properties['uuid']
+
+            objmaps.append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'setPBDs': ids_from_refs(properties.get('PBDs', []))
+                })
+
+        yield RelationshipMap(
+            relname='srs',
+            modname=MODULE_NAME['SR'],
+            objmaps=objmaps)
+
+    def vdi_relmaps(self, results):
+        '''
+        Yield a vdis RelationshipMap for each storage repository.
+        '''
+        objmaps = collections.defaultdict(list)
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or \
+                properties.get('location') or \
+                properties['uuid']
+
+            objmaps[properties['SR']].append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
+                })
+
+        for ref, ref_objmaps in objmaps.items():
+            yield RelationshipMap(
+                compname='srs/%s' % id_from_ref(ref),
+                relname='vdis',
+                modname=MODULE_NAME['VDI'],
+                objmaps=ref_objmaps)
 
     def pbd_relmaps(self, results):
         '''

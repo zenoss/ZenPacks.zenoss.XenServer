@@ -230,7 +230,7 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerHostCPU',
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'modelname',
             sortInfo: {
                 field: 'name',
                 direction: 'asc'
@@ -242,6 +242,8 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'status'},
                 {name: 'severity'},
                 {name: 'host'},
+                {name: 'modelname'},
+                {name: 'speed'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
@@ -255,17 +257,28 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 sortable: true,
                 width: 50
             },{
-                id: 'name',
-                dataIndex: 'name',
-                header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
-            },{
                 id: 'host',
                 dataIndex: 'host',
                 header: _t('Host'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 width: 120
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                sortable: true,
+                width: 60
+            },{
+                id: 'modelname',
+                dataIndex: 'modelname',
+                header: _t('Model')
+            },{
+                id: 'speed',
+                dataIndex: 'speed',
+                header: _t('Speed'),
+                renderer: Zenoss.render.cpu_speed,
+                width: 80
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -294,10 +307,7 @@ Zenoss.nav.appendTo('Component', [{
     xtype: 'XenServerHostCPUPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerHost': return true;
-            default: return false;
-        }
+        return navpanel.refOwner.componentType == 'XenServerHost';
     },
     setContext: function(uid) {
         ZC.XenServerHostCPUPanel.superclass.setContext.apply(this, [uid]);
@@ -1120,10 +1130,7 @@ Zenoss.nav.appendTo('Component', [{
     xtype: 'XenServerVDIPanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
-        switch (navpanel.refOwner.componentType) {
-            case 'XenServerSR': return true;
-            default: return false;
-        }
+        return navpanel.refOwner.componentType == 'XenServerSR';
     },
     setContext: function(uid) {
         ZC.XenServerVDIPanel.superclass.setContext.apply(this, [uid]);
