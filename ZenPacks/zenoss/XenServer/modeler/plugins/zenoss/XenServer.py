@@ -96,6 +96,16 @@ def float_or_none(value):
         return None
 
 
+def to_boolean(value, true_value='true'):
+    '''
+    Return value converted to boolean.
+    '''
+    if value == true_value:
+        return True
+    else:
+        return False
+
+
 class ModelerPluginCacheMixin(object):
     '''
     Mix-in class to allow modeler plugin instances to safely share an
@@ -490,27 +500,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 relname='pifs',
                 modname=MODULE_NAME['PIF'],
                 objmaps=grouped_objmaps)
-
-    def network_relmaps(self, results):
-        '''
-        Yield a single networks RelationshipMap.
-        '''
-        objmaps = []
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or properties['uuid']
-
-            objmaps.append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setPIFs': ids_from_refs(properties.get('PIFs', [])),
-                'setVIFs': ids_from_refs(properties.get('VIFs', [])),
-                })
-
-        yield RelationshipMap(
-            relname='networks',
-            modname=MODULE_NAME['Network'],
-            objmaps=objmaps)
 
     def vm_relmaps(self, results):
         '''

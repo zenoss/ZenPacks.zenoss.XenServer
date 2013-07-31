@@ -329,16 +329,14 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'bridge'},
+                {name: 'pif_count'},
+                {name: 'vif_count'},
+                {name: 'is_guest_installer_network'},
+                {name: 'is_host_internal_management_network'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'bridge'},
-                {name: 'default_locking_mode'},
-                {name: 'MTU'},
-                {name: 'name_description'},
-                {name: 'name_label'},
-                {name: 'tags'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -355,47 +353,32 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
+                id: 'bridge',
                 dataIndex: 'bridge',
-                header: _t('bridge'),
-                sortable: true,
-                width: 80,
-                id: 'bridge'
+                header: _t('Bridge'),
+                width: 80
             },{
-                dataIndex: 'default_locking_mode',
-                header: _t('default_locking_mode'),
-                sortable: true,
-                width: 80,
-                id: 'default_locking_mode'
+                id: 'pif_count',
+                dataIndex: 'pif_count',
+                header: _t('PIFs'),
+                width: 60
             },{
-                dataIndex: 'MTU',
-                header: _t('MTU'),
-                sortable: true,
-                width: 80,
-                id: 'MTU'
+                id: 'vif_count',
+                dataIndex: 'vif_count',
+                header: _t('VIFs'),
+                width: 60
             },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                sortable: true,
-                width: 80,
-                id: 'name_description'
+                id: 'is_guest_installer_network',
+                dataIndex: 'is_guest_installer_network',
+                header: _t('Guest Installer'),
+                renderer: Zenoss.render.checkbox,
+                width: 100
             },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                sortable: true,
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'tags',
-                header: _t('tags'),
-                sortable: true,
-                width: 80,
-                id: 'tags'
-            },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                sortable: true,
-                width: 80,
-                id: 'xapi_uuid'
+                id: 'is_host_internal_management_network',
+                dataIndex: 'is_host_internal_management_network',
+                header: _t('Management'),
+                renderer: Zenoss.render.checkbox,
+                width: 90
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
