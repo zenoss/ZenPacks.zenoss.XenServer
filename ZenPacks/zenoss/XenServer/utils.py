@@ -1,10 +1,31 @@
-from Products.AdvancedQuery import Eq, Or
-
-from Products.ZenUtils.Utils import prepId
-from Products.Zuul.interfaces import ICatalogTool
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
 
 from zope.event import notify
+
+from Products.AdvancedQuery import Eq, Or
+
+from Products.ZenModel.Device import Device
+from Products.ZenModel.DeviceComponent import DeviceComponent
+from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
+from Products.ZenUtils.Utils import prepId
+from Products import Zuul
 from Products.Zuul.catalog.events import IndexingEvent
+from Products.Zuul.form import schema
+from Products.Zuul.infos import ProxyProperty
+from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.interfaces import ICatalogTool
+from Products.Zuul.interfaces.component import IComponentInfo
+from Products.Zuul.utils import ZuulMessageFactory as _t
+
 
 def add_local_lib_path():
     '''
@@ -14,8 +35,6 @@ def add_local_lib_path():
     import site
 
     site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
-
-add_local_lib_path()
 
 
 def updateToMany(relationship, root, type_, ids):
@@ -97,3 +116,126 @@ def updateToOne(relationship, root, type_, id_):
 
     return
 
+
+def RelationshipInfoProperty(relationship_name):
+    '''
+    Return a read-only property with the Infos for object(s) in the
+    relationship.
+
+    A list of Info objects is returned for ToMany relationships, and a
+    single Info object is returned for ToOne relationships.
+    '''
+    def getter(self):
+        return Zuul.info(getattr(self._object, relationship_name)())
+
+    return property(getter)
+
+
+def RelationshipLengthProperty(relationship_name):
+    '''
+    Return a read-only property with a value equal to the number of
+    objects in the relationship named relationship_name.
+    '''
+    def getter(self):
+        relationship = getattr(self._object, relationship_name)
+        try:
+            return relationship.countObjects()
+        except Exception:
+            return len(relationship())
+
+    return property(getter)
+
+
+class BaseComponent(DeviceComponent, ManagedEntity):
+    '''
+    Abstract base class for components.
+    '''
+
+    xapi_ref = None
+    xapi_uuid = None
+
+    # Explicit inheritence.
+    _properties = ManagedEntity._properties + (
+        {'id': 'xapi_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xapi_uuid', 'type': 'string', 'mode': 'w'},
+        )
+
+    _relations = ManagedEntity._relations
+
+    factory_type_information = ({
+        'actions': ({
+            'id': 'perfConf',
+            'name': 'Template',
+            'action': 'objTemplates',
+            'permissions': (ZEN_CHANGE_DEVICE,),
+            },),
+        },)
+
+    def device(self):
+        '''
+        Return device under which this component/device is contained.
+        '''
+        obj = self
+
+        for i in range(200):
+            if isinstance(obj, Device):
+                return obj
+
+            try:
+                obj = obj.getPrimaryParent()
+            except AttributeError as exc:
+                raise AttributeError(
+                    'Unable to determine parent at %s (%s) '
+                    'while getting device for %s' % (
+                        obj, exc, self))
+
+
+class IBaseComponentInfo(IComponentInfo):
+    '''
+    Abstract base API Info interface for components.
+    '''
+
+    endpoint = schema.Entity(title=_t('Endpoint'))
+    xapi_ref = schema.TextLine(title=_t(u'XenAPI Reference'))
+    xapi_uuid = schema.TextLine(title=_t(u'XenAPI UUID'))
+
+
+class BaseComponentInfo(ComponentInfo):
+    '''
+    Abstract base API Info adapter factory for components.
+    '''
+
+    endpoint = RelationshipInfoProperty('device')
+    xapi_ref = ProxyProperty('xapi_ref')
+    xapi_uuid = ProxyProperty('xapi_uuid')
+
+
+class PooledComponent(BaseComponent):
+    '''
+    Abstract base class for all pooled components.
+    '''
+
+    def pool(self):
+        '''
+        Return the pool containing this component.
+
+        For a non-pooled resource return None.
+        '''
+        for pool in self.device().pools.objectValuesGen():
+            return pool
+
+
+class IPooledComponentInfo(IBaseComponentInfo):
+    '''
+    Abstract base API Info interface for pooled components.
+    '''
+
+    pool = schema.Entity(title=_t(u'Pool'))
+
+
+class PooledComponentInfo(BaseComponentInfo):
+    '''
+    Abstract base API Info adapter factory for pooled components.
+    '''
+
+    pool = RelationshipInfoProperty('pool')

@@ -1,112 +1,247 @@
-#LICENSE HEADER SAMPLE
+######################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is
+# installed.
+#
+######################################################################
+
+from zope.component import adapts
 from zope.interface import implements
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.Zuul.decorators import info
+
+from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.interfaces.component import IComponentInfo
-from Products.ZenRelations.RelSchema import ToManyCont,ToOne
 
-class SR(DeviceComponent, ManagedEntity):
-    meta_type = portal_type = 'SR'
+from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
+from ZenPacks.zenoss.XenServer.utils import (
+    PooledComponent, IPooledComponentInfo, PooledComponentInfo,
+    RelationshipLengthProperty,
+    updateToMany,
+    )
 
-    Klasses = [DeviceComponent, ManagedEntity]
 
-    uuid = None
-    physical_size = None
-    name_label = None
-    physical_utilisation = None
+class SR(PooledComponent):
+    '''
+    Model class for SR. Also known as Storage Repository.
+    '''
+
+    meta_type = portal_type = 'XenServerSR'
+
+    allowed_operations = None
     content_type = None
-    shared = None
+    local_cache_enabled = None
     name_description = None
-    virtual_allocation = None
+    name_label = None
+    physical_size = None
+    shared = None
+    sm_type = None
+    sr_type = None
 
-    _properties = ()
-    for Klass in Klasses:
-        _properties = _properties + getattr(Klass,'_properties', ())
-
-    _properties = _properties + (
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
-        {'id': 'physical_size', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'physical_utilisation', 'type': 'string', 'mode': 'w'},
+    _properties = PooledComponent._properties + (
+        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'content_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'shared', 'type': 'string', 'mode': 'w'},
+        {'id': 'local_cache_enabled', 'type': 'boolean', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'virtual_allocation', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'physical_size', 'type': 'int', 'mode': 'w'},
+        {'id': 'shared', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'sm_type', 'type': 'string', 'mode': 'w'},
+        {'id': 'sr_type', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = ()
-    for Klass in Klasses:
-        _relations = _relations + getattr(Klass, '_relations', ())
-
-    _relations = _relations + (
-        ('device', ToOne(ToManyCont, 'Products.ZenModel.Device.Device', 'srs',)),
-        ('vbds', ToManyCont(ToOne, 'ZenPacks.zenoss.XenServer.VBD', 'sr',)),
+    _relations = PooledComponent._relations + (
+        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'srs',)),
+        ('vdis', ToManyCont(ToOne, MODULE_NAME['VDI'], 'sr',)),
+        ('pbds', ToMany(ToOne, MODULE_NAME['PBD'], 'sr',)),
+        ('default_for_pools', ToMany(ToOne, MODULE_NAME['Pool'], 'default_sr')),
+        ('suspend_image_for_pools', ToMany(ToOne, MODULE_NAME['Pool'], 'suspend_image_sr')),
+        ('crash_dump_for_pools', ToMany(ToOne, MODULE_NAME['Pool'], 'crash_dump_sr')),
+        ('suspend_image_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'suspend_image_sr')),
+        ('crash_dump_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'crash_dump_sr')),
+        ('local_cache_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'local_cache_sr')),
         )
 
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-            },),
-        },)
-
-    def device(self):
+    def getPBDs(self):
         '''
-        Return device under which this component/device is contained.
+        Return a sorted list of related PBD ids.
+
+        Used by modeling.
         '''
-        obj = self
+        return sorted(x.id for x in self.pbds.objectValuesGen())
 
-        for i in range(200):
-            if isinstance(obj, Device):
-                return obj
+    def setPBDs(self, pbd_ids):
+        '''
+        Update PBD relationship given PBD ids.
 
-            try:
-                obj = obj.getPrimaryParent()
-            except AttributeError as exc:
-                raise AttributeError(
-                    'Unable to determine parent at %s (%s) '
-                    'while getting device for %s' % (
-                        obj, exc, self))
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.pbds,
+            root=self.device(),
+            type_=CLASS_NAME['PBD'],
+            ids=pbd_ids)
 
-class ISRInfo(IComponentInfo):
-    vbd_count = schema.Int(title=_t(u'Number of VBDS'))
+    def getDefaultForPools(self):
+        '''
+        Return a sorted list of related Pool ids.
 
-    uuid = schema.TextLine(title=_t(u'uuids'))
-    physical_size = schema.TextLine(title=_t(u'physical_sizes'))
-    name_label = schema.TextLine(title=_t(u'name_labels'))
-    physical_utilisation = schema.TextLine(title=_t(u'physical_utilisations'))
-    content_type = schema.TextLine(title=_t(u'content_types'))
-    shared = schema.TextLine(title=_t(u'shareds'))
-    name_description = schema.TextLine(title=_t(u'name_descriptions'))
-    virtual_allocation = schema.TextLine(title=_t(u'virtual_allocations'))
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.default_for_pools.objectValuesGen())
 
-class SRInfo(ComponentInfo):
+    def setDefaultForPools(self, pool_ids):
+        '''
+        Set default_for_pools relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.default_for_pools,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
+
+    def getSuspendImageForPools(self):
+        '''
+        Return a sorted list of related Pool ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.suspend_image_for_pools.objectValuesGen())
+
+    def setSuspendImageForPools(self, pool_ids):
+        '''
+        Set suspend_image_for_pools relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.suspend_image_for_pools,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
+
+    def getCrashDumpForPools(self):
+        '''
+        Return a sorted list of related Pool ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.crash_dump_for_pools.objectValuesGen())
+
+    def setCrashDumpForPools(self, pool_ids):
+        '''
+        Set crash_dump_for_pools relationship by Pool id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.crash_dump_for_pools,
+            root=self.device(),
+            type_=CLASS_NAME['Pool'],
+            ids=pool_ids)
+
+    def getSuspendImageForHosts(self):
+        '''
+        Return a sorted list of related Host ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.suspend_image_for_hosts.objectValuesGen())
+
+    def setSuspendImageForHosts(self, pool_ids):
+        '''
+        Set suspend_image_for_hosts relationship by Host id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.suspend_image_for_hosts,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
+            ids=pool_ids)
+
+    def getCrashDumpForHosts(self):
+        '''
+        Return a sorted list of related Host ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.crash_dump_for_hosts.objectValuesGen())
+
+    def setCrashDumpForHosts(self, pool_ids):
+        '''
+        Set crash_dump_for_hosts relationship by Host id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.crash_dump_for_hosts,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
+            ids=pool_ids)
+
+    def getLocalCacheForHosts(self):
+        '''
+        Return a sorted list of related Host ids.
+
+        Used by modeling.
+        '''
+        return sorted(x.id for x in self.local_cache_for_hosts.objectValuesGen())
+
+    def setLocalCacheForHosts(self, pool_ids):
+        '''
+        Set local_cache_for_hosts relationship by Host id.
+
+        Used by modeling.
+        '''
+        updateToMany(
+            relationship=self.local_cache_for_hosts,
+            root=self.device(),
+            type_=CLASS_NAME['Host'],
+            ids=pool_ids)
+
+
+class ISRInfo(IPooledComponentInfo):
+    '''
+    API Info interface for SR.
+    '''
+
+    allowed_operations = schema.Text(title=_t(u'Allowed Operations'))
+    content_type = schema.TextLine(title=_t(u'Content Type'))
+    local_cache_enabled = schema.Bool(title=_t(u'Local Cache Enabled'))
+    name_description = schema.TextLine(title=_t(u'Description'))
+    name_label = schema.TextLine(title=_t(u'Label'))
+    physical_size = schema.Int(title=_t(u'Physical Size'))
+    shared = schema.Bool(title=_t(u'Shared'))
+    sm_type = schema.TextLine(title=_t(u'SM Type'))
+    sr_type = schema.TextLine(title=_t(u'Type'))
+
+    vdi_count = schema.Int(title=_t(u'Number of VDIS'))
+    pbd_count = schema.Int(title=_t(u'Number of PBDS'))
+
+
+class SRInfo(PooledComponentInfo):
+    '''
+    API Info adapter factory for SR.
+    '''
+
     implements(ISRInfo)
+    adapts(SR)
 
-    uuid = ProxyProperty('uuid')
-    physical_size = ProxyProperty('physical_size')
-    name_label = ProxyProperty('name_label')
-    physical_utilisation = ProxyProperty('physical_utilisation')
+    allowed_operations = ProxyProperty('allowed_operations')
     content_type = ProxyProperty('content_type')
-    shared = ProxyProperty('shared')
+    local_cache_enabled = ProxyProperty('local_cache_enabled')
     name_description = ProxyProperty('name_description')
-    virtual_allocation = ProxyProperty('virtual_allocation')
+    name_label = ProxyProperty('name_label')
+    physical_size = ProxyProperty('physical_size')
+    shared = ProxyProperty('shared')
+    sm_type = ProxyProperty('sm_type')
+    sr_type = ProxyProperty('sr_type')
 
-
-    @property
-    def vbd_count():
-        # Using countObjects is fast.
-        try:
-            return self._object.vbds.countObjects()
-        except:
-            # Using len on the results of calling the relationship is slow.
-            return len(self._object.vbds())
-
+    vdi_count = RelationshipLengthProperty('vdis')
+    pbd_count = RelationshipLengthProperty('pbds')
