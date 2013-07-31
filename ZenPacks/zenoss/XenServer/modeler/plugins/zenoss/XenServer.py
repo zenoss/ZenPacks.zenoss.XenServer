@@ -570,30 +570,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             modname=MODULE_NAME['SR'],
             objmaps=objmaps)
 
-    def vdi_relmaps(self, results):
-        '''
-        Yield a vdis RelationshipMap for each storage repository.
-        '''
-        objmaps = collections.defaultdict(list)
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or \
-                properties.get('location') or \
-                properties['uuid']
-
-            objmaps[properties['SR']].append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
-                })
-
-        for ref, ref_objmaps in objmaps.items():
-            yield RelationshipMap(
-                compname='srs/%s' % id_from_ref(ref),
-                relname='vdis',
-                modname=MODULE_NAME['VDI'],
-                objmaps=ref_objmaps)
-
     def vbd_relmaps(self, results):
         '''
         Yield a vbds RelationshipMap for each VM.
@@ -630,6 +606,46 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 relname='vbds',
                 modname=MODULE_NAME['VBD'],
                 objmaps=grouped_objmaps)
+
+    def vdi_relmaps(self, results):
+        '''
+        Yield a vdis RelationshipMap for each storage repository.
+        '''
+        objmaps = collections.defaultdict(list)
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or \
+                properties.get('location') or \
+                properties['uuid']
+
+            objmaps[properties['SR']].append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'allow_caching': properties.get('allow_caching'),
+                'allowed_operations': properties.get('allowed_operations'),
+                'is_a_snapshot': properties.get('is_a_snapshot'),
+                'location': properties.get('location'),
+                'managed': properties.get('managed'),
+                'missing': properties.get('missing'),
+                'name_description': properties.get('name_description'),
+                'name_label': properties.get('name_label'),
+                'on_boot': properties.get('on_boot'),
+                'read_only': properties.get('read_only'),
+                'sharable': properties.get('sharable'),
+                'storage_lock': properties.get('storage_lock'),
+                'vdi_type': properties.get('type'),
+                'virtual_size': properties.get('virtual_size'),
+                'setVBDs': ids_from_refs(properties.get('VBDs', [])),
+                })
+
+        for ref, ref_objmaps in objmaps.items():
+            yield RelationshipMap(
+                compname='srs/%s' % id_from_ref(ref),
+                relname='vdis',
+                modname=MODULE_NAME['VDI'],
+                objmaps=ref_objmaps)
 
     def vm_relmaps(self, results):
         '''

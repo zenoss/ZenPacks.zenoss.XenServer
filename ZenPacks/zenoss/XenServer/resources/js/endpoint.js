@@ -928,20 +928,17 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'sr'},
+                {name: 'vdi_type'},
+                {name: 'virtual_size'},
+                {name: 'is_a_snapshot'},
+                {name: 'read_only'},
+                {name: 'on_boot'},
+                {name: 'sharable'},
+                {name: 'vbd_count'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'allow_caching'},
-                {name: 'missing'},
-                {name: 'name_description'},
-                {name: 'name_label'},
-                {name: 'on_boot'},
-                {name: 'physical_utilisation'},
-                {name: 'read_only'},
-                {name: 'sharable'},
-                {name: 'Type'},
-                {name: 'virtual_size'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -954,63 +951,52 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
+            },{
+                id: 'sr',
+                dataIndex: 'sr',
+                header: _t('Storage Repository'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 120
             },{
-                dataIndex: 'allow_caching',
-                header: _t('allow_caching'),
-                width: 80,
-                id: 'allow_caching'
-            },{
-                dataIndex: 'missing',
-                header: _t('missing'),
-                width: 80,
-                id: 'missing'
-            },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                width: 80,
-                id: 'name_description'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'on_boot',
-                header: _t('on_boot'),
-                width: 80,
-                id: 'on_boot'
-            },{
-                dataIndex: 'physical_utilisation',
-                header: _t('physical_utilisation'),
-                width: 80,
-                id: 'physical_utilisation'
-            },{
-                dataIndex: 'read_only',
-                header: _t('read_only'),
-                width: 80,
-                id: 'read_only'
-            },{
-                dataIndex: 'sharable',
-                header: _t('sharable'),
-                width: 80,
-                id: 'sharable'
-            },{
-                dataIndex: 'Type',
+                id: 'vdi_type',
+                dataIndex: 'vdi_type',
                 header: _t('Type'),
-                width: 80,
-                id: 'Type'
+                width: 70
             },{
+                id: 'virtual_size',
                 dataIndex: 'virtual_size',
-                header: _t('virtual_size'),
-                width: 80,
-                id: 'virtual_size'
+                header: _t('Size'),
+                renderer: Zenoss.render.bytesString,
+                width: 80
             },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                width: 80,
-                id: 'xapi_uuid'
+                id: 'on_boot',
+                dataIndex: 'on_boot',
+                header: _t('On Boot'),
+                width: 70
+            },{
+                id: 'is_a_snapshot',
+                dataIndex: 'is_a_snapshot',
+                header: _t('Snapshot'),
+                renderer: Zenoss.render.checkbox,
+                width: 70
+            },{
+                id: 'read_only',
+                dataIndex: 'read_only',
+                header: _t('Read Only'),
+                renderer: Zenoss.render.checkbox,
+                width: 75
+            },{
+                id: 'sharable',
+                dataIndex: 'sharable',
+                header: _t('Sharable'),
+                renderer: Zenoss.render.checkbox,
+                width: 65
+            },{
+                id: 'vbd_count',
+                dataIndex: 'vbd_count',
+                header: _t('VBDs'),
+                width: 50
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',

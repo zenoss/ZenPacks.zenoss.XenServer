@@ -43,6 +43,7 @@ class VDI(PooledComponent):
     sharable = None
     storage_lock = None
     vdi_type = None
+    virtual_size = None
 
     _properties = PooledComponent._properties + (
         {'id': 'allow_caching', 'type': 'bool', 'mode': 'w'},
@@ -53,11 +54,12 @@ class VDI(PooledComponent):
         {'id': 'missing', 'type': 'bool', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'on_boot', 'type': 'bool', 'mode': 'w'},
+        {'id': 'on_boot', 'type': 'string', 'mode': 'w'},
         {'id': 'read_only', 'type': 'bool', 'mode': 'w'},
         {'id': 'sharable', 'type': 'bool', 'mode': 'w'},
         {'id': 'storage_lock', 'type': 'bool', 'mode': 'w'},
         {'id': 'vdi_type', 'type': 'string', 'mode': 'w'},
+        {'id': 'virtual_size', 'type': 'int', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -102,11 +104,12 @@ class IVDIInfo(IPooledComponentInfo):
     missing = schema.Bool(title=_t(u'Missing'))
     name_description = schema.TextLine(title=_t(u'Description'))
     name_label = schema.TextLine(title=_t(u'Label'))
-    on_boot = schema.Bool(title=_t(u'On Boot'))
+    on_boot = schema.TextLine(title=_t(u'On Boot'))
     read_only = schema.Bool(title=_t(u'Read Only'))
     sharable = schema.Bool(title=_t(u'Sharable'))
     storage_lock = schema.Bool(title=_t(u'Storage Lock'))
     vdi_type = schema.TextLine(title=_t(u'Type'))
+    virtual_size = schema.Int(title=_t(u'Virtual Size'))
 
     vbd_count = schema.Int(title=_t(u'Number of Virtual Block Devices'))
 
@@ -134,5 +137,6 @@ class VDIInfo(PooledComponentInfo):
     sharable = ProxyProperty('sharable')
     storage_lock = ProxyProperty('storage_lock')
     vdi_type = ProxyProperty('vdi_type')
+    virtual_size = ProxyProperty('virtual_size')
 
     vbd_count = RelationshipLengthProperty('vbds')
