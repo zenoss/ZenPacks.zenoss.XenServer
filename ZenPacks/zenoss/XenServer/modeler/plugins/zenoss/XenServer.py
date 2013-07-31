@@ -40,6 +40,7 @@ XAPI_CLASSES = [
     'PBD',
     'PIF',
     'network',
+    'VM_metrics',
     'VM',
     'VBD',
     'VIF',
@@ -305,7 +306,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'name_description': properties.get('name_description'),
                 'name_label': properties.get('name_label'),
                 'sched_policy': properties.get('sched_policy'),
-                'memory_total': metrics.get('memory_total'),
+                'memory_total': int_or_none(metrics.get('memory_total')),
                 'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
                 'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
                 'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
@@ -681,6 +682,17 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 modname=MODULE_NAME['VIF'],
                 objmaps=grouped_objmaps)
 
+    def vm_metrics_relmaps(self, results):
+        '''
+        Cache VM_metrics data to later be used in vm_relmaps.
+        '''
+        for ref, properties in results.items():
+            self.cache_set('vm_metrics', ref, properties)
+
+        # This method needs to be a generator of nothing.
+        if False:
+            yield
+
     def vm_relmaps(self, results):
         '''
         Yield a single vms RelationshipMap.
@@ -696,9 +708,39 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
             title = properties.get('name_label') or properties['uuid']
 
+            metrics = self.cache_get(
+                'vm_metrics', properties.get('metrics'), {})
+
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'hvm_shadow_multiplier': properties.get('HVM_shadow_multiplier'),
+                'vcpus_at_startup': int_or_none(properties.get('VCPUs_at_startup')),
+                'vcpus_max': int_or_none(properties.get('VCPUs_max')),
+                'actions_after_crash': properties.get('actions_after_crash'),
+                'actions_after_reboot': properties.get('actions_after_reboot'),
+                'actions_after_shutdown': properties.get('actions_after_shutdown'),
+                'allowed_operations': properties.get('allowed_operations'),
+                'domarch': properties.get('domarch'),
+                'domid': int_or_none(properties.get('domid')),
+                'guest_metrics_ref': properties.get('guest_metrics'),
+                'ha_always_run': properties.get('ha_always_run'),
+                'ha_restart_priority': properties.get('ha_restart_priority'),
+                'is_a_snapshot': properties.get('is_a_snapshot'),
+                'is_a_template': properties.get('is_a_template'),
+                'is_control_domain': properties.get('is_control_domain'),
+                'is_snapshot_from_vmpp': properties.get('is_snapshot_from_vmpp'),
+                'memory_actual': int_or_none(metrics.get('memory_actual')),
+                'metrics_ref': properties.get('metrics'),
+                'name_description': properties.get('name_description'),
+                'name_label': properties.get('name_label'),
+                'power_state': properties.get('power_state'),
+                'shutdown_delay': int_or_none(properties.get('shutdown_delay')),
+                'start_delay': int_or_none(properties.get('start_delay')),
+                'user_version': int_or_none(properties.get('user_version')),
+                'version': int_or_none(properties.get('version')),
                 'setHost': id_from_ref(properties.get('resident_on')),
                 'setVMAppliance': id_from_ref(properties.get('appliance')),
                 })

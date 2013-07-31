@@ -41,14 +41,15 @@ class VM(PooledComponent):
     allowed_operations = None
     domarch = None
     domid = None
-    guest_metrics = None
+    guest_metrics_ref = None
     ha_always_run = None
     ha_restart_priority = None
     is_a_snapshot = None
     is_a_template = None
     is_control_domain = None
     is_snapshot_from_vmpp = None
-    metrics = None
+    memory_actual = None
+    metrics_ref = None
     name_description = None
     name_label = None
     power_state = None
@@ -58,30 +59,31 @@ class VM(PooledComponent):
     version = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'hvm_shadow_multiplier', 'type': 'string', 'mode': 'w'},
-        {'id': 'vcpus_at_startup', 'type': 'string', 'mode': 'w'},
-        {'id': 'vcpus_max', 'type': 'string', 'mode': 'w'},
+        {'id': 'hvm_shadow_multiplier', 'type': 'float', 'mode': 'w'},
+        {'id': 'vcpus_at_startup', 'type': 'int', 'mode': 'w'},
+        {'id': 'vcpus_max', 'type': 'int', 'mode': 'w'},
         {'id': 'actions_after_crash', 'type': 'string', 'mode': 'w'},
         {'id': 'actions_after_reboot', 'type': 'string', 'mode': 'w'},
         {'id': 'actions_after_shutdown', 'type': 'string', 'mode': 'w'},
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'domarch', 'type': 'string', 'mode': 'w'},
-        {'id': 'domid', 'type': 'string', 'mode': 'w'},
-        {'id': 'guest_metrics', 'type': 'string', 'mode': 'w'},
-        {'id': 'ha_always_run', 'type': 'bool', 'mode': 'w'},
+        {'id': 'domid', 'type': 'int', 'mode': 'w'},
+        {'id': 'guest_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'ha_always_run', 'type': 'boolean', 'mode': 'w'},
         {'id': 'ha_restart_priority', 'type': 'string', 'mode': 'w'},
-        {'id': 'is_a_snapshot', 'type': 'bool', 'mode': 'w'},
-        {'id': 'is_a_template', 'type': 'bool', 'mode': 'w'},
-        {'id': 'is_control_domain', 'type': 'bool', 'mode': 'w'},
-        {'id': 'is_snapshot_from_vmpp', 'type': 'bool', 'mode': 'w'},
-        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'is_a_snapshot', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_a_template', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_control_domain', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_snapshot_from_vmpp', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'memory_actual', 'type': 'int', 'mode': 'w'},
+        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'power_state', 'type': 'string', 'mode': 'w'},
-        {'id': 'shutdown_delay', 'type': 'string', 'mode': 'w'},
-        {'id': 'start_delay', 'type': 'string', 'mode': 'w'},
-        {'id': 'user_version', 'type': 'string', 'mode': 'w'},
-        {'id': 'version', 'type': 'string', 'mode': 'w'},
+        {'id': 'shutdown_delay', 'type': 'int', 'mode': 'w'},
+        {'id': 'start_delay', 'type': 'int', 'mode': 'w'},
+        {'id': 'user_version', 'type': 'int', 'mode': 'w'},
+        {'id': 'version', 'type': 'int', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -145,28 +147,29 @@ class IVMInfo(IPooledComponentInfo):
     host = schema.Entity(title=_t(u'Host'))
     vmappliance = schema.Entity(title=_t(u'vApp'))
 
-    hvm_shadow_multiplier = schema.TextLine(title=_t(u'HVM Shadow Multiplier'))
-    vcpus_at_startup = schema.TextLine(title=_t(u'vCPUs at Startup'))
-    vcpus_max = schema.TextLine(title=_t(u'Maximum vCPUs'))
+    hvm_shadow_multiplier = schema.Float(title=_t(u'HVM Shadow Multiplier'))
+    vcpus_at_startup = schema.Int(title=_t(u'vCPUs at Startup'))
+    vcpus_max = schema.Int(title=_t(u'Maximum vCPUs'))
     actions_after_crash = schema.TextLine(title=_t(u'Actions After Crash'))
     actions_after_reboot = schema.TextLine(title=_t(u'Actions After Reboot'))
     actions_after_shutdown = schema.TextLine(title=_t(u'Actions After Shutdown'))
     allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
     domarch = schema.TextLine(title=_t(u'Domain Architecture'))
-    domid = schema.TextLine(title=_t(u'Domain ID'))
-    ha_always_run = schema.TextLine(title=_t(u'HA Always Run'))
+    domid = schema.Int(title=_t(u'Domain ID'))
+    ha_always_run = schema.Bool(title=_t(u'HA Always Run'))
     ha_restart_priority = schema.TextLine(title=_t(u'HA Restart Priority'))
-    is_a_snapshot = schema.TextLine(title=_t(u'Is a Snapshot'))
-    is_a_template = schema.TextLine(title=_t(u'Is a Template'))
-    is_control_domain = schema.TextLine(title=_t(u'Is a Control Domain'))
-    is_snapshot_from_vmpp = schema.TextLine(title=_t(u'Is a Snapshot from VMPP'))
+    is_a_snapshot = schema.Bool(title=_t(u'Is a Snapshot'))
+    is_a_template = schema.Bool(title=_t(u'Is a Template'))
+    is_control_domain = schema.Bool(title=_t(u'Is a Control Domain'))
+    is_snapshot_from_vmpp = schema.Bool(title=_t(u'Is a Snapshot from VMPP'))
+    memory_actual = schema.Int(title=_t(u'Actual Memory'))
     name_description = schema.TextLine(title=_t(u'Description'))
     name_label = schema.TextLine(title=_t(u'Name'))
     power_state = schema.TextLine(title=_t(u'Power State'))
-    shutdown_delay = schema.TextLine(title=_t(u'Shutdown Delay'))
-    start_delay = schema.TextLine(title=_t(u'Start Delay'))
-    user_version = schema.TextLine(title=_t(u'User Version'))
-    version = schema.TextLine(title=_t(u'Version'))
+    shutdown_delay = schema.Int(title=_t(u'Shutdown Delay'))
+    start_delay = schema.Int(title=_t(u'Start Delay'))
+    user_version = schema.Int(title=_t(u'User Version'))
+    version = schema.Int(title=_t(u'Version'))
 
     vbd_count = schema.Int(title=_t(u'Number of Virtual Block Devices'))
     vif_count = schema.Int(title=_t(u'Number of Virtual Network Interfaces'))
@@ -192,12 +195,15 @@ class VMInfo(PooledComponentInfo):
     allowed_operations = ProxyProperty('allowed_operations')
     domarch = ProxyProperty('domarch')
     domid = ProxyProperty('domid')
+    guest_metrics_ref = ProxyProperty('guest_metrics_ref')
     ha_always_run = ProxyProperty('ha_always_run')
     ha_restart_priority = ProxyProperty('ha_restart_priority')
     is_a_snapshot = ProxyProperty('is_a_snapshot')
     is_a_template = ProxyProperty('is_a_template')
     is_control_domain = ProxyProperty('is_control_domain')
     is_snapshot_from_vmpp = ProxyProperty('is_snapshot_from_vmpp')
+    memory_actual = ProxyProperty('memory_actual')
+    metrics_ref = ProxyProperty('metrics_ref')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
     power_state = ProxyProperty('power_state')

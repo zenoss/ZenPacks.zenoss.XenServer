@@ -162,8 +162,7 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
             },{
                 id: 'pool',
                 dataIndex: 'pool',
@@ -344,8 +343,7 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
             },{
                 id: 'bridge',
                 dataIndex: 'bridge',
@@ -1143,20 +1141,17 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'host'},
+                {name: 'vmappliance'},
+                {name: 'vcpus_at_startup'},  // for combined_cpu
+                {name: 'vcpus_max'}, // for combined_cpu
+                {name: 'memory_actual'},
+                {name: 'power_state'},
+                {name: 'vbd_count'},
+                {name: 'vif_count'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'VCPUs_max'},
-                {name: 'VCPUs_at_startup'},
-                {name: 'memory_dynamic_max'},
-                {name: 'memory_dynamic_min'},
-                {name: 'memory_overhead'},
-                {name: 'memory_static_max'},
-                {name: 'memory_static_min'},
-                {name: 'name_label'},
-                {name: 'name_description'},
-                {name: 'power_state'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -1169,63 +1164,51 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
+            },{
+                id: 'host',
+                dataIndex: 'host',
+                header: _t('Host'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 120
             },{
-                dataIndex: 'VCPUs_max',
-                header: _t('VCPUs_max'),
-                width: 80,
-                id: 'VCPUs_max'
+                id: 'vmappliance',
+                dataIndex: 'vmappliance',
+                header: _t('vApp'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
-                dataIndex: 'VCPUs_at_startup',
-                header: _t('VCPUs_at_startup'),
-                width: 80,
-                id: 'VCPUs_at_startup'
+                id: 'combined_cpu',
+                dataIndex: 'vcpus_at_startup',
+                header: _t('vCPUs'),
+                renderer: function(value, metaData, record) {
+                    return '<span title="Startup / Maximum">' +
+                        record.data.vcpus_at_startup + ' / ' +
+                        record.data.vcpus_max +
+                        '</span>';
+                },
+                width: 60
             },{
-                dataIndex: 'memory_dynamic_max',
-                header: _t('memory_dynamic_max'),
-                width: 80,
-                id: 'memory_dynamic_max'
+                id: 'memory_actual',
+                dataIndex: 'memory_actual',
+                header: _t('Memory'),
+                renderer: Zenoss.render.memory,
+                width: 80
             },{
-                dataIndex: 'memory_dynamic_min',
-                header: _t('memory_dynamic_min'),
-                width: 80,
-                id: 'memory_dynamic_min'
-            },{
-                dataIndex: 'memory_overhead',
-                header: _t('memory_overhead'),
-                width: 80,
-                id: 'memory_overhead'
-            },{
-                dataIndex: 'memory_static_max',
-                header: _t('memory_static_max'),
-                width: 80,
-                id: 'memory_static_max'
-            },{
-                dataIndex: 'memory_static_min',
-                header: _t('memory_static_min'),
-                width: 80,
-                id: 'memory_static_min'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                width: 80,
-                id: 'name_description'
-            },{
+                id: 'power_state',
                 dataIndex: 'power_state',
-                header: _t('power_state'),
-                width: 80,
-                id: 'power_state'
+                header: _t('Power State'),
+                width: 85
             },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                width: 80,
-                id: 'xapi_uuid'
+                id: 'vbd_count',
+                dataIndex: 'vbd_count',
+                header: _t('VBDs'),
+                width: 50
+            },{
+                id: 'vif_count',
+                dataIndex: 'vif_count',
+                header: _t('VIFs'),
+                width: 50
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -1294,8 +1277,7 @@ ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
