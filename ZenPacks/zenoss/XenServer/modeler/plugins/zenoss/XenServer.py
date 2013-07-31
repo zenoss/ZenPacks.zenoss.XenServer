@@ -34,6 +34,7 @@ import txxenapi
 XAPI_CLASSES = [
     'SR',
     'VDI',
+    'host_metrics',
     'host',
     'host_cpu',
     'PBD',
@@ -75,6 +76,26 @@ def ids_from_refs(refs):
     return ids
 
 
+def int_or_none(value):
+    '''
+    Return value converted to int or None if conversion fails.
+    '''
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def float_or_none(value):
+    '''
+    Return value converted to float or None if conversion fails.
+    '''
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 class ModelerPluginCacheMixin(object):
     '''
     Mix-in class to allow modeler plugin instances to safely share an
@@ -90,19 +111,19 @@ class ModelerPluginCacheMixin(object):
         Prepare class cache for modeling device.
         '''
         self.device = device
-        if not hasattr(self, 'cache'):
-            self.cache = {}
+        if not hasattr(self, '_cache'):
+            self._cache = {}
 
-        self.cache[self.device.id] = collections.defaultdict(dict)
+        self._cache[self.device.id] = collections.defaultdict(dict)
 
     def cache_set(self, namespace, key, value):
         '''
         Set the cache value for key in namespace. Return value.
         '''
-        if not self.device or not self.cache:
+        if not self.device or not self._cache:
             raise Exception('cache not initialized')
 
-        self.cache[self.device.id][namespace][key] = value
+        self._cache[self.device.id][namespace][key] = value
 
         return value
 
@@ -110,17 +131,17 @@ class ModelerPluginCacheMixin(object):
         '''
         Get the cached value for key in namespace.
         '''
-        if not self.device or not self.cache:
+        if not self.device or not self._cache:
             raise Exception('cache not initialized')
 
-        return self.cache[self.device.id][namespace].get(key, default)
+        return self._cache[self.device.id][namespace].get(key, default)
 
     def cache_clear(self):
         '''
         Clear class cache for current device.
         '''
-        if self.device and self.cache and self.device.id in self.cache:
-            del(self.cache[self.device.id])
+        if self.device and self._cache and self.device.id in self._cache:
+            del(self._cache[self.device.id])
 
         self.device = None
 
@@ -267,6 +288,17 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 modname=MODULE_NAME['VDI'],
                 objmaps=ref_objmaps)
 
+    def host_metrics_relmaps(self, results):
+        '''
+        Cache host_metrics data to later be used in host_relmaps.
+        '''
+        for ref, properties in results.items():
+            self.cache_set('host_metrics', ref, properties)
+
+        # This method needs to be a generator of nothing.
+        if False:
+            yield
+
     def host_relmaps(self, results):
         '''
         Yield a single hosts RelationshipMap.
@@ -297,6 +329,15 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         for ref, properties in results.items():
             title = properties.get('name_label') or properties.get('hostname')
 
+            cpu_info = properties.get('cpu_info', {})
+
+            cpu_speed = float_or_none(cpu_info.get('speed'))
+            if cpu_speed:
+                cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
+
+            metrics = self.cache_get(
+                'host_metrics', properties.get('metrics'), {})
+
             host_oms.append({
                 'id': id_from_ref(ref),
                 'title': title,
@@ -304,6 +345,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'name_label': properties.get('name_label'),
                 'name_description': properties.get('name_description'),
                 'address': properties.get('address'),
+                'cpu_count': int_or_none(cpu_info.get('cpu_count')),
+                'cpu_speed': cpu_speed,
+                'memory_total': metrics.get('memory_total'),
                 'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
                 'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
                 'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),

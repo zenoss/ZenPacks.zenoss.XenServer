@@ -37,6 +37,8 @@ class Host(PooledComponent):
     address = None
     allowed_operations = None
     capabilities = None
+    cpu_count = None
+    cpu_speed = None
     edition = None
     enabled = None
     hostname = None
@@ -44,6 +46,7 @@ class Host(PooledComponent):
     name_description = None
     name_label = None
     sched_policy = None
+    memory_total = None
 
     _properties = PooledComponent._properties + (
         {'id': 'api_version_major', 'type': 'string', 'mode': 'w'},
@@ -52,6 +55,8 @@ class Host(PooledComponent):
         {'id': 'address', 'type': 'string', 'mode': 'w'},
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'capabilities', 'type': 'lines', 'mode': 'w'},
+        {'id': 'cpu_count', 'type': 'int', 'mode': 'w'},
+        {'id': 'cpu_speed', 'type': 'float', 'mode': 'w'},
         {'id': 'edition', 'type': 'string', 'mode': 'w'},
         {'id': 'enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'hostname', 'type': 'string', 'mode': 'w'},
@@ -59,6 +64,7 @@ class Host(PooledComponent):
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'sched_policy', 'type': 'string', 'mode': 'w'},
+        {'id': 'memory_total', 'type': 'int', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -72,6 +78,10 @@ class Host(PooledComponent):
         ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for_hosts')),
         ('local_cache_sr', ToOne(ToMany, MODULE_NAME['SR'], 'local_cache_for_hosts')),
         )
+
+    @property
+    def is_pool_master(self):
+        return self.master_for() is not None
 
     def getVMs(self):
         '''
@@ -194,19 +204,23 @@ class IHostInfo(IPooledComponentInfo):
     address = schema.TextLine(title=_t(u'Address'))
     allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
     capabilities = schema.TextLine(title=_t(u'Capabilities'))
+    cpu_count = schema.Int(title=_t(u'CPU Count'))
+    cpu_speed = schema.Float(title=_t(u'CPU Speed'))
     edition = schema.TextLine(title=_t(u'Edition'))
     enabled = schema.TextLine(title=_t(u'Enabled'))
     hostname = schema.TextLine(title=_t(u'Hostname'))
+    is_pool_master = schema.Bool(title=_t(u'Is Pool Master'))
     name_description = schema.TextLine(title=_t(u'Description'))
     name_label = schema.TextLine(title=_t(u'Label'))
     sched_policy = schema.TextLine(title=_t(u'Scheduling Policy'))
+    memory_total = schema.Int(title=_t(u'Total Memory'))
 
     master_for = schema.Entity(title=_t(u'Master for Pool'))
     suspend_image_sr = schema.Entity(title=_t(u'Suspend Image Storage Repository'))
     crash_dump_sr = schema.Entity(title=_t(u'Crash Dump Storage Repository'))
     local_cache_sr = schema.Entity(title=_t(u'Local Cache Storage Repository'))
 
-    hostcpu_count = schema.Int(title=_t(u'Number of CPUs'))
+    hostcpu_count = schema.Int(title=_t(u'Number of Host CPUs'))
     pbd_count = schema.Int(title=_t(u'Number of Block Devices'))
     pif_count = schema.Int(title=_t(u'Number of Network Interfaces'))
     vm_count = schema.Int(title=_t(u'Number of VMs'))
@@ -226,13 +240,17 @@ class HostInfo(PooledComponentInfo):
     address = ProxyProperty('address')
     allowed_operations = ProxyProperty('allowed_operations')
     capabilities = ProxyProperty('capabilities')
+    cpu_count = ProxyProperty('cpu_count')
+    cpu_speed = ProxyProperty('cpu_speed')
     edition = ProxyProperty('edition')
     enabled = ProxyProperty('enabled')
     hostname = ProxyProperty('hostname')
+    is_pool_master = ProxyProperty('is_pool_master')
     metrics = ProxyProperty('metrics')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
     sched_policy = ProxyProperty('sched_policy')
+    memory_total = ProxyProperty('memory_total')
 
     master_for = RelationshipInfoProperty('master_for')
     suspend_image_sr = RelationshipInfoProperty('suspend_image_sr')

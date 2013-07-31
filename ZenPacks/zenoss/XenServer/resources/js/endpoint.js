@@ -141,13 +141,12 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'status'},
                 {name: 'severity'},
                 {name: 'usesMonitorAttribute'},
-                {name: 'master_for'},
-                {name: 'suspend_image_sr'},
-                {name: 'crash_dump_sr'},
-                {name: 'local_cache_sr'},
-                {name: 'hostcpu_count'},
-                {name: 'pbd_count'},
-                {name: 'pif_count'},
+                {name: 'pool'},
+                {name: 'is_pool_master'},
+                {name: 'address'},
+                {name: 'cpu_count'},    // for cpu_combined
+                {name: 'cpu_speed'},    // for cpu_combined
+                {name: 'memory_total'},
                 {name: 'vm_count'},
                 {name: 'monitor'},
                 {name: 'monitored'},
@@ -167,49 +166,44 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 sortable: true
             },{
-                id: 'master_for',
-                dataIndex: 'master_for',
-                header: _t('Master For'),
+                id: 'pool',
+                dataIndex: 'pool',
+                header: _t('Pool'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
                 width: 120
             },{
-                id: 'suspend_image_sr',
-                dataIndex: 'suspend_image_sr',
-                header: _t('Suspend SR'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                width: 120
+                id: 'is_pool_master',
+                dataIndex: 'is_pool_master',
+                header: _t('Master'),
+                renderer: Zenoss.render.checkbox,
+                width: 60
             },{
-                id: 'crash_dump_sr',
-                dataIndex: 'crash_dump_sr',
-                header: _t('Crash SR'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                width: 120
+                id: 'address',
+                dataIndex: 'address',
+                header: _t('Address'),
+                width: 90
             },{
-                id: 'local_cache_sr',
-                dataIndex: 'local_cache_sr',
-                header: _t('Cache SR'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                width: 120
-            },{
-                id: 'hostcpu_count',
-                dataIndex: 'hostcpu_count',
+                id: 'cpu_combined',
+                dataIndex: 'cpu_count',
                 header: _t('CPUs'),
-                width: 60
+                renderer: function(value, metaData, record) {
+                    return '<span title="Count x Speed">' +
+                        record.data.cpu_count + ' x ' +
+                        Zenoss.render.cpu_speed(record.data.cpu_speed) +
+                        '</span>';
+                },
+                width: 80
             },{
-                id: 'pbd_count',
-                dataIndex: 'pbd_count',
-                header: _t('PBDs'),
-                width: 60
-            },{
-                id: 'pif_count',
-                dataIndex: 'pif_count',
-                header: _t('PIFs'),
-                width: 60
+                id: 'memory_total',
+                dataIndex: 'memory_total',
+                header: _t('Memory'),
+                renderer: Zenoss.render.memory,
+                width: 70
             },{
                 id: 'vm_count',
                 dataIndex: 'vm_count',
                 header: _t('VMs'),
-                width: 60
+                width: 50
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
