@@ -762,6 +762,11 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'allowed_operations': properties.get('allowed_operations'),
+                'name_description': properties.get('name_description'),
+                'name_label': properties.get('name_label'),
                 'setVMs': ids_from_refs(properties.get('VMs', [])),
                 })
 

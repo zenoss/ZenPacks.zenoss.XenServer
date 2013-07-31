@@ -1251,7 +1251,7 @@ ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVMAppliance',
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'name_description',
             sortInfo: {
                 field: 'name',
                 direction: 'asc'
@@ -1262,6 +1262,8 @@ ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'name_description'},
+                {name: 'vm_count'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
@@ -1277,7 +1279,17 @@ ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 200
+            },{
+                id: 'name_description',
+                dataIndex: 'name_description',
+                header: _t('Description')
+            },{
+                id: 'vm_count',
+                dataIndex: 'vm_count',
+                header: _t('VMs'),
+                width: 50
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
