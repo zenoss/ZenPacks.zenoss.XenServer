@@ -328,7 +328,7 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'name_description'},
                 {name: 'name_label'},
                 {name: 'tags'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -381,11 +381,11 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'tags'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -430,7 +430,7 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'dc_legacy_mode'},
                 {name: 'dc_location'},
                 {name: 'dc_device'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -471,11 +471,11 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'dc_device'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -537,7 +537,7 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'IP'},
                 {name: 'MAC'},
                 {name: 'netmask'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -578,11 +578,11 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'netmask'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -648,7 +648,7 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'name_description'},
                 {name: 'name_label'},
                 {name: 'redo_log_enabled'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'vswitch_controller'},
                 {name: 'locking'}
             ],
@@ -714,11 +714,11 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'redo_log_enabled'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 dataIndex: 'vswitch_controller',
                 header: _t('vswitch_controller'),
@@ -772,7 +772,7 @@ ZC.XenServerSRPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'physical_utilisation'},
                 {name: 'shared'},
                 {name: 'virtual_allocation'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -831,11 +831,11 @@ ZC.XenServerSRPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'virtual_allocation'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -882,7 +882,7 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'status_code'},
                 {name: 'status_detail'},
                 {name: 'Type'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -935,11 +935,11 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'Type'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -1010,7 +1010,7 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'sharable'},
                 {name: 'Type'},
                 {name: 'virtual_size'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -1087,11 +1087,11 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'virtual_size'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -1153,7 +1153,7 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'qos_algorithm_type'},
                 {name: 'status_code'},
                 {name: 'status_detail'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -1200,11 +1200,11 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'status_detail'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -1273,7 +1273,7 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'name_label'},
                 {name: 'name_description'},
                 {name: 'power_state'},
-                {name: 'uuid'},
+                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -1350,11 +1350,11 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'power_state'
             },{
-                dataIndex: 'uuid',
-                header: _t('uuid'),
+                dataIndex: 'xapi_uuid',
+                header: _t('xapi_uuid'),
                 sortable: true,
                 width: 80,
-                id: 'uuid'
+                id: 'xapi_uuid'
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',

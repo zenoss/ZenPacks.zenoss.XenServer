@@ -151,11 +151,13 @@ class BaseComponent(DeviceComponent, ManagedEntity):
     Abstract base class for components.
     '''
 
-    uuid = None
+    xapi_uuid = None
+    xapi_ref = None
 
     # Explicit inheritence.
     _properties = ManagedEntity._properties + (
-        {'id': 'uuid', 'type': 'string', 'mode': 'w'},
+        {'id': 'xapi_uuid', 'type': 'string', 'mode': 'w'},
+        {'id': 'xapi_ref', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = ManagedEntity._relations
@@ -194,7 +196,8 @@ class IBaseComponentInfo(IComponentInfo):
     '''
 
     endpoint = schema.Entity(title=_t('Endpoint'))
-    uuid = schema.TextLine(title=_t(u'UUID'))
+    xapi_uuid = schema.TextLine(title=_t(u'XenAPI UUID'))
+    xapi_ref = schema.TextLine(title=_t(u'XenAPI Reference'))
 
 
 class BaseComponentInfo(ComponentInfo):
@@ -203,7 +206,8 @@ class BaseComponentInfo(ComponentInfo):
     '''
 
     endpoint = RelationshipInfoProperty('device')
-    uuid = ProxyProperty('uuid')
+    xapi_uuid = ProxyProperty('xapi_uuid')
+    xapi_ref = ProxyProperty('xapi_ref')
 
 
 class PooledComponent(BaseComponent):

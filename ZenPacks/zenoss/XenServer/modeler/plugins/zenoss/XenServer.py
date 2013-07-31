@@ -303,6 +303,38 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         '''
         Yield a single hosts RelationshipMap.
         '''
+        objmaps = []
+
+        for ref, properties in results.items():
+            title = properties.get('name_label') or properties.get('hostname')
+
+            cpu_info = properties.get('cpu_info', {})
+
+            cpu_speed = float_or_none(cpu_info.get('speed'))
+            if cpu_speed:
+                cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
+
+            metrics = self.cache_get(
+                'host_metrics', properties.get('metrics'), {})
+
+            objmaps.append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'xapi_uuid': properties.get('uuid'),
+                'name_label': properties.get('name_label'),
+                'name_description': properties.get('name_description'),
+                'address': properties.get('address'),
+                'cpu_count': int_or_none(cpu_info.get('cpu_count')),
+                'cpu_speed': cpu_speed,
+                'memory_total': metrics.get('memory_total'),
+                'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
+                'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
+                'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
+                'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
+                })
+
+            # To be used as a default for containing pool with no name.
+            self.cache_set('host_titles', ref, title)
 
         # Cache API version information for use in other_maps.
         try:
@@ -323,44 +355,10 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                     'model': model,
                     })
 
-        # Create host ObjectMaps.
-        host_oms = []
-
-        for ref, properties in results.items():
-            title = properties.get('name_label') or properties.get('hostname')
-
-            cpu_info = properties.get('cpu_info', {})
-
-            cpu_speed = float_or_none(cpu_info.get('speed'))
-            if cpu_speed:
-                cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
-
-            metrics = self.cache_get(
-                'host_metrics', properties.get('metrics'), {})
-
-            host_oms.append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'uuid': properties.get('uuid'),
-                'name_label': properties.get('name_label'),
-                'name_description': properties.get('name_description'),
-                'address': properties.get('address'),
-                'cpu_count': int_or_none(cpu_info.get('cpu_count')),
-                'cpu_speed': cpu_speed,
-                'memory_total': metrics.get('memory_total'),
-                'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
-                'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
-                'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
-                'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
-                })
-
-            # To be used as a default for containing pool with no name.
-            self.cache_set('host_titles', ref, title)
-
         yield RelationshipMap(
             relname='hosts',
             modname=MODULE_NAME['Host'],
-            objmaps=host_oms)
+            objmaps=objmaps)
 
     def host_cpu_relmaps(self, results):
         '''
@@ -374,7 +372,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'uuid': properties.get('uuid'),
+                'xapi_uuid': properties.get('uuid'),
                 'number': properties.get('number'),
                 'speed': properties.get('speed'),
                 'stepping': properties.get('stepping'),
