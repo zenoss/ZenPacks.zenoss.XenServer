@@ -184,18 +184,27 @@ def sleep(seconds):
 
 
 if __name__ == '__main__':
-    from pprint import pprint
+    import pprint
+    import sys
 
     @inlineCallbacks
-    def main():
+    def main(xapi_classname):
         client = Client(['xenserver1', 'xenserver2'], 'root', 'zenoss')
 
-        r = yield client.xenapi.pool.get_all_records()
-        pprint(r)
+        try:
+            r = yield getattr(client.xenapi, xapi_classname).get_all_records()
+        except Exception, ex:
+            print ex
+        else:
+            pprint.pprint(r)
 
         yield client.close()
 
         reactor.stop()
 
-    main()
+    if len(sys.argv) < 2:
+        print >> sys.stderr, "Usage: %s <class>" % sys.argv[0]
+        sys.exit(1)
+
+    main(sys.argv[1])
     reactor.run()
