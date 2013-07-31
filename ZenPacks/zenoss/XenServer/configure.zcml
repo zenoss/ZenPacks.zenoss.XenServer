@@ -4,8 +4,26 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     >
 
-    <!-- API: Info Adapters -->
+    <!-- API: Routers -->
+    <include package="Products.ZenUtils.extdirect.zope" file="meta.zcml"/>
 
+    <browser:directRouter
+        name="xenserver_router"
+        for="*"
+        class=".api.XenServerRouter"
+        namespace="Zenoss.remote"
+        permission="zenoss.View"
+        />
+
+    <!-- API: Facades -->
+    <adapter
+        name="xenserver"
+        provides=".api.IXenServerFacade"
+        for="*"
+        factory=".api.XenServerFacade"
+        />
+
+    <!-- API: Info Adapters -->
     <adapter
         provides=".Endpoint.IEndpointInfo"
         for=".Endpoint.Endpoint"
@@ -86,7 +104,6 @@
 
 
     <!-- Custom Path Reporters -->
-
     <adapter
         provides="Products.Zuul.catalog.interfaces.IPathReporter"
         for=".VBD.VBD"
@@ -134,8 +151,7 @@
         permission="zope2.Public"
         />
 
-    <!-- JavaScript needed only for NetApp devices. -->
-
+    <!-- JavaScript needed only for XenServer devices. -->
     <browser:viewlet
         name="js-xenserver-endpoint"
         paths="/++resource++xenserver/js/endpoint.js"
