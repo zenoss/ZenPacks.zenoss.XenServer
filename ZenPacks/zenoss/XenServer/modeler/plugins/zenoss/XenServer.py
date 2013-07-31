@@ -594,6 +594,43 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 modname=MODULE_NAME['VDI'],
                 objmaps=ref_objmaps)
 
+    def vbd_relmaps(self, results):
+        '''
+        Yield a vbds RelationshipMap for each VM.
+        '''
+        objmaps = collections.defaultdict(list)
+
+        for ref, properties in results.items():
+            title = properties.get('device') or \
+                properties.get('userdevice') or \
+                properties['uuid']
+
+            objmaps[properties['VM']].append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'allowed_operations': properties.get('allowed_operations'),
+                'bootable': properties.get('bootable'),
+                'currently_attached': properties.get('currently_attached'),
+                'vbd_device': properties.get('device'),
+                'empty': properties.get('empty'),
+                'metrics_ref': properties.get('metrics'),
+                'mode': properties.get('mode'),
+                'storage_lock': properties.get('storage_lock'),
+                'vbd_type': properties.get('type'),
+                'unpluggable': properties.get('unpluggable'),
+                'userdevice': properties.get('userdevice'),
+                'setVDI': id_from_ref(properties.get('VDI')),
+                })
+
+        for parent_ref, grouped_objmaps in objmaps.items():
+            yield RelationshipMap(
+                compname='vms/%s' % id_from_ref(parent_ref),
+                relname='vbds',
+                modname=MODULE_NAME['VBD'],
+                objmaps=grouped_objmaps)
+
     def vm_relmaps(self, results):
         '''
         Yield a single vms RelationshipMap.
@@ -620,30 +657,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             relname='vms',
             modname=MODULE_NAME['VM'],
             objmaps=objmaps)
-
-    def vbd_relmaps(self, results):
-        '''
-        Yield a vbds RelationshipMap for each VM.
-        '''
-        objmaps = collections.defaultdict(list)
-
-        for ref, properties in results.items():
-            title = properties.get('device') or \
-                properties.get('userdevice') or \
-                properties['uuid']
-
-            objmaps[properties['VM']].append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setVDI': id_from_ref(properties.get('VDI')),
-                })
-
-        for parent_ref, grouped_objmaps in objmaps.items():
-            yield RelationshipMap(
-                compname='vms/%s' % id_from_ref(parent_ref),
-                relname='vbds',
-                modname=MODULE_NAME['VBD'],
-                objmaps=grouped_objmaps)
 
     def vif_relmaps(self, results):
         '''

@@ -34,10 +34,10 @@ class VBD(PooledComponent):
 
     allowed_operations = None
     bootable = None
-    current_attached = None
+    currently_attached = None
     vbd_device = None
     empty = None
-    metrics = None
+    metrics_ref = None
     mode = None
     storage_lock = None
     vbd_type = None
@@ -47,10 +47,10 @@ class VBD(PooledComponent):
     _properties = PooledComponent._properties + (
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'bootable', 'type': 'bool', 'mode': 'w'},
-        {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'currently_attached', 'type': 'bool', 'mode': 'w'},
         {'id': 'vbd_device', 'type': 'string', 'mode': 'w'},
         {'id': 'empty', 'type': 'bool', 'mode': 'w'},
-        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'mode', 'type': 'string', 'mode': 'w'},
         {'id': 'storage_lock', 'type': 'bool', 'mode': 'w'},
         {'id': 'vbd_type', 'type': 'string', 'mode': 'w'},
@@ -96,7 +96,7 @@ class IVBDInfo(IPooledComponentInfo):
 
     allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
     bootable = schema.TextLine(title=_t(u'Bootable'))
-    current_attached = schema.TextLine(title=_t(u'Currently Attached'))
+    currently_attached = schema.TextLine(title=_t(u'Currently Attached'))
     vbd_device = schema.TextLine(title=_t(u'Device Name'))
     empty = schema.TextLine(title=_t(u'Empty'))
     mode = schema.TextLine(title=_t(u'Mode'))
@@ -119,9 +119,10 @@ class VBDInfo(PooledComponentInfo):
 
     allowed_operations = ProxyProperty('allowed_operations')
     bootable = ProxyProperty('bootable')
-    current_attached = ProxyProperty('current_attached')
+    currently_attached = ProxyProperty('currently_attached')
     vbd_device = ProxyProperty('vbd_device')
     empty = ProxyProperty('empty')
+    metrics_ref = ProxyProperty('metrics_ref')
     mode = ProxyProperty('mode')
     storage_lock = ProxyProperty('storage_lock')
     vbd_type = ProxyProperty('vbd_type')

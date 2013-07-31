@@ -157,7 +157,6 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
@@ -209,7 +208,6 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -254,7 +252,6 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'host',
@@ -267,7 +264,6 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'name',
                 header: _t('Name'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true,
                 width: 60
             },{
                 id: 'modelname',
@@ -284,7 +280,6 @@ ZC.XenServerHostCPUPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -344,7 +339,6 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
@@ -384,7 +378,6 @@ ZC.XenServerNetworkPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -821,16 +814,16 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'vm'},
+                {name: 'vdi'},
+                {name: 'vbd_type'},
+                {name: 'mode'},
+                {name: 'bootable'},
+                {name: 'unpluggable'},
+                {name: 'currently_attached'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'bootable'},
-                {name: 'currently_attached'},
-                {name: 'empty'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'Type'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -838,62 +831,52 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
+            },{
+                id: 'vm',
+                dataIndex: 'vm',
+                header: _t('VM'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 120
             },{
+                id: 'vdi',
+                dataIndex: 'vdi',
+                header: _t('VDI'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
+            },{
+                id: 'mode',
+                dataIndex: 'mode',
+                header: _t('Mode'),
+                width: 80
+            },{
+                id: 'bootable',
                 dataIndex: 'bootable',
-                header: _t('bootable'),
-                sortable: true,
-                width: 80,
-                id: 'bootable'
+                header: _t('Bootable'),
+                renderer: Zenoss.render.checkbox,
+                width: 80
             },{
+                id: 'unpluggable',
+                dataIndex: 'unpluggable',
+                header: _t('Unpluggable'),
+                renderer: Zenoss.render.checkbox,
+                width: 80
+            },{
+                id: 'currently_attached',
                 dataIndex: 'currently_attached',
-                header: _t('currently_attached'),
-                sortable: true,
-                width: 80,
-                id: 'currently_attached'
-            },{
-                dataIndex: 'empty',
-                header: _t('empty'),
-                sortable: true,
-                width: 80,
-                id: 'empty'
-            },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                sortable: true,
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                sortable: true,
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'Type',
-                header: _t('Type'),
-                sortable: true,
-                width: 80,
-                id: 'Type'
-            },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                sortable: true,
-                width: 80,
-                id: 'xapi_uuid'
+                header: _t('Attached'),
+                renderer: Zenoss.render.checkbox,
+                width: 70
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -966,7 +949,6 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
@@ -977,67 +959,56 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             },{
                 dataIndex: 'allow_caching',
                 header: _t('allow_caching'),
-                sortable: true,
                 width: 80,
                 id: 'allow_caching'
             },{
                 dataIndex: 'missing',
                 header: _t('missing'),
-                sortable: true,
                 width: 80,
                 id: 'missing'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
-                sortable: true,
                 width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
-                sortable: true,
                 width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'on_boot',
                 header: _t('on_boot'),
-                sortable: true,
                 width: 80,
                 id: 'on_boot'
             },{
                 dataIndex: 'physical_utilisation',
                 header: _t('physical_utilisation'),
-                sortable: true,
                 width: 80,
                 id: 'physical_utilisation'
             },{
                 dataIndex: 'read_only',
                 header: _t('read_only'),
-                sortable: true,
                 width: 80,
                 id: 'read_only'
             },{
                 dataIndex: 'sharable',
                 header: _t('sharable'),
-                sortable: true,
                 width: 80,
                 id: 'sharable'
             },{
                 dataIndex: 'Type',
                 header: _t('Type'),
-                sortable: true,
                 width: 80,
                 id: 'Type'
             },{
                 dataIndex: 'virtual_size',
                 header: _t('virtual_size'),
-                sortable: true,
                 width: 80,
                 id: 'virtual_size'
             },{
                 dataIndex: 'xapi_uuid',
                 header: _t('xapi_uuid'),
-                sortable: true,
                 width: 80,
                 id: 'xapi_uuid'
             },{
@@ -1045,7 +1016,6 @@ ZC.XenServerVDIPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -1106,7 +1076,6 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
@@ -1117,37 +1086,31 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             },{
                 dataIndex: 'MAC',
                 header: _t('MAC'),
-                sortable: true,
                 width: 80,
                 id: 'MAC'
             },{
                 dataIndex: 'MTU',
                 header: _t('MTU'),
-                sortable: true,
                 width: 80,
                 id: 'MTU'
             },{
                 dataIndex: 'qos_algorithm_type',
                 header: _t('qos_algorithm_type'),
-                sortable: true,
                 width: 80,
                 id: 'qos_algorithm_type'
             },{
                 dataIndex: 'status_code',
                 header: _t('status_code'),
-                sortable: true,
                 width: 80,
                 id: 'status_code'
             },{
                 dataIndex: 'status_detail',
                 header: _t('status_detail'),
-                sortable: true,
                 width: 80,
                 id: 'status_detail'
             },{
                 dataIndex: 'xapi_uuid',
                 header: _t('xapi_uuid'),
-                sortable: true,
                 width: 80,
                 id: 'xapi_uuid'
             },{
@@ -1155,7 +1118,6 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -1226,7 +1188,6 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
@@ -1237,67 +1198,56 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
             },{
                 dataIndex: 'VCPUs_max',
                 header: _t('VCPUs_max'),
-                sortable: true,
                 width: 80,
                 id: 'VCPUs_max'
             },{
                 dataIndex: 'VCPUs_at_startup',
                 header: _t('VCPUs_at_startup'),
-                sortable: true,
                 width: 80,
                 id: 'VCPUs_at_startup'
             },{
                 dataIndex: 'memory_dynamic_max',
                 header: _t('memory_dynamic_max'),
-                sortable: true,
                 width: 80,
                 id: 'memory_dynamic_max'
             },{
                 dataIndex: 'memory_dynamic_min',
                 header: _t('memory_dynamic_min'),
-                sortable: true,
                 width: 80,
                 id: 'memory_dynamic_min'
             },{
                 dataIndex: 'memory_overhead',
                 header: _t('memory_overhead'),
-                sortable: true,
                 width: 80,
                 id: 'memory_overhead'
             },{
                 dataIndex: 'memory_static_max',
                 header: _t('memory_static_max'),
-                sortable: true,
                 width: 80,
                 id: 'memory_static_max'
             },{
                 dataIndex: 'memory_static_min',
                 header: _t('memory_static_min'),
-                sortable: true,
                 width: 80,
                 id: 'memory_static_min'
             },{
                 dataIndex: 'name_label',
                 header: _t('name_label'),
-                sortable: true,
                 width: 80,
                 id: 'name_label'
             },{
                 dataIndex: 'name_description',
                 header: _t('name_description'),
-                sortable: true,
                 width: 80,
                 id: 'name_description'
             },{
                 dataIndex: 'power_state',
                 header: _t('power_state'),
-                sortable: true,
                 width: 80,
                 id: 'power_state'
             },{
                 dataIndex: 'xapi_uuid',
                 header: _t('xapi_uuid'),
-                sortable: true,
                 width: 80,
                 id: 'xapi_uuid'
             },{
@@ -1305,7 +1255,6 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -1364,7 +1313,6 @@ ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
@@ -1377,7 +1325,6 @@ ZC.XenServerVMAppliancePanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
