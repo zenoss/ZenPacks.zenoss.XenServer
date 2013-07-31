@@ -546,9 +546,22 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         for ref, properties in results.items():
             title = properties.get('name_label') or properties['uuid']
 
+            sm_config = properties.get('sm_config', {})
+
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'allowed_operations': properties.get('allowed_operations'),
+                'content_type': properties.get('content_type'),
+                'local_cache_enabled': properties.get('local_cache_enabled'),
+                'name_description': properties.get('name_description'),
+                'name_label': properties.get('name_label'),
+                'physical_size': properties.get('physical_size'),
+                'shared': properties.get('shared'),
+                'sm_type': sm_config.get('type'),
+                'sr_type': properties.get('type'),
                 'setPBDs': ids_from_refs(properties.get('PBDs', []))
                 })
 

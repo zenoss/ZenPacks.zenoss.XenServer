@@ -36,7 +36,9 @@ class SR(PooledComponent):
     local_cache_enabled = None
     name_description = None
     name_label = None
+    physical_size = None
     shared = None
+    sm_type = None
     sr_type = None
 
     _properties = PooledComponent._properties + (
@@ -45,7 +47,9 @@ class SR(PooledComponent):
         {'id': 'local_cache_enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'shared', 'type': 'string', 'mode': 'w'},
+        {'id': 'physical_size', 'type': 'int', 'mode': 'w'},
+        {'id': 'shared', 'type': 'bool', 'mode': 'w'},
+        {'id': 'sm_type', 'type': 'string', 'mode': 'w'},
         {'id': 'sr_type', 'type': 'string', 'mode': 'w'},
         )
 
@@ -212,7 +216,9 @@ class ISRInfo(IPooledComponentInfo):
     local_cache_enabled = schema.Bool(title=_t(u'Local Cache Enabled'))
     name_description = schema.TextLine(title=_t(u'Description'))
     name_label = schema.TextLine(title=_t(u'Label'))
+    physical_size = schema.Int(title=_t(u'Physical Size'))
     shared = schema.Bool(title=_t(u'Shared'))
+    sm_type = schema.TextLine(title=_t(u'SM Type'))
     sr_type = schema.TextLine(title=_t(u'Type'))
 
     vdi_count = schema.Int(title=_t(u'Number of VDIS'))
@@ -232,7 +238,9 @@ class SRInfo(PooledComponentInfo):
     local_cache_enabled = ProxyProperty('local_cache_enabled')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
+    physical_size = ProxyProperty('physical_size')
     shared = ProxyProperty('shared')
+    sm_type = ProxyProperty('sm_type')
     sr_type = ProxyProperty('sr_type')
 
     vdi_count = RelationshipLengthProperty('vdis')

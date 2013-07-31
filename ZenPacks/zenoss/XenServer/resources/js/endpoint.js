@@ -716,17 +716,17 @@ ZC.XenServerSRPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'content_type'},
+                {name: 'sr_type'},  // for combined_type
+                {name: 'sm_type'},  // for combined_type
+                {name: 'physical_size'},
+                {name: 'shared'},
+                {name: 'local_cache_enabled'},
                 {name: 'usesMonitorAttribute'},
+                {name: 'pbd_count'},
+                {name: 'vdi_count'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'name_description'},
-                {name: 'name_label'},
-                {name: 'content_type'},
-                {name: 'physical_size'},
-                {name: 'physical_utilisation'},
-                {name: 'shared'},
-                {name: 'virtual_allocation'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -734,68 +734,62 @@ ZC.XenServerSRPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
-                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
             },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                sortable: true,
-                width: 80,
-                id: 'name_description'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                sortable: true,
-                width: 80,
-                id: 'name_label'
-            },{
+                id: 'content_type',
                 dataIndex: 'content_type',
-                header: _t('content_type'),
-                sortable: true,
-                width: 80,
-                id: 'content_type'
+                header: _t('Content'),
+                width: 70
             },{
+                id: 'combined_type',
+                dataIndex: 'sr_type',
+                header: _t('Type'),
+                renderer: function(value, metaData, record) {
+                    if (record.data.sm_type) {
+                        return record.data.sr_type +' / ' + record.data.sm_type;
+                    }
+
+                    return value;
+                },
+                width: 80
+            },{
+                id: 'physical_size',
                 dataIndex: 'physical_size',
-                header: _t('physical_size'),
-                sortable: true,
-                width: 80,
-                id: 'physical_size'
+                header: _t('Size'),
+                renderer: Zenoss.render.bytesString,
+                width: 80
             },{
-                dataIndex: 'physical_utilisation',
-                header: _t('physical_utilisation'),
-                sortable: true,
-                width: 80,
-                id: 'physical_utilisation'
-            },{
+                id: 'shared',
                 dataIndex: 'shared',
-                header: _t('shared'),
-                sortable: true,
-                width: 80,
-                id: 'shared'
+                header: _t('Shared'),
+                renderer: Zenoss.render.checkbox,
+                width: 60
             },{
-                dataIndex: 'virtual_allocation',
-                header: _t('virtual_allocation'),
-                sortable: true,
-                width: 80,
-                id: 'virtual_allocation'
+                id: 'local_cache_enabled',
+                dataIndex: 'local_cache_enabled',
+                header: _t('Local Cache'),
+                renderer: Zenoss.render.checkbox,
+                width: 85
             },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                sortable: true,
-                width: 80,
-                id: 'xapi_uuid'
+                id: 'pbd_count',
+                dataIndex: 'pbd_count',
+                header: _t('PBDs'),
+                width: 50
+            },{
+                id: 'vdi_count',
+                dataIndex: 'vdi_count',
+                header: _t('VDIs'),
+                width: 50
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
