@@ -409,6 +409,38 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             modname=MODULE_NAME['Network'],
             objmaps=objmaps)
 
+    def pbd_relmaps(self, results):
+        '''
+        Yield a pbds RelationshipMap for each host.
+        '''
+        objmaps = collections.defaultdict(list)
+
+        for ref, properties in results.items():
+            device_config = properties.get('device_config', {})
+
+            title = device_config.get('location') or \
+                device_config.get('device') or \
+                properties['uuid']
+
+            objmaps[properties['host']].append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'currently_attached': properties.get('currently_attached'),
+                'dc_device': device_config.get('device'),
+                'dc_legacy_mode': to_boolean(device_config.get('legacy_mode')),
+                'dc_location': device_config.get('location'),
+                'setSR': id_from_ref(properties.get('SR')),
+                })
+
+        for parent_ref, grouped_objmaps in objmaps.items():
+            yield RelationshipMap(
+                compname='hosts/%s' % id_from_ref(parent_ref),
+                relname='pbds',
+                modname=MODULE_NAME['PBD'],
+                objmaps=grouped_objmaps)
+
     def sr_relmaps(self, results):
         '''
         Yield a single srs RelationshipMap.
@@ -452,32 +484,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 relname='vdis',
                 modname=MODULE_NAME['VDI'],
                 objmaps=ref_objmaps)
-
-    def pbd_relmaps(self, results):
-        '''
-        Yield a pbds RelationshipMap for each host.
-        '''
-        objmaps = collections.defaultdict(list)
-
-        for ref, properties in results.items():
-            device_config = properties['device_config']
-
-            title = device_config.get('location') or \
-                device_config.get('device') or \
-                properties['uuid']
-
-            objmaps[properties['host']].append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setSR': id_from_ref(properties.get('SR')),
-                })
-
-        for parent_ref, grouped_objmaps in objmaps.items():
-            yield RelationshipMap(
-                compname='hosts/%s' % id_from_ref(parent_ref),
-                relname='pbds',
-                modname=MODULE_NAME['PBD'],
-                objmaps=grouped_objmaps)
 
     def pif_relmaps(self, results):
         '''

@@ -32,13 +32,13 @@ class PBD(PooledComponent):
 
     meta_type = portal_type = 'XenServerPBD'
 
-    current_attached = None
+    currently_attached = None
     dc_device = None
     dc_legacy_mode = None
     dc_location = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'current_attached', 'type': 'bool', 'mode': 'w'},
+        {'id': 'currently_attached', 'type': 'bool', 'mode': 'w'},
         {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
         {'id': 'dc_legacy_mode', 'type': 'bool', 'mode': 'w'},
         {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
@@ -80,7 +80,7 @@ class IPBDInfo(IPooledComponentInfo):
     host = schema.Entity(title=_t(u'Host'))
     sr = schema.Entity(title=_t(u'Storage Repository'))
 
-    current_attached = schema.Bool(title=_t(u'Currently Attached'))
+    currently_attached = schema.Bool(title=_t(u'Currently Attached'))
     dc_device = schema.TextLine(title=_t(u'Device Name'))
     dc_legacy_mode = schema.Bool(title=_t(u'Legacy Mode'))
     dc_location = schema.TextLine(title=_t(u'Location'))
@@ -97,7 +97,7 @@ class PBDInfo(PooledComponentInfo):
     host = RelationshipInfoProperty('host')
     sr = RelationshipInfoProperty('sr')
 
-    current_attached = ProxyProperty('current_attached')
+    currently_attached = ProxyProperty('currently_attached')
     dc_device = ProxyProperty('dc_device')
     dc_legacy_mode = ProxyProperty('dc_legacy_mode')
     dc_location = ProxyProperty('dc_location')

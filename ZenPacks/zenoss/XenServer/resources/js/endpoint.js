@@ -416,14 +416,13 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'host'},
+                {name: 'sr'},
+                {name: 'currently_attached'},
+                {name: 'dc_legacy_mode'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'current_attached'},
-                {name: 'dc_legacy_mode'},
-                {name: 'dc_location'},
-                {name: 'dc_device'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -431,50 +430,41 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
+            },{
+                id: 'host',
+                dataIndex: 'host',
+                header: _t('Host'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 120
             },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
-                sortable: true,
-                width: 80,
-                id: 'current_attached'
+                id: 'sr',
+                dataIndex: 'sr',
+                header: _t('Storage Repository'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
+                id: 'currently_attached',
+                dataIndex: 'currently_attached',
+                header: _t('Attached'),
+                renderer: Zenoss.render.checkbox,
+                width: 70
+            },{
+                id: 'dc_legacy_mode',
                 dataIndex: 'dc_legacy_mode',
-                header: _t('dc_legacy_mode'),
-                sortable: true,
-                width: 80,
-                id: 'dc_legacy_mode'
-            },{
-                dataIndex: 'dc_location',
-                header: _t('dc_location'),
-                sortable: true,
-                width: 80,
-                id: 'dc_location'
-            },{
-                dataIndex: 'dc_device',
-                header: _t('dc_device'),
-                sortable: true,
-                width: 80,
-                id: 'dc_device'
-            },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                sortable: true,
-                width: 80,
-                id: 'xapi_uuid'
+                header: _t('Legacy Mode'),
+                renderer: Zenoss.render.checkbox,
+                width: 95
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
@@ -870,7 +860,7 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'monitor'},
                 {name: 'monitored'},
                 {name: 'bootable'},
-                {name: 'current_attached'},
+                {name: 'currently_attached'},
                 {name: 'empty'},
                 {name: 'status_code'},
                 {name: 'status_detail'},
@@ -898,11 +888,11 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 width: 80,
                 id: 'bootable'
             },{
-                dataIndex: 'current_attached',
-                header: _t('current_attached'),
+                dataIndex: 'currently_attached',
+                header: _t('currently_attached'),
                 sortable: true,
                 width: 80,
-                id: 'current_attached'
+                id: 'currently_attached'
             },{
                 dataIndex: 'empty',
                 header: _t('empty'),
