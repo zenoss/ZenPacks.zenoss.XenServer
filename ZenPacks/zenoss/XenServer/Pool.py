@@ -34,8 +34,6 @@ class Pool(BaseComponent):
     ha_allow_overcommit = None
     ha_enabled = None
     ha_host_failures_to_tolerate = None
-    ha_overcommitted = None
-    ha_plan_exists_for = None
     name_description = None
     name_label = None
     oc_cpuid_feature_mask = None
@@ -47,8 +45,6 @@ class Pool(BaseComponent):
         {'id': 'ha_allow_overcommit', 'type': 'bool', 'mode': 'w'},
         {'id': 'ha_enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'ha_host_failures_to_tolerate', 'type': 'int', 'mode': 'w'},
-        {'id': 'ha_overcommitted', 'type': 'bool', 'mode': 'w'},
-        {'id': 'ha_plan_exists_for', 'type': 'int', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'oc_cpuid_feature_mask', 'type': 'string', 'mode': 'w'},
@@ -167,8 +163,6 @@ class IPoolInfo(IBaseComponentInfo):
     ha_allow_overcommit = schema.Bool(title=_t(u'HA Allow Overcommit'))
     ha_enabled = schema.Bool(title=_t(u'HA Enabled'))
     ha_host_failures_to_tolerate = schema.Int(title=_t(u'HA Host Failures to Tolerate'))
-    ha_overcommitted = schema.Bool(title=_t(u'HA Overcommitted'))
-    ha_plan_exists_for = schema.Int(title=_t(u'HA Plan Exists For'))
     oc_cpuid_feature_mask = schema.TextLine(title=_t(u'CPU ID Feature Mask'))
     oc_memory_ratio_hvm = schema.TextLine(title=_t(u'HVM Memory Ratio'))
     oc_memory_ratio_pv = schema.TextLine(title=_t(u'PV Memory Ratio'))
@@ -193,8 +187,6 @@ class PoolInfo(BaseComponentInfo):
     ha_allow_overcommit = ProxyProperty('ha_allow_overcommit')
     ha_enabled = ProxyProperty('ha_enabled')
     ha_host_failures_to_tolerate = ProxyProperty('ha_host_failures_to_tolerate')
-    ha_overcommitted = ProxyProperty('ha_overcommitted')
-    ha_plan_exists_for = ProxyProperty('ha_plan_exists_for')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
     oc_cpuid_feature_mask = ProxyProperty('oc_cpuid_feature_mask')

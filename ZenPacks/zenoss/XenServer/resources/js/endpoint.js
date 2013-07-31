@@ -630,19 +630,14 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'master'},
+                {name: 'default_sr'},
+                {name: 'ha_enabled'},
+                {name: 'ha_allow_overcommit'},
+                {name: 'ha_host_failures_to_tolerate'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'ha_allow_overcommit'},
-                {name: 'ha_enabled'},
-                {name: 'ha_host_failures_to_tolerate'},
-                {name: 'ha_overcommitted'},
-                {name: 'ha_plan_exists_for'},
-                {name: 'name_description'},
-                {name: 'name_label'},
-                {name: 'redo_log_enabled'},
-                {name: 'xapi_uuid'},
-                {name: 'vswitch_controller'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -650,80 +645,46 @@ ZC.XenServerPoolPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
+            },{
+                id: 'master',
+                dataIndex: 'master',
+                header: _t('Master Host'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 120
             },{
-                dataIndex: 'ha_allow_overcommit',
-                header: _t('ha_allow_overcommit'),
-                sortable: true,
-                width: 80,
-                id: 'ha_allow_overcommit'
+                id: 'default_sr',
+                dataIndex: 'default_sr',
+                header: _t('Default SR'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
+                id: 'ha_enabled',
                 dataIndex: 'ha_enabled',
-                header: _t('ha_enabled'),
-                sortable: true,
-                width: 80,
-                id: 'ha_enabled'
+                header: _t('HA Enabled'),
+                renderer: Zenoss.render.checkbox,
+                width: 80
             },{
+                id: 'ha_allow_overcommit',
+                dataIndex: 'ha_allow_overcommit',
+                header: _t('Allow Overcommit'),
+                renderer: Zenoss.render.checkbox,
+                width: 115
+            },{
+                id: 'ha_host_failures_to_tolerate',
                 dataIndex: 'ha_host_failures_to_tolerate',
-                header: _t('ha_host_failures_to_tolerate'),
-                sortable: true,
-                width: 80,
-                id: 'ha_host_failures_to_tolerate'
-            },{
-                dataIndex: 'ha_overcommitted',
-                header: _t('ha_overcommitted'),
-                sortable: true,
-                width: 80,
-                id: 'ha_overcommitted'
-            },{
-                dataIndex: 'ha_plan_exists_for',
-                header: _t('ha_plan_exists_for'),
-                sortable: true,
-                width: 80,
-                id: 'ha_plan_exists_for'
-            },{
-                dataIndex: 'name_description',
-                header: _t('name_description'),
-                sortable: true,
-                width: 80,
-                id: 'name_description'
-            },{
-                dataIndex: 'name_label',
-                header: _t('name_label'),
-                sortable: true,
-                width: 80,
-                id: 'name_label'
-            },{
-                dataIndex: 'redo_log_enabled',
-                header: _t('redo_log_enabled'),
-                sortable: true,
-                width: 80,
-                id: 'redo_log_enabled'
-            },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                sortable: true,
-                width: 80,
-                id: 'xapi_uuid'
-            },{
-                dataIndex: 'vswitch_controller',
-                header: _t('vswitch_controller'),
-                sortable: true,
-                width: 80,
-                id: 'vswitch_controller'
+                header: _t('Tolerable Host Failures'),
+                width: 140
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',

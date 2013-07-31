@@ -189,8 +189,13 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
         # Simultaneously call client.xenapi.xxx.get_all_records() for
         # each XAPI class.
-        results = yield DeferredList([
-            getattr(client.xenapi, x).get_all_records() for x in XAPI_CLASSES])
+        try:
+            results = yield DeferredList([
+                getattr(client.xenapi, x).get_all_records() for x in XAPI_CLASSES])
+        except Exception, ex:
+            LOG.error(
+                "%s %s XenAPI error: %s",
+                self.device, self.name(), ex)
 
         try:
             yield client.close()
@@ -235,10 +240,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         # class.
         for i, xapi_class in enumerate(XAPI_CLASSES):
             if not results[i][0] or results[i][1] is None:
-                LOG.error(
-                    "No XenServer API response for %s from %s",
-                    xapi_class, device.id)
-
+                LOG.error("No %s response from %s", xapi_class, device.id)
                 continue
 
             maps.extend(
@@ -491,6 +493,50 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 modname=MODULE_NAME['PIF'],
                 objmaps=grouped_objmaps)
 
+    def pool_relmaps(self, results):
+        '''
+        Yield a single pools RelationshipMap.
+        '''
+        objmaps = []
+
+        for ref, properties in results.items():
+            pool_title = properties.get('name_label')
+
+            # By default pools will not have a name_label. XenCenter
+            # shows the master host's name_label in this case. We should
+            # do the same.
+            if not pool_title:
+                master_ref = properties.get('master')
+                if master_ref:
+                    pool_title = self.cache_get('host_titles', master_ref)
+
+            other_config = properties.get('other_config', {})
+
+            objmaps.append({
+                'id': id_from_ref(ref),
+                'title': pool_title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'ha_allow_overcommit': properties.get('ha_allow_overcommit'),
+                'ha_enabled': properties.get('ha_enabled'),
+                'ha_host_failures_to_tolerate': int_or_none(properties.get('ha_host_failures_to_tolerate')),
+                'name_description': properties.get('name_description'),
+                'name_label': properties.get('name_label'),
+                'oc_cpuid_feature_mask': other_config.get('cpuid_feature_mask'),
+                'oc_memory_ratio_hvm': other_config.get('memory-ratio-hvm'),
+                'oc_memory_ratio_pv': other_config.get('memory-ratio-pv'),
+                'vswitch_controller': properties.get('vswitch_controller'),
+                'setMaster': id_from_ref(properties.get('master')),
+                'setDefaultSR': id_from_ref(properties.get('default_SR')),
+                'setSuspendImageSR': id_from_ref(properties.get('suspend_image_SR')),
+                'setCrashDumpSR': id_from_ref(properties.get('crash_dump_SR')),
+                })
+
+        yield RelationshipMap(
+            relname='pools',
+            modname=MODULE_NAME['Pool'],
+            objmaps=objmaps)
+
     def sr_relmaps(self, results):
         '''
         Yield a single srs RelationshipMap.
@@ -627,37 +673,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         yield RelationshipMap(
             relname='vmappliances',
             modname=MODULE_NAME['VMAppliance'],
-            objmaps=objmaps)
-
-    def pool_relmaps(self, results):
-        '''
-        Yield a single pools RelationshipMap.
-        '''
-        objmaps = []
-
-        for ref, properties in results.items():
-            pool_title = properties.get('name_label')
-
-            # By default pools will not have a name_label. XenCenter
-            # shows the master host's name_label in this case. We should
-            # do the same.
-            if not pool_title:
-                master_ref = properties.get('master')
-                if master_ref:
-                    pool_title = self.cache_get('host_titles', master_ref)
-
-            objmaps.append({
-                'id': id_from_ref(ref),
-                'title': pool_title,
-                'setMaster': id_from_ref(properties.get('master')),
-                'setDefaultSR': id_from_ref(properties.get('default_SR')),
-                'setSuspendImageSR': id_from_ref(properties.get('suspend_image_SR')),
-                'setCrashDumpSR': id_from_ref(properties.get('crash_dump_SR')),
-                })
-
-        yield RelationshipMap(
-            relname='pools',
-            modname=MODULE_NAME['Pool'],
             objmaps=objmaps)
 
     def other_maps(self):
