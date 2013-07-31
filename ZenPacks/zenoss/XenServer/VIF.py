@@ -41,7 +41,7 @@ class VIF(PooledComponent):
     ipv4_allowed = None
     ipv6_allowed = None
     locking_mode = None
-    metrics = None
+    metrics_ref = None
 
     _properties = PooledComponent._properties + (
         {'id': 'macaddress', 'type': 'string', 'mode': 'w'},
@@ -53,7 +53,7 @@ class VIF(PooledComponent):
         {'id': 'ipv4_allowed', 'type': 'lines', 'mode': 'w'},
         {'id': 'ipv6_allowed', 'type': 'lines', 'mode': 'w'},
         {'id': 'locking_mode', 'type': 'string', 'mode': 'w'},
-        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
@@ -123,7 +123,7 @@ class VIFInfo(PooledComponentInfo):
     ipv4_allowed = ProxyProperty('ipv4_allowed')
     ipv6_allowed = ProxyProperty('ipv6_allowed')
     locking_mode = ProxyProperty('locking_mode')
-    metrics = ProxyProperty('metrics')
+    metrics_ref = ProxyProperty('metrics_ref')
 
 
 class VIFPathReporter(DefaultPathReporter):

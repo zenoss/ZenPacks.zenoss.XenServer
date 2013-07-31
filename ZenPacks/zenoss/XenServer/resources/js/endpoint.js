@@ -1035,7 +1035,7 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerVIF',
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'network',
             sortInfo: {
                 field: 'name',
                 direction: 'asc'
@@ -1046,15 +1046,13 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'vm'},
+                {name: 'network'},
+                {name: 'locking_mode'},
+                {name: 'currently_attached'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
-                {name: 'MAC'},
-                {name: 'MTU'},
-                {name: 'qos_algorithm_type'},
-                {name: 'status_code'},
-                {name: 'status_detail'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -1068,37 +1066,29 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'name',
                 header: _t('Name'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 100
             },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                width: 80,
-                id: 'MAC'
+                id: 'vm',
+                dataIndex: 'vm',
+                header: _t('VM'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
-                dataIndex: 'MTU',
-                header: _t('MTU'),
-                width: 80,
-                id: 'MTU'
+                id: 'network',
+                dataIndex: 'network',
+                header: _t('Network'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
             },{
-                dataIndex: 'qos_algorithm_type',
-                header: _t('qos_algorithm_type'),
-                width: 80,
-                id: 'qos_algorithm_type'
+                id: 'locking_mode',
+                dataIndex: 'locking_mode',
+                header: _t('Locking Mode'),
+                width: 100
             },{
-                dataIndex: 'status_code',
-                header: _t('status_code'),
-                width: 80,
-                id: 'status_code'
-            },{
-                dataIndex: 'status_detail',
-                header: _t('status_detail'),
-                width: 80,
-                id: 'status_detail'
-            },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                width: 80,
-                id: 'xapi_uuid'
+                id: 'currently_attached',
+                dataIndex: 'currently_attached',
+                header: _t('Attached'),
+                renderer: Zenoss.render.checkbox,
+                width: 70
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
