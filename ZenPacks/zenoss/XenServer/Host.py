@@ -42,7 +42,7 @@ class Host(PooledComponent):
     edition = None
     enabled = None
     hostname = None
-    metrics = None
+    metrics_ref = None
     name_description = None
     name_label = None
     sched_policy = None
@@ -60,7 +60,7 @@ class Host(PooledComponent):
         {'id': 'edition', 'type': 'string', 'mode': 'w'},
         {'id': 'enabled', 'type': 'bool', 'mode': 'w'},
         {'id': 'hostname', 'type': 'string', 'mode': 'w'},
-        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'sched_policy', 'type': 'string', 'mode': 'w'},
@@ -246,7 +246,7 @@ class HostInfo(PooledComponentInfo):
     enabled = ProxyProperty('enabled')
     hostname = ProxyProperty('hostname')
     is_pool_master = ProxyProperty('is_pool_master')
-    metrics = ProxyProperty('metrics')
+    metrics_ref = ProxyProperty('metrics_ref')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
     sched_policy = ProxyProperty('sched_policy')
