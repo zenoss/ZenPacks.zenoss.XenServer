@@ -441,6 +441,56 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 modname=MODULE_NAME['PBD'],
                 objmaps=grouped_objmaps)
 
+    def pif_relmaps(self, results):
+        '''
+        Yield a pifs RelationshipMap for each host.
+        '''
+        objmaps = collections.defaultdict(list)
+
+        for ref, properties in results.items():
+            title = properties.get('device') or properties['uuid']
+
+            # IP is a single string whereas IPv6 is a list.
+            ipv4_addresses = [x for x in [properties.get('IP')] if x]
+            ipv6_addresses = [x for x in properties.get('IPv6', []) if x]
+
+            vlan = properties.get('VLAN')
+            if vlan == '-1':
+                vlan = None
+
+            objmaps[properties['host']].append({
+                'id': id_from_ref(ref),
+                'title': title,
+                'xapi_ref': ref,
+                'xapi_uuid': properties.get('uuid'),
+                'dns': properties.get('dns'),
+                'ipv4_addresses': ipv4_addresses,
+                'ipv6_addresses': ipv6_addresses,
+                'macaddress': properties.get('MAC'),
+                'mtu': properties.get('MTU'),
+                'vlan': vlan,
+                'currently_attached': properties.get('currently_attached'),
+                'pif_device': properties.get('device'),
+                'disallow_unplug': properties.get('disallow_unplug'),
+                'ipv4_gateway': properties.get('gateway'),
+                'ipv4_configuration_mode': properties.get('ip_configuration_mode'),
+                'ipv6_configuration_mode': properties.get('ipv6_configuration_mode'),
+                'ipv6_gateway': properties.get('ipv6_gateway'),
+                'management': properties.get('management'),
+                'metrics_ref': properties.get('metrics'),
+                'ipv4_netmask': properties.get('netmask'),
+                'physical': properties.get('physical'),
+                'primary_address_type': properties.get('primary_address_type'),
+                'setNetwork': id_from_ref(properties.get('network')),
+                })
+
+        for parent_ref, grouped_objmaps in objmaps.items():
+            yield RelationshipMap(
+                compname='hosts/%s' % id_from_ref(parent_ref),
+                relname='pifs',
+                modname=MODULE_NAME['PIF'],
+                objmaps=grouped_objmaps)
+
     def sr_relmaps(self, results):
         '''
         Yield a single srs RelationshipMap.
@@ -484,28 +534,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 relname='vdis',
                 modname=MODULE_NAME['VDI'],
                 objmaps=ref_objmaps)
-
-    def pif_relmaps(self, results):
-        '''
-        Yield a pifs RelationshipMap for each host.
-        '''
-        objmaps = collections.defaultdict(list)
-
-        for ref, properties in results.items():
-            title = properties.get('device') or properties['uuid']
-
-            objmaps[properties['host']].append({
-                'id': id_from_ref(ref),
-                'title': title,
-                'setNetwork': id_from_ref(properties.get('network')),
-                })
-
-        for parent_ref, grouped_objmaps in objmaps.items():
-            yield RelationshipMap(
-                compname='hosts/%s' % id_from_ref(parent_ref),
-                relname='pifs',
-                modname=MODULE_NAME['PIF'],
-                objmaps=grouped_objmaps)
 
     def vm_relmaps(self, results):
         '''

@@ -45,7 +45,7 @@ class PIF(PooledComponent):
     ipv6_configuration_mode = None
     ipv6_gateway = None
     management = None
-    metrics = None
+    metrics_ref = None
     ipv4_netmask = None
     physical = None
     primary_address_type = None
@@ -65,7 +65,7 @@ class PIF(PooledComponent):
         {'id': 'ipv6_configuration_mode', 'type': 'string', 'mode': 'w'},
         {'id': 'ipv6_gateway', 'type': 'string', 'mode': 'w'},
         {'id': 'management', 'type': 'bool', 'mode': 'w'},
-        {'id': 'metrics', 'type': 'string', 'mode': 'w'},
+        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'ipv4_netmask', 'type': 'string', 'mode': 'w'},
         {'id': 'physical', 'type': 'bool', 'mode': 'w'},
         {'id': 'primary_address_type', 'type': 'string', 'mode': 'w'},
@@ -125,11 +125,6 @@ class IPIFInfo(IPooledComponentInfo):
     physical = schema.Bool(title=_t(u'Physical'))
     primary_address_type = schema.TextLine(title=_t(u'Primary Address Type'))
 
-    IP = schema.TextLine(title=_t(u'IPS'))
-    MAC = schema.TextLine(title=_t(u'MACS'))
-    netmask = schema.TextLine(title=_t(u'netmasks'))
-    gateway = schema.TextLine(title=_t(u'gateways'))
-
 
 class PIFInfo(PooledComponentInfo):
     '''
@@ -149,13 +144,14 @@ class PIFInfo(PooledComponentInfo):
     mtu = ProxyProperty('mtu')
     vlan = ProxyProperty('vlan')
     currently_attached = ProxyProperty('currently_attached')
-    pif_device = ProxyProperty('device')
+    pif_device = ProxyProperty('pif_device')
     disallow_unplug = ProxyProperty('disallow_unplug')
     ipv4_gateway = ProxyProperty('ipv4_gateway')
     ipv4_configuration_mode = ProxyProperty('ipv4_configuration_mode')
     ipv6_configuration_mode = ProxyProperty('ipv6_configuration_mode')
     ipv6_gateway = ProxyProperty('ipv6_gateway')
     management = ProxyProperty('management')
+    metrics_ref = ProxyProperty('metrics_ref')
     ipv4_netmask = ProxyProperty('ipv4_netmask')
     physical = ProxyProperty('physical')
     primary_address_type = ProxyProperty('primary_address_type')

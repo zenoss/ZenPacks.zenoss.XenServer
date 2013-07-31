@@ -502,7 +502,7 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             componentType: 'XenServerPIF',
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'network',
             sortInfo: {
                 field: 'name',
                 direction: 'asc'
@@ -513,14 +513,17 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'host'},
+                {name: 'network'},
+                {name: 'primary_address_type'},  // for address
+                {name: 'ipv4_addresses'},  // for address
+                {name: 'ipv6_addresses'},  // for address
+                {name: 'management'},
+                {name: 'physical'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
                 {name: 'gateway'},
-                {name: 'IP'},
-                {name: 'MAC'},
-                {name: 'netmask'},
-                {name: 'xapi_uuid'},
                 {name: 'locking'}
             ],
             columns: [{
@@ -528,50 +531,57 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 dataIndex: 'severity',
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
-                sortable: true,
                 width: 50
             },{
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('Name'),
                 renderer: Zenoss.render.xenserver_entityLinkFromGrid,
-                sortable: true
+                width: 120
             },{
-                dataIndex: 'gateway',
-                header: _t('gateway'),
-                sortable: true,
-                width: 80,
-                id: 'gateway'
+                id: 'host',
+                dataIndex: 'host',
+                header: _t('Host'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid,
+                width: 120
             },{
-                dataIndex: 'IP',
-                header: _t('IP'),
-                sortable: true,
-                width: 80,
-                id: 'IP'
+                id: 'network',
+                dataIndex: 'network',
+                header: _t('Network'),
+                renderer: Zenoss.render.xenserver_entityLinkFromGrid
             },{
-                dataIndex: 'MAC',
-                header: _t('MAC'),
-                sortable: true,
-                width: 80,
-                id: 'MAC'
+                id: 'address',
+                dataIndex: 'ipv4_addresses',
+                header: _t('Address'),
+                renderer: function(value, metaData, record) {
+                    if (record.data.primary_address_type == 'IPv4') {
+                        if (record.data.ipv4_addresses.length > 0) {
+                            return record.data.ipv4_addresses[0];
+                        }
+                    } else if (record.data.primary_address_type == 'IPv6') {
+                        if (record.data.ipv6_addresses.length > 0) {
+                            return record.dataipv6_addresses[0];
+                        }
+                    }
+                },
+                width: 90
             },{
-                dataIndex: 'netmask',
-                header: _t('netmask'),
-                sortable: true,
-                width: 80,
-                id: 'netmask'
+                id: 'management',
+                dataIndex: 'management',
+                header: _t('Management'),
+                renderer: Zenoss.render.checkbox,
+                width: 85
             },{
-                dataIndex: 'xapi_uuid',
-                header: _t('xapi_uuid'),
-                sortable: true,
-                width: 80,
-                id: 'xapi_uuid'
+                id: 'physical',
+                dataIndex: 'physical',
+                header: _t('Physical'),
+                renderer: Zenoss.render.checkbox,
+                width: 65
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
                 renderer: Zenoss.render.checkbox,
-                sortable: true,
                 width: 70
             },{
                 id: 'locking',
