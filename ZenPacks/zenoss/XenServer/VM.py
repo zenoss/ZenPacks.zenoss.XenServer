@@ -32,6 +32,8 @@ class VM(PooledComponent):
 
     meta_type = portal_type = 'XenServerVM'
 
+    xapi_metrics_ref = None
+    xapi_guest_metrics_ref = None
     hvm_shadow_multiplier = None
     vcpus_at_startup = None
     vcpus_max = None
@@ -41,7 +43,6 @@ class VM(PooledComponent):
     allowed_operations = None
     domarch = None
     domid = None
-    guest_metrics_ref = None
     ha_always_run = None
     ha_restart_priority = None
     is_a_snapshot = None
@@ -49,7 +50,6 @@ class VM(PooledComponent):
     is_control_domain = None
     is_snapshot_from_vmpp = None
     memory_actual = None
-    metrics_ref = None
     name_description = None
     name_label = None
     power_state = None
@@ -59,6 +59,8 @@ class VM(PooledComponent):
     version = None
 
     _properties = PooledComponent._properties + (
+        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xapi_guest_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'hvm_shadow_multiplier', 'type': 'float', 'mode': 'w'},
         {'id': 'vcpus_at_startup', 'type': 'int', 'mode': 'w'},
         {'id': 'vcpus_max', 'type': 'int', 'mode': 'w'},
@@ -68,7 +70,6 @@ class VM(PooledComponent):
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'domarch', 'type': 'string', 'mode': 'w'},
         {'id': 'domid', 'type': 'int', 'mode': 'w'},
-        {'id': 'guest_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'ha_always_run', 'type': 'boolean', 'mode': 'w'},
         {'id': 'ha_restart_priority', 'type': 'string', 'mode': 'w'},
         {'id': 'is_a_snapshot', 'type': 'boolean', 'mode': 'w'},
@@ -76,7 +77,6 @@ class VM(PooledComponent):
         {'id': 'is_control_domain', 'type': 'boolean', 'mode': 'w'},
         {'id': 'is_snapshot_from_vmpp', 'type': 'boolean', 'mode': 'w'},
         {'id': 'memory_actual', 'type': 'int', 'mode': 'w'},
-        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'power_state', 'type': 'string', 'mode': 'w'},
@@ -138,6 +138,32 @@ class VM(PooledComponent):
             type_=CLASS_NAME['VMAppliance'],
             id_=vmappliance_id)
 
+    def getRRDTemplates(self):
+        '''
+        Return a list of RRDTemplate objects to bind to this VM.
+        '''
+        template_names = [self.getRRDTemplateName()]
+
+        # Bind the guest template only if guest metrics are available.
+        if self.xapi_guest_metrics_ref:
+            template_names.append('{0}Guest'.format(self.getRRDTemplateName()))
+
+        templates = []
+        for template_name in template_names:
+            template = self.getRRDTemplateByName(template_name)
+            if template:
+                templates.append(template)
+
+        return templates
+
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        if self.xapi_uuid:
+            return ('vm', self.xapi_uuid, '')
+
 
 class IVMInfo(IPooledComponentInfo):
     '''
@@ -186,6 +212,8 @@ class VMInfo(PooledComponentInfo):
     host = RelationshipInfoProperty('host')
     vmappliance = RelationshipInfoProperty('vmappliance')
 
+    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
+    xapi_guest_metrics_ref = ProxyProperty('xapi_guest_metrics_ref')
     hvm_shadow_multiplier = ProxyProperty('hvm_shadow_multiplier')
     vcpus_at_startup = ProxyProperty('vcpus_at_startup')
     vcpus_max = ProxyProperty('vcpus_max')
@@ -195,7 +223,6 @@ class VMInfo(PooledComponentInfo):
     allowed_operations = ProxyProperty('allowed_operations')
     domarch = ProxyProperty('domarch')
     domid = ProxyProperty('domid')
-    guest_metrics_ref = ProxyProperty('guest_metrics_ref')
     ha_always_run = ProxyProperty('ha_always_run')
     ha_restart_priority = ProxyProperty('ha_restart_priority')
     is_a_snapshot = ProxyProperty('is_a_snapshot')
@@ -203,7 +230,6 @@ class VMInfo(PooledComponentInfo):
     is_control_domain = ProxyProperty('is_control_domain')
     is_snapshot_from_vmpp = ProxyProperty('is_snapshot_from_vmpp')
     memory_actual = ProxyProperty('memory_actual')
-    metrics_ref = ProxyProperty('metrics_ref')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
     power_state = ProxyProperty('power_state')

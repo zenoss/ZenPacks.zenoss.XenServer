@@ -24,4 +24,28 @@ ZenPacks.zenoss.XenServer.Endpoint
 True
 </property>
 </object>
+<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'XAPICollectionError') -->
+<object id='/zport/dmd/Events/Status/instances/XAPICollectionError' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="string" id="eventClassKey" mode="w" >
+XAPICollectionError
+</property>
+<property type="int" id="sequence" mode="w" >
+10
+</property>
+<property type="string" id="example" mode="w" >
+invalid response
+</property>
+</object>
+<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'XAPICollectionSuccess') -->
+<object id='/zport/dmd/Events/Status/instances/XAPICollectionSuccess' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="string" id="eventClassKey" mode="w" >
+XAPICollectionSuccess
+</property>
+<property type="int" id="sequence" mode="w" >
+10
+</property>
+<property type="string" id="example" mode="w" >
+XAPI: successful collection
+</property>
+</object>
 </objects>

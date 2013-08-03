@@ -56,6 +56,15 @@ class HostCPU(PooledComponent):
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'hostcpus')),
         )
 
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        host_uuid = self.host().xapi_uuid
+        if host_uuid and self.number is not None:
+            return ('host', host_uuid, ''.join(('cpu', self.number)))
+
 
 class IHostCPUInfo(IPooledComponentInfo):
     '''

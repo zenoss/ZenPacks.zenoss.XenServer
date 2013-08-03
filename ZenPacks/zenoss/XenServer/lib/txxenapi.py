@@ -20,6 +20,7 @@ import random
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred, inlineCallbacks, returnValue
 from twisted.web import xmlrpc
+from twisted.web.client import getPage
 
 
 __all__ = ['Client']
@@ -184,6 +185,42 @@ class Client(object):
         XenAPI endpoint. Used to call XenAPI methods.
         '''
         return APICall(self)
+
+    @inlineCallbacks
+    def rrd_updates(self, address, start=None, cf=None, interval=None, host=None, uuid=None, json=None):
+        '''
+        XenServer RRDtool rrd_updates. For performance data.
+        '''
+        if not self._proxy:
+            yield self.rotate_server()
+
+        if not self._session_key:
+            yield self.login()
+
+        url_parts = []
+        url_parts.append('https://{0}/rrd_updates?session_id={1}'.format(
+            address, self._session_key))
+
+        if start:
+            url_parts.append('start={0}'.format(int(start)))
+
+        if cf:
+            url_parts.append('cf={0}'.format(cf))
+
+        if interval:
+            url_parts.append('interval={0}'.format(int(interval)))
+
+        if host:
+            url_parts.append('host')
+
+        if uuid:
+            url_parts.append('uuid={0}'.format(uuid))
+
+        if json:
+            url_parts.append('json')
+
+        result = yield getPage('&'.join(url_parts))
+        returnValue(result)
 
 
 class APICall(object):

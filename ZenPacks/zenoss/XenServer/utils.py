@@ -189,6 +189,28 @@ class BaseComponent(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+    def getRRDTemplateName(self):
+        '''
+        Return name of monitoring template to bind to this component.
+        '''
+        return self.__class__.__name__
+
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+
+        Prefix must be a three element tuple that looks like one of the
+        following examples::
+
+            ('host', 'host-uuid', '')
+            ('host', 'host-uuid', 'sr_sr-uuid_')
+
+        No generic implementation exists. Must be overridden in
+        subclasses to which XenServer RRD datasources will be bound.
+        '''
+        return None
+
 
 class IBaseComponentInfo(IComponentInfo):
     '''

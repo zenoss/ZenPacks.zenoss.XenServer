@@ -205,6 +205,15 @@ class SR(PooledComponent):
             type_=CLASS_NAME['Host'],
             ids=pool_ids)
 
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        host_uuid = self.host().xapi_uuid
+        if host_uuid and self.xapi_uuid:
+            return ('host', host_uuid, '_'.join(('sr', self.xapi_uuid)))
+
 
 class ISRInfo(IPooledComponentInfo):
     '''

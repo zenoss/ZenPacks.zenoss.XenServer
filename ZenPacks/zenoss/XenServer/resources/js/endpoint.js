@@ -123,6 +123,30 @@ ZC.XenServerComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
 });
 
 
+function convertToUnits(num, divby, unitstr, places){
+    unitstr = unitstr || "B";
+    places = places || 2;
+    divby = divby || 1024.0;
+    var units = [];
+    Ext.each(['', 'K', 'M', 'G', 'T', 'P'], function(p){
+        units.push(p+unitstr);
+    });
+    var sign = 1;
+    if (num < 0) {
+        num = Math.abs(num);
+        sign = -1;
+    }
+    var i;
+    for (i=0;i<units.length;i++) {
+        if (num<divby) {
+            break;
+        }
+        num = num/divby;
+    }
+    return (num*sign).toFixed(places) + units[i];
+}
+
+
 /*** Component Panels *******************************************************/
 
 ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
@@ -509,6 +533,7 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'primary_address_type'},  // for address
                 {name: 'ipv4_addresses'},  // for address
                 {name: 'ipv6_addresses'},  // for address
+                {name: 'speed'},
                 {name: 'management'},
                 {name: 'physical'},
                 {name: 'usesMonitorAttribute'},
@@ -556,6 +581,15 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                     }
                 },
                 width: 90
+            },{
+                id: 'speed',
+                dataIndex: 'speed',
+                header: _t('Speed'),
+                renderer: function(value) {
+                    if (value === null) return 'n/a';
+                    return convertToUnits(value, 1000, 'bps', 0);
+                },
+                width: 70
             },{
                 id: 'management',
                 dataIndex: 'management',

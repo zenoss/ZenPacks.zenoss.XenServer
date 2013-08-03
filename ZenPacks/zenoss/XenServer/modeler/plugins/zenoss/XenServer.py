@@ -38,6 +38,7 @@ XAPI_CLASSES = [
     'host',
     'host_cpu',
     'PBD',
+    'PIF_metrics',
     'PIF',
     'network',
     'VM_metrics',
@@ -291,6 +292,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'title': title,
                 'xapi_ref': ref,
                 'xapi_uuid': properties.get('uuid'),
+                'xapi_metrics_ref': properties.get('metrics'),
                 'api_version_major': properties.get('API_version_major'),
                 'api_version_minor': properties.get('API_version_minor'),
                 'api_version_vendor': properties.get('API_version_vendor'),
@@ -302,7 +304,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'edition': properties.get('edition'),
                 'enabled': properties.get('enabled'),
                 'hostname': properties.get('hostname'),
-                'metrics_ref': properties.get('metrics'),
                 'name_description': properties.get('name_description'),
                 'name_label': properties.get('name_label'),
                 'sched_policy': properties.get('sched_policy'),
@@ -444,6 +445,17 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 modname=MODULE_NAME['PBD'],
                 objmaps=grouped_objmaps)
 
+    def pif_metrics_relmaps(self, results):
+        '''
+        Cache PIF_metrics data to later be used in pif_relmaps.
+        '''
+        for ref, properties in results.items():
+            self.cache_set('pif_metrics', ref, properties)
+
+        # This method needs to be a generator of nothing.
+        if False:
+            yield
+
     def pif_relmaps(self, results):
         '''
         Yield a pifs RelationshipMap for each host.
@@ -461,10 +473,18 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             if vlan == '-1':
                 vlan = None
 
+            metrics = self.cache_get(
+                'pif_metrics', properties.get('metrics'), {})
+
+            speed = int_or_none(metrics.get('speed'))
+            if speed:
+                speed = speed * 1e6  # Convert from Mbps to bps.
+
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
                 'xapi_ref': ref,
+                'xapi_metrics_ref': properties.get('metrics'),
                 'xapi_uuid': properties.get('uuid'),
                 'dns': properties.get('dns'),
                 'ipv4_addresses': ipv4_addresses,
@@ -472,18 +492,22 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'macaddress': properties.get('MAC'),
                 'mtu': properties.get('MTU'),
                 'vlan': vlan,
+                'carrier': metrics.get('carrier'),
                 'currently_attached': properties.get('currently_attached'),
                 'pif_device': properties.get('device'),
+                'pif_device_id': metrics.get('device_id'),
+                'pif_device_name': metrics.get('device_name'),
                 'disallow_unplug': properties.get('disallow_unplug'),
                 'ipv4_gateway': properties.get('gateway'),
                 'ipv4_configuration_mode': properties.get('ip_configuration_mode'),
                 'ipv6_configuration_mode': properties.get('ipv6_configuration_mode'),
                 'ipv6_gateway': properties.get('ipv6_gateway'),
                 'management': properties.get('management'),
-                'metrics_ref': properties.get('metrics'),
                 'ipv4_netmask': properties.get('netmask'),
                 'physical': properties.get('physical'),
                 'primary_address_type': properties.get('primary_address_type'),
+                'speed': speed,
+                'vendor_name': metrics.get('vendor_name'),
                 'setNetwork': id_from_ref(properties.get('network')),
                 })
 
@@ -586,13 +610,13 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'id': id_from_ref(ref),
                 'title': title,
                 'xapi_ref': ref,
+                'xapi_metrics_ref': properties.get('metrics'),
                 'xapi_uuid': properties.get('uuid'),
                 'allowed_operations': properties.get('allowed_operations'),
                 'bootable': properties.get('bootable'),
                 'currently_attached': properties.get('currently_attached'),
                 'vbd_device': properties.get('device'),
                 'empty': properties.get('empty'),
-                'metrics_ref': properties.get('metrics'),
                 'mode': properties.get('mode'),
                 'storage_lock': properties.get('storage_lock'),
                 'vbd_type': properties.get('type'),
@@ -661,6 +685,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'id': id_from_ref(ref),
                 'title': title,
                 'xapi_ref': ref,
+                'xapi_metrics_ref': properties.get('metrics'),
                 'xapi_uuid': properties.get('uuid'),
                 'macaddress': properties.get('MAC'),
                 'mac_autogenerated': properties.get('MAC_autogenerated'),
@@ -671,7 +696,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'ipv4_allowed': properties.get('ipv4_allowed'),
                 'ipv6_allowed': properties.get('ipv6_allowed'),
                 'locking_mode': properties.get('locking_mode'),
-                'metrics_ref': properties.get('metrics_ref'),
                 'setNetwork': id_from_ref(properties.get('network')),
                 })
 
@@ -708,6 +732,10 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
             title = properties.get('name_label') or properties['uuid']
 
+            guest_metrics_ref = properties.get('guest_metrics')
+            if guest_metrics_ref == 'OpaqueRef:NULL':
+                guest_metrics_ref = None
+
             metrics = self.cache_get(
                 'vm_metrics', properties.get('metrics'), {})
 
@@ -715,6 +743,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'id': id_from_ref(ref),
                 'title': title,
                 'xapi_ref': ref,
+                'xapi_metrics_ref': properties.get('metrics'),
+                'xapi_guest_metrics_ref': guest_metrics_ref,
                 'xapi_uuid': properties.get('uuid'),
                 'hvm_shadow_multiplier': properties.get('HVM_shadow_multiplier'),
                 'vcpus_at_startup': int_or_none(properties.get('VCPUs_at_startup')),
@@ -725,7 +755,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'allowed_operations': properties.get('allowed_operations'),
                 'domarch': properties.get('domarch'),
                 'domid': int_or_none(properties.get('domid')),
-                'guest_metrics_ref': properties.get('guest_metrics'),
                 'ha_always_run': properties.get('ha_always_run'),
                 'ha_restart_priority': properties.get('ha_restart_priority'),
                 'is_a_snapshot': properties.get('is_a_snapshot'),
@@ -733,7 +762,6 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 'is_control_domain': properties.get('is_control_domain'),
                 'is_snapshot_from_vmpp': properties.get('is_snapshot_from_vmpp'),
                 'memory_actual': int_or_none(metrics.get('memory_actual')),
-                'metrics_ref': properties.get('metrics'),
                 'name_description': properties.get('name_description'),
                 'name_label': properties.get('name_label'),
                 'power_state': properties.get('power_state'),

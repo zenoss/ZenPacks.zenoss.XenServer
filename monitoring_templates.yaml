@@ -1,0 +1,279 @@
+/XenServer/Host:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Host"
+
+  datasources:
+    host:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: host
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        memoryOverhead:
+          path: memory_overhead
+
+    hostMetrics:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: host_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        memoryFree:
+          path: memory_free
+
+        memoryTotal:
+          path: memory_total
+
+    hostRRDs:
+      type: XenServer RRD
+      eventClass: /Ignore
+
+      datapoints:
+        memoryTotal:
+          pattern: memory_total_kib
+          rpn: "1024,*"
+
+        memoryFree:
+          pattern: memory_free_kib
+          rpn: "1024,*"
+
+        xapiMemoryUsage:
+          pattern: xapi_memory_usage_kib
+          rpn: "1024,*"
+
+        xapiFreeMemory:
+          pattern: xapi_free_memory_kib
+          rpn: "1024,*"
+
+        xapiLiveMemory:
+          pattern: xapi_live_memory_kib
+          rpn: "1024,*"
+
+        xapiAllocation:
+          pattern: xapi_allocation_kib
+          rpn: "1024,*"
+
+        pifAggrRX:
+          pattern: pif_aggr_rx
+          rpn: "8,*"
+
+        pifAggrTX:
+          pattern: pif_aggr_tx
+          rpn: "8,*"
+
+        cpuAvg:
+          pattern: cpu_avg
+
+        loadAvg:
+          pattern: loadavg
+
+        srCacheSizeSum:
+          pattern: _cache_size
+          group_aggregation: SUM
+
+        maxSRCacheHitsSum:
+          pattern: _cache_hits
+          time_aggregation: MAX
+          group_aggregation: SUM
+
+        maxSRCacheMissesSum:
+          pattern: _cache_misses
+          time_aggregation: MAX
+          group_aggregation: SUM
+
+
+/XenServer/HostCPU:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.HostCPU"
+
+  datasources:
+    hostCPU:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: host_cpu
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        utilisation:
+          path: utilisation
+
+
+/XenServer/Network:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Network"
+
+
+/XenServer/PBD:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.PBD"
+
+
+/XenServer/PIF:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.PIF"
+
+  datasources:
+    pifMetrics:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: PIF_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        ioReadKbs:
+          path: io_read_kbs
+          rpn: "8192,*"
+
+        ioWriteKbs:
+          path: io_write_kbs
+          rpn: "8192,*"
+
+        speed:
+          path: speed
+          rpn: "1000000,*"
+
+
+/XenServer/Pool:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Pool"
+
+  datasources:
+    pool:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: pool
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        haPlanExistsFor:
+          path: ha_plan_exists_for
+
+        haHostFailuresToTolerate:
+          path: ha_host_failures_to_tolerate
+
+
+/XenServer/SR:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.SR"
+
+  datasources:
+    sr:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: SR
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        physicalSize:
+          path: physical_size
+          rrdmin: 0
+
+        physicalUtilisation:
+          path: physical_utilisation
+          rrdmin: 0
+
+        virtualAllocation:
+          path: virtual_allocation
+
+
+/XenServer/VBD:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VBD"
+
+  datasources:
+    vbdMetrics:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: VBD_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        ioReadKbs:
+          path: io_read_kbs
+          rpn: "1024,*"
+
+        ioWriteKbs:
+          path: io_write_kbs
+          rpn: "1024,*"
+
+/XenServer/VDI:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VDI"
+
+  datasources:
+    vdi:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: VDI
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        physicalUtilisation:
+          path: physical_utilisation
+          rrdmin: 0
+
+        virtualSize:
+          path: virtual_size
+          rrdmin: 0
+
+
+/XenServer/VIF:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VIF"
+
+  datasources:
+    vifMetrics:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: VIF_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        ioReadKbs:
+          path: io_read_kbs
+          rpn: "8192,*"
+
+        ioWriteKbs:
+          path: io_write_kbs
+          rpn: "8192,*"
+
+
+/XenServer/VM:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VM"
+
+  datasources:
+    vm:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: VM
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        memoryDynamicMax:
+          path: memory_dynamic_max
+
+        memoryDynamicMin:
+          path: memory_dynamic_min
+
+        memoryOverhead:
+          path: memory_overhead
+
+        memoryStaticMax:
+          path: memory_static_max
+
+        memoryStaticMin:
+          path: memory_static_min
+
+        memoryTarget:
+          path: memory_target
+
+    vmMetrics:
+      type: XenServer XAPI
+      eventClass: /Ignore
+      xapi_classname: VM_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        vcpusNumber:
+          path: VCPUs_number
+          rrdmin: 0
+
+        memoryActual:
+          path: memory_actual
+          rrdmin: 0
+
+
+/XenServer/VMGuest:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VM"

@@ -88,6 +88,16 @@ class VDI(PooledComponent):
             type_=CLASS_NAME['VBD'],
             ids=vbd_ids)
 
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        # This is a guess at future support. XenServer 6.2 doesn't have
+        # any RRD data for VDIs.
+        if self.xapi_uuid:
+            return ('vdi', self.xapi_uuid, '')
+
 
 class IVDIInfo(IPooledComponentInfo):
     '''
