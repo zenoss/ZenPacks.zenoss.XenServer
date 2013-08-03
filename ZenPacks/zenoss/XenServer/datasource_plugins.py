@@ -12,6 +12,7 @@ LOG = logging.getLogger('zen.XenServer')
 
 import collections
 import math
+import re
 
 from cStringIO import StringIO
 from lxml import etree
@@ -181,8 +182,8 @@ def aggregate_values(datapoint, columns):
         'SUM': sum,
         }
 
-    return aggregate[datapoint.params['group_aggregation']]([
-        aggregate[datapoint.params['time_aggregation']](x) for x in columns])
+    return aggregate[datapoint.group_aggregation]([
+        aggregate[datapoint.time_aggregation](x) for x in columns])
 
 
 class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
@@ -215,21 +216,18 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
             ds0.zXenServerUsername,
             ds0.zXenServerPassword)
 
-        prefix_tree = collections.defaultdict(
+        rrd_tree = collections.defaultdict(
             lambda: collections.defaultdict(
                 lambda: collections.defaultdict(
                     list)))
 
-        for datasource in config.datasources:
-            prefix = datasource.params.get('prefix')
-            if not prefix:
-                continue
-
-            for datapoint in datasource.points:
-                datapoint.row_indexes = []
-                prefix_tree[prefix[0]][prefix[1]][prefix[2]].append(datapoint)
-
         for address in ds0.xenserver_addresses:
+
+            # We must check what time the host thinks it is so we be
+            # accurate and efficient about what and how much data we
+            # request.
+            server_time = None
+
             time_check_result = yield client.rrd_updates(address, start=1e11)
 
             for _, end in etree.iterparse(StringIO(time_check_result), tag='end'):
@@ -238,10 +236,14 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
             if not server_time:
                 continue
 
-            start = int(server_time) - ds0.cycletime - 5
-            result = yield client.rrd_updates(address, start=start, host=True)
+            # Initialize {int: str} map of column indexes to
+            # their corresponding entry strings. To be used to match
+            # data to datapoints.
+            index_entries = None
 
-            row_data = collections.defaultdict(list)
+            start = int(server_time) - ds0.cycletime - 5
+            result = yield client.rrd_updates(
+                address, start=start, cf='AVERAGE', host=True)
 
             for _, element in etree.iterparse(StringIO(result)):
                 if element.tag == 'meta':
@@ -254,13 +256,10 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
 
                         continue
 
-                    for i, entry in enumerate(element.iter('entry')):
-                        etype, euuid, elabel = entry.text.split(':')[1:]
-
-                        points = prefix_tree[etype][euuid]
-                        for label_prefix, point in points.iteritems():
-                            if elabel.startswith(label_prefix):
-                                point.row_indexes.append(i)
+                    # Map (type, uuid, label) tuples to column indexes.
+                    index_entries = dict(
+                        (i, x.text.split(':')[1:]) for i, x in enumerate(
+                            element.iter('entry')))
 
                 elif element.tag == 'row':
                     for i, v in enumerate(element.iter('v')):
@@ -270,25 +269,37 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
                             continue
 
                         if not math.isnan(value):
-                            row_data[i].append(value)
-
-            # Looping through all datasource and datapoints for each
-            # host is sub-optimal, but it allows for continual
-            # monitoring of virtual resource even when they've moved to
-            # another host without our knowledge.
-
-            for datasource in config.datasources:
-                for datapoint in datasource.points:
-                    if not datapoint.row_indexes:
-                        continue
-
-                    # Time aggregation.
-                    if len(datapoint.row_indexes) == 1:
-                        pass
-
-                    # Time and group aggregation.
-                    else:
-                        pass
+                            etype, euuid, elabel = index_entries[i]
+                            rrd_tree[etype][euuid][elabel].append(value)
 
         data = self.new_data()
+
+        for datasource in config.datasources:
+            prefix = datasource.params.get('prefix')
+            if not prefix:
+                continue
+
+            datasource_data = rrd_tree[prefix[0]][prefix[1]]
+            for datapoint in datasource.points:
+                datapoint_data = []
+                for elabel in datasource_data.keys():
+                    if elabel == prefix[2]:
+                        datapoint_data.append(datasource_data[elabel])
+
+                    elif elabel.startswith(prefix[2]):
+                        remainder = elabel.replace(prefix[2], '', 1)
+                        if re.search(datapoint.pattern, remainder):
+                            datapoint_data.append(datasource_data[elabel])
+
+                if datapoint_data:
+                    value = aggregate_values(datapoint, datapoint_data)
+                    data['values'][datasource.component][datapoint.id] = (
+                        value, 'N')
+                else:
+                    LOG.info(
+                        "missing RRD data for %s:%s:%s",
+                        config.id,
+                        datasource.datasource,
+                        datapoint.id)
+
         returnValue(data)
