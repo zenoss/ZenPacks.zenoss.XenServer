@@ -192,7 +192,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
         # each XAPI class.
         try:
             results = yield DeferredList([
-                getattr(client.xenapi, x).get_all_records() for x in XAPI_CLASSES])
+                client.xenapi[x].get_all_records() for x in XAPI_CLASSES])
         except Exception, ex:
             LOG.error(
                 "%s %s XenAPI error: %s",

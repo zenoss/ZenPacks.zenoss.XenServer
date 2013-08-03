@@ -38,6 +38,7 @@ class Endpoint(Device):
         ('vms', ToManyCont(ToOne, MODULE_NAME['VM'], 'endpoint')),
         )
 
+    @property
     def xenserver_addresses(self):
         '''
         Return a list of all known XenServer host addresses.
