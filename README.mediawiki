@@ -3,7 +3,7 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# XenAPI datasource type.
+# XenServer RRD datasource type.
 # Monitoring templates.
 # Events.
 # Create Impact ERD.
@@ -29,7 +29,7 @@ Tidbits that are useful to me while developing the ZenPack.
 <pre>
 d = dmd.Devices.XenServer.createInstance('xenserver1')
 d.setPerformanceMonitor('localhost')
-d.setZenProperty('zXenServerAddresses', ['192.168.66.72', '192.168.66.71'])
+d.setZenProperty('zXenServerAddresses', ['192.168.66.71'])
 d.setZenProperty('zXenServerUsername', 'root')
 d.setZenProperty('zXenServerPassword', 'zenoss')
 commit()
