@@ -277,6 +277,22 @@
         haHostFailuresToTolerate:
           path: ha_host_failures_to_tolerate
 
+  graphs:
+    High Availability:
+      units: host failures
+      miny: 0
+
+      graphpoints:
+        Tolerable:
+          dpName: "property_haHostFailuresToTolerate"
+          format: "%4.0lf"
+          color: "000000"
+
+        Plan For:
+          dpName: "property_haPlanExistsFor"
+          format: "%4.0lf"
+          colorindex: 0
+
 
 /XenServer/SR:
   targetPythonClass: "ZenPacks.zenoss.XenServer.SR"
