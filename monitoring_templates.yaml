@@ -450,23 +450,8 @@
       xapi_ref: "${here/xapi_ref}"
 
       datapoints:
-        memoryDynamicMax:
-          path: memory_dynamic_max
-
-        memoryDynamicMin:
-          path: memory_dynamic_min
-
         memoryOverhead:
           path: memory_overhead
-
-        memoryStaticMax:
-          path: memory_static_max
-
-        memoryStaticMin:
-          path: memory_static_min
-
-        memoryTarget:
-          path: memory_target
 
     metric:
       type: XenServer XAPI
@@ -488,6 +473,7 @@
       datapoints:
         cpuAvg:
           pattern: cpu
+          rpn: "100,*"
 
         memory:
           pattern: memory
@@ -495,28 +481,105 @@
         vifRXSum:
           pattern: "vif_[^_]+_rx"
           group_aggregation: SUM
-          rpn: "8192,*"
+          rpn: "8,*"
 
         vifTXSum:
           pattern: "vif_[^_]+_tx"
           group_aggregation: SUM
-          rpn: "8192,*"
+          rpn: "8,*"
 
         vbdReadSum:
           pattern: "vbd_[^_]+_read"
           group_aggregation: SUM
-          rpn: "1024,*"
 
         vbdWriteSum:
           pattern: "vbd_[^_]+_write"
           group_aggregation: SUM
-          rpn: "1024,*"
 
         memoryInternalFree:
           pattern: memory_internal_free
+          rpn: "1024,*"
 
         memoryTarget:
           pattern: memory_target
+
+  graphs:
+    CPU Utilization:
+      units: "percent"
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: "rrd_cpuAvg"
+          format: "%7.2lf%%"
+
+    CPUs:
+      units: vCPUs
+      miny: 0
+
+      graphpoints:
+        Count:
+          dpName: "metric_vcpusNumber"
+          format: "%4.0lf"
+
+    Memory Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Actual:
+          dpName: "rrd_memoryTarget"
+          lineWidth: 2
+          color: "000000"
+          format: "%7.2lf%s"
+
+        Allocated:
+          dpName: "rrd_memory"
+          lineWidth: 1
+          color: "333333"
+          format: "%7.2lf%s"
+
+        Used:
+          dpName: "rrd_memoryInternalFree"
+          rpn: "Actual,EXC,-"
+          lineType: AREA
+          colorindex: 0
+          format: "%7.2lf%s"
+
+        Overhead:
+          dpName: "property_memoryOverhead"
+          lineType: AREA
+          stacked: true
+          colorindex: 1
+          format: "%7.2lf%s"
+
+    Disk Throughput:
+      units: bytes/sec
+      miny: 0
+
+      graphpoints:
+        Read:
+          dpName: "rrd_vbdReadSum"
+          format: "%7.2lf%s"
+
+        Write:
+          dpName: "rrd_vbdWriteSum"
+          format: "%7.2lf%s"
+
+    Network Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: "rrd_vifRXSum"
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: "rrd_vifTXSum"
+          format: "%7.2lf%s"
 
 
 /XenServer/VMGuest:
