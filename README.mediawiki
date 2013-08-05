@@ -3,7 +3,6 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# XenServer RRD datasource type.
 # Events.
 # Create Impact ERD.
 # Internal Impact adapters.
