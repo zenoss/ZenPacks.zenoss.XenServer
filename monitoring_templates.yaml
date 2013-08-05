@@ -412,20 +412,6 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.VIF"
 
   datasources:
-    metric:
-      type: XenServer XAPI
-      xapi_classname: VIF_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
-
-      datapoints:
-        ioRead:
-          path: io_read_kbs
-          rpn: "8192,*"
-
-        ioWrite:
-          path: io_write_kbs
-          rpn: "8192,*"
-
     rrd:
       type: XenServer RRD
 
@@ -437,6 +423,21 @@
         tx:
           pattern: _tx
           rpn: "8,*"
+
+  graphs:
+    Throughput:
+      units: bits/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: "rrd_rx"
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: "rrd_tx"
+          format: "%7.2lf%s"
 
 
 /XenServer/VM:
