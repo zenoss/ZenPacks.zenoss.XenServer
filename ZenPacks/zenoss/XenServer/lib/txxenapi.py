@@ -20,11 +20,34 @@ import random
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred, inlineCallbacks, returnValue
 from twisted.web import xmlrpc
+from twisted.web.client import getPage
 
 
 __all__ = ['Client']
 
 LOG = logging.getLogger('txxenapi')
+
+
+XAPI_CLASSNAMES = [
+    'host',
+    'host_cpu',
+    'host_metrics',
+    'network',
+    'PBD',
+    'PIF',
+    'PIF_metrics',
+    'pool',
+    'SR',
+    'VBD',
+    'VBD_metrics',
+    'VDI',
+    'VIF',
+    'VIF_metrics',
+    'VM',
+    'VM_appliance',
+    'VM_guest_metrics',
+    'VM_metrics',
+    ]
 
 
 class Client(object):
@@ -116,6 +139,16 @@ class Client(object):
                     raise Exception("error with no description")
 
     @inlineCallbacks
+    def login(self):
+        '''
+        Login and save the session ID for future calls.
+        '''
+        self._session_key = yield self._retryingCallRemote(
+            'session.login_with_password', self._username, self._password)
+
+        returnValue(self._session_key)
+
+    @inlineCallbacks
     def callRemote(self, method, *args):
         '''
         Wrap XML-RPC callRemote to handle common results and support
@@ -125,8 +158,7 @@ class Client(object):
             yield self.rotate_server()
 
         if not self._session_key:
-            self._session_key = yield self._retryingCallRemote(
-                'session.login_with_password', self._username, self._password)
+            yield self.login()
 
         if args[0] is None:
             args = list(args)
@@ -154,6 +186,42 @@ class Client(object):
         '''
         return APICall(self)
 
+    @inlineCallbacks
+    def rrd_updates(self, address, start=None, cf=None, interval=None, host=None, uuid=None, json=None):
+        '''
+        XenServer RRDtool rrd_updates. For performance data.
+        '''
+        if not self._proxy:
+            yield self.rotate_server()
+
+        if not self._session_key:
+            yield self.login()
+
+        url_parts = []
+        url_parts.append('https://{0}/rrd_updates?session_id={1}'.format(
+            address, self._session_key))
+
+        if start:
+            url_parts.append('start={0}'.format(int(start)))
+
+        if cf:
+            url_parts.append('cf={0}'.format(cf))
+
+        if interval:
+            url_parts.append('interval={0}'.format(int(interval)))
+
+        if host:
+            url_parts.append('host')
+
+        if uuid:
+            url_parts.append('uuid={0}'.format(uuid))
+
+        if json:
+            url_parts.append('json')
+
+        result = yield getPage('&'.join(url_parts))
+        returnValue(result)
+
 
 class APICall(object):
     '''
@@ -169,6 +237,9 @@ class APICall(object):
             return APICall(self._client, '{0}.{1}'.format(self._name, name))
         else:
             return APICall(self._client, name)
+
+    def __getitem__(self, name):
+        return getattr(self, name)
 
     def __call__(self, *args):
         return self._client.callRemote(self._name, self._client._session_key, *args)
@@ -188,23 +259,40 @@ if __name__ == '__main__':
     import sys
 
     @inlineCallbacks
-    def main(xapi_classname):
-        client = Client(['xenserver1', 'xenserver2'], 'root', 'zenoss')
+    def main(address, username, password, xapi_classnames):
+        client = Client([address], username, password)
 
-        try:
-            r = yield getattr(client.xenapi, xapi_classname).get_all_records()
-        except Exception, ex:
-            print ex
-        else:
-            pprint.pprint(r)
+        for xapi_classname in xapi_classnames:
+            try:
+                r = yield getattr(client.xenapi, xapi_classname).get_all_records()
+            except Exception, ex:
+                print >> sys.stderr, ex
+                continue
+
+            if len(xapi_classnames) > 1:
+                filename = '{0}.py'.format(xapi_classname)
+                print "Writing {0}.".format(filename)
+                with open(filename, 'w') as f:
+                    pprint.pprint(r, f)
+            else:
+                pprint.pprint(r)
 
         yield client.close()
 
         reactor.stop()
 
-    if len(sys.argv) < 2:
-        print >> sys.stderr, "Usage: %s <class>" % sys.argv[0]
+    if len(sys.argv) < 5:
+        print >> sys.stderr, (
+            "Usage: {0} <address> <username> <password> [all|class]".format(
+                sys.argv[0]))
+
         sys.exit(1)
 
-    main(sys.argv[1])
+    xapi_classnames = sys.argv[4:]
+
+    if 'all' in xapi_classnames:
+        main(sys.argv[1], sys.argv[2], sys.argv[3], XAPI_CLASSNAMES)
+    else:
+        main(sys.argv[1], sys.argv[2], sys.argv[3], xapi_classnames)
+
     reactor.run()

@@ -25,6 +25,30 @@
 
     <!-- API: Info Adapters -->
     <adapter
+        provides=".datasources.XenServerXAPIDataSource.IXenServerXAPIDataSourceInfo"
+        for=".datasources.XenServerXAPIDataSource.XenServerXAPIDataSource"
+        factory=".datasources.XenServerXAPIDataSource.XenServerXAPIDataSourceInfo"
+        />
+
+    <adapter
+        provides=".datasources.XenServerXAPIDataSource.IXenServerXAPIDataPointInfo"
+        for=".datasources.XenServerXAPIDataSource.XenServerXAPIDataPoint"
+        factory=".datasources.XenServerXAPIDataSource.XenServerXAPIDataPointInfo"
+        />
+
+    <adapter
+        provides=".datasources.XenServerRRDDataSource.IXenServerRRDDataSourceInfo"
+        for=".datasources.XenServerRRDDataSource.XenServerRRDDataSource"
+        factory=".datasources.XenServerRRDDataSource.XenServerRRDDataSourceInfo"
+        />
+
+    <adapter
+        provides=".datasources.XenServerRRDDataSource.IXenServerRRDDataPointInfo"
+        for=".datasources.XenServerRRDDataSource.XenServerRRDDataPoint"
+        factory=".datasources.XenServerRRDDataSource.XenServerRRDDataPointInfo"
+        />
+
+    <adapter
         provides=".Endpoint.IEndpointInfo"
         for=".Endpoint.Endpoint"
         factory=".Endpoint.EndpointInfo"

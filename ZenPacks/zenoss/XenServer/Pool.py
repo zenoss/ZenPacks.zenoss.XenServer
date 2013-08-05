@@ -149,6 +149,16 @@ class Pool(BaseComponent):
             type_=CLASS_NAME['SR'],
             id_=sr_id)
 
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        # This is a guess at future support. XenServer 6.2 doesn't have
+        # any RRD data for pools.
+        if self.xapi_uuid:
+            return ('pool', self.xapi_uuid, '')
+
 
 class IPoolInfo(IBaseComponentInfo):
     '''

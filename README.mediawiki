@@ -3,8 +3,7 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# XenAPI datasource type.
-# Monitoring templates.
+# XenServer RRD datasource type.
 # Events.
 # Create Impact ERD.
 # Internal Impact adapters.
@@ -12,8 +11,10 @@ Tracking tasks here at least until the first revision is done.
 # Documentation.
 
 ;Niceties
+# Add CloudStack Impact integration.
 # Add useful information to device overview screen.
 # zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
+# Vocabulary for XenServerRRDDataPointInfo *_aggregation properties.
 # Order component types on device screen sensibly.
 # Add bond interfaces. (Bond)
 # Add VLANs. (VLAN)
@@ -29,7 +30,7 @@ Tidbits that are useful to me while developing the ZenPack.
 <pre>
 d = dmd.Devices.XenServer.createInstance('xenserver1')
 d.setPerformanceMonitor('localhost')
-d.setZenProperty('zXenServerAddresses', ['192.168.66.72', '192.168.66.71'])
+d.setZenProperty('zXenServerAddresses', ['192.168.66.71'])
 d.setZenProperty('zXenServerUsername', 'root')
 d.setZenProperty('zXenServerPassword', 'zenoss')
 commit()

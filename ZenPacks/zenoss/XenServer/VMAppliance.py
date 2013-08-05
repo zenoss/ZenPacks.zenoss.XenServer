@@ -67,6 +67,16 @@ class VMAppliance(PooledComponent):
             type_=CLASS_NAME['VM'],
             ids=vm_ids)
 
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        # This is a guess at future support. XenServer 6.2 doesn't have
+        # any RRD data for VMAppliances.
+        if self.xapi_uuid:
+            return ('vmappliance', self.xapi_uuid, '')
+
 
 class IVMApplianceInfo(IPooledComponentInfo):
     '''

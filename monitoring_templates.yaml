@@ -1,0 +1,586 @@
+/XenServer/Host:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Host"
+
+  datasources:
+    property:
+      type: XenServer XAPI
+      xapi_classname: host
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        memoryOverhead:
+          path: memory_overhead
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        memoryTotal:
+          pattern: memory_total_kib
+          rpn: "1024,*"
+
+        memoryFree:
+          pattern: memory_free_kib
+          rpn: "1024,*"
+
+        xapiMemoryUsage:
+          pattern: xapi_memory_usage_kib
+          rpn: "1024,*"
+
+        xapiFreeMemory:
+          pattern: xapi_free_memory_kib
+          rpn: "1024,*"
+
+        xapiLiveMemory:
+          pattern: xapi_live_memory_kib
+          rpn: "1024,*"
+
+        xapiAllocation:
+          pattern: xapi_allocation_kib
+          rpn: "1024,*"
+
+        pifAggrRX:
+          pattern: pif_aggr_rx
+          rpn: "8,*"
+
+        pifAggrTX:
+          pattern: pif_aggr_tx
+          rpn: "8,*"
+
+        cpuAvg:
+          pattern: cpu_avg
+          rpn: "100,*"
+
+        loadAvg:
+          pattern: loadavg
+
+        srCacheSizeSum:
+          pattern: _cache_size
+          group_aggregation: SUM
+
+        srCacheHitsSum:
+          pattern: _cache_hits
+          group_aggregation: SUM
+
+        srCacheMissesSum:
+          pattern: _cache_misses
+          group_aggregation: SUM
+
+  graphs:
+    CPU Utilization:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: "rrd_cpuAvg"
+          format: "%7.2lf%%"
+
+    Memory Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: "rrd_memoryTotal"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Used:
+          dpName: "rrd_memoryFree"
+          rpn: "Total,EXC,-"
+          lineType: AREA
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Overhead:
+          dpName: "property_memoryOverhead"
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+          colorindex: 1
+
+    Network Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: "rrd_pifAggrRX"
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: "rrd_pifAggrTX"
+          format: "%7.2lf%s"
+
+    Control Domain Load:
+      units: processes
+      miny: 0
+
+      graphpoints:
+        Load Average:
+          dpName: "rrd_loadAvg"
+          format: "%7.2lf%s"
+
+    Storage Repositories Cache Size:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total Size:
+          dpName: "rrd_srCacheSizeSum"
+          format: "%7.2lf%s"
+
+    Storage Repositories Cache Rates:
+      units: ops/sec
+      miny: 0
+
+      graphpoints:
+        Hits:
+          dpName: "rrd_srCacheHitsSum"
+          format: "%7.2lf%s"
+
+        Misses:
+          dpName: "rrd_srCacheMissesSum"
+          format: "%7.2lf%s"
+
+    Agent Memory:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Usage:
+          dpName: "rrd_xapiMemoryUsage"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Allocation:
+          dpName: "rrd_xapiAllocation"
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Live:
+          dpName: "rrd_xapiLiveMemory"
+          format: "%7.2lf%s"
+          colorindex: 1
+
+        Free:
+          dpName: "rrd_xapiFreeMemory"
+          format: "%7.2lf%s"
+          colorindex: 2
+
+
+/XenServer/HostCPU:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.HostCPU"
+
+  datasources:
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        cpu:
+          pattern: ""
+          rpn: "100,*"
+
+  graphs:
+    CPU Utilization:
+      units: "percent"
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: "rrd_cpu"
+          format: "%7.2lf%%"
+
+
+/XenServer/Network:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Network"
+
+
+/XenServer/PBD:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.PBD"
+
+
+/XenServer/PIF:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.PIF"
+
+  datasources:
+    metric:
+      type: XenServer XAPI
+      xapi_classname: PIF_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        speed:
+          path: speed
+          rpn: "1000000,*"
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        rx:
+          pattern: _rx
+          rpn: "8,*"
+
+        tx:
+          pattern: _tx
+          rpn: "8,*"
+
+  graphs:
+    Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Limit:
+          dpName: "metric_speed"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Receive_m:
+          dpName: "metric_ioRead"
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Send_m:
+          dpName: "metric_ioWrite"
+          format: "%7.2lf%s"
+          colorindex: 1
+
+        Receive_r:
+          dpName: "rrd_rx"
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Send_r:
+          dpName: "rrd_tx"
+          format: "%7.2lf%s"
+          colorindex: 1
+
+
+/XenServer/Pool:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Pool"
+
+  datasources:
+    property:
+      type: XenServer XAPI
+      xapi_classname: pool
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        haPlanExistsFor:
+          path: ha_plan_exists_for
+
+        haHostFailuresToTolerate:
+          path: ha_host_failures_to_tolerate
+
+  graphs:
+    High Availability:
+      units: host failures
+      miny: 0
+
+      graphpoints:
+        Tolerable:
+          dpName: "property_haHostFailuresToTolerate"
+          format: "%4.0lf"
+          color: "000000"
+
+        Plan For:
+          dpName: "property_haPlanExistsFor"
+          format: "%4.0lf"
+          colorindex: 0
+
+
+/XenServer/SR:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.SR"
+
+  datasources:
+    property:
+      type: XenServer XAPI
+      xapi_classname: SR
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        physicalSize:
+          path: physical_size
+          rrdmin: 0
+
+        physicalUtilisation:
+          path: physical_utilisation
+          rrdmin: 0
+
+        virtualAllocation:
+          path: virtual_allocation
+
+  graphs:
+    Storage Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: "property_physicalSize"
+          color: "000000"
+          format: "%7.2lf%s"
+
+        Physical:
+          dpName: "property_physicalUtilisation"
+          lineType: AREA
+          colorindex: 0
+          format: "%7.2lf%s"
+
+        Virtual:
+          dpName: "property_virtualAllocation"
+          colorindex: 1
+          format: "%7.2lf%s"
+
+
+/XenServer/VBD:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VBD"
+
+  datasources:
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        read:
+          pattern: _read
+
+        write:
+          pattern: _write
+
+  graphs:
+    Throughput:
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Read:
+          dpName: "rrd_read"
+          format: "%7.2lf%s"
+
+        Write:
+          dpName: "rrd_write"
+          format: "%7.2lf%s"
+
+
+/XenServer/VDI:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VDI"
+
+  datasources:
+    property:
+      type: XenServer XAPI
+      xapi_classname: VDI
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        physicalUtilisation:
+          path: physical_utilisation
+          rrdmin: 0
+
+        virtualSize:
+          path: virtual_size
+          rrdmin: 0
+
+  graphs:
+    Storage Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Virtual:
+          dpName: "property_virtualSize"
+          color: "000000"
+          format: "%7.2lf%s"
+
+        Physical:
+          dpName: "property_physicalUtilisation"
+          colorindex: 0
+          format: "%7.2lf%s"
+
+
+/XenServer/VIF:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VIF"
+
+  datasources:
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        rx:
+          pattern: _rx
+          rpn: "8,*"
+
+        tx:
+          pattern: _tx
+          rpn: "8,*"
+
+  graphs:
+    Throughput:
+      units: bits/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: "rrd_rx"
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: "rrd_tx"
+          format: "%7.2lf%s"
+
+
+/XenServer/VM:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VM"
+
+  datasources:
+    property:
+      type: XenServer XAPI
+      xapi_classname: VM
+      xapi_ref: "${here/xapi_ref}"
+
+      datapoints:
+        memoryOverhead:
+          path: memory_overhead
+
+    metric:
+      type: XenServer XAPI
+      xapi_classname: VM_metrics
+      xapi_ref: "${here/xapi_metrics_ref}"
+
+      datapoints:
+        vcpusNumber:
+          path: VCPUs_number
+          rrdmin: 0
+
+        memoryActual:
+          path: memory_actual
+          rrdmin: 0
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        cpuAvg:
+          pattern: cpu
+          rpn: "100,*"
+
+        memory:
+          pattern: memory
+
+        vifRXSum:
+          pattern: "vif_[^_]+_rx"
+          group_aggregation: SUM
+          rpn: "8,*"
+
+        vifTXSum:
+          pattern: "vif_[^_]+_tx"
+          group_aggregation: SUM
+          rpn: "8,*"
+
+        vbdReadSum:
+          pattern: "vbd_[^_]+_read"
+          group_aggregation: SUM
+
+        vbdWriteSum:
+          pattern: "vbd_[^_]+_write"
+          group_aggregation: SUM
+
+        memoryInternalFree:
+          pattern: memory_internal_free
+          rpn: "1024,*"
+
+        memoryTarget:
+          pattern: memory_target
+
+  graphs:
+    CPU Utilization:
+      units: "percent"
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: "rrd_cpuAvg"
+          format: "%7.2lf%%"
+
+    CPUs:
+      units: vCPUs
+      miny: 0
+
+      graphpoints:
+        Count:
+          dpName: "metric_vcpusNumber"
+          format: "%4.0lf"
+
+    Memory Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Actual:
+          dpName: "rrd_memoryTarget"
+          lineWidth: 2
+          color: "000000"
+          format: "%7.2lf%s"
+
+        Allocated:
+          dpName: "rrd_memory"
+          lineWidth: 1
+          color: "333333"
+          format: "%7.2lf%s"
+
+        Used:
+          dpName: "rrd_memoryInternalFree"
+          rpn: "Actual,EXC,-"
+          lineType: AREA
+          colorindex: 0
+          format: "%7.2lf%s"
+
+        Overhead:
+          dpName: "property_memoryOverhead"
+          lineType: AREA
+          stacked: true
+          colorindex: 1
+          format: "%7.2lf%s"
+
+    Disk Throughput:
+      units: bytes/sec
+      miny: 0
+
+      graphpoints:
+        Read:
+          dpName: "rrd_vbdReadSum"
+          format: "%7.2lf%s"
+
+        Write:
+          dpName: "rrd_vbdWriteSum"
+          format: "%7.2lf%s"
+
+    Network Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: "rrd_vifRXSum"
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: "rrd_vifTXSum"
+          format: "%7.2lf%s"
+
+
+/XenServer/VMGuest:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VM"

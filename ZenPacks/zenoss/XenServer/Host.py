@@ -31,6 +31,7 @@ class Host(PooledComponent):
 
     meta_type = portal_type = 'XenServerHost'
 
+    xapi_metrics_ref = None
     api_version_major = None
     api_version_minor = None
     api_version_vendor = None
@@ -42,13 +43,13 @@ class Host(PooledComponent):
     edition = None
     enabled = None
     hostname = None
-    metrics_ref = None
     name_description = None
     name_label = None
     sched_policy = None
     memory_total = None
 
     _properties = PooledComponent._properties + (
+        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_major', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_minor', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_vendor', 'type': 'string', 'mode': 'w'},
@@ -60,7 +61,6 @@ class Host(PooledComponent):
         {'id': 'edition', 'type': 'string', 'mode': 'w'},
         {'id': 'enabled', 'type': 'boolean', 'mode': 'w'},
         {'id': 'hostname', 'type': 'string', 'mode': 'w'},
-        {'id': 'metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'name_description', 'type': 'string', 'mode': 'w'},
         {'id': 'name_label', 'type': 'string', 'mode': 'w'},
         {'id': 'sched_policy', 'type': 'string', 'mode': 'w'},
@@ -192,6 +192,14 @@ class Host(PooledComponent):
             type_=CLASS_NAME['SR'],
             id_=sr_id)
 
+    def xenrrd_prefix(self):
+        '''
+        Return prefix under which XenServer stores RRD data about this
+        component.
+        '''
+        if self.xapi_uuid:
+            return ('host', self.xapi_uuid, '')
+
 
 class IHostInfo(IPooledComponentInfo):
     '''
@@ -234,6 +242,7 @@ class HostInfo(PooledComponentInfo):
     implements(IHostInfo)
     adapts(Host)
 
+    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
     api_version_major = ProxyProperty('api_version_major')
     api_version_minor = ProxyProperty('api_version_minor')
     api_version_vendor = ProxyProperty('api_version_vendor')
@@ -246,7 +255,6 @@ class HostInfo(PooledComponentInfo):
     enabled = ProxyProperty('enabled')
     hostname = ProxyProperty('hostname')
     is_pool_master = ProxyProperty('is_pool_master')
-    metrics_ref = ProxyProperty('metrics_ref')
     name_description = ProxyProperty('name_description')
     name_label = ProxyProperty('name_label')
     sched_policy = ProxyProperty('sched_policy')
