@@ -8,6 +8,9 @@
 #
 ######################################################################
 
+import logging
+LOG = logging.getLogger('zen.XenServer')
+
 from zope.event import notify
 
 from Products.AdvancedQuery import Eq, Or
@@ -189,6 +192,20 @@ class BaseComponent(DeviceComponent, ManagedEntity):
                     'while getting device for %s' % (
                         obj, exc, self))
 
+    def index_object(self, idxs=None):
+        '''
+        Overrides to also catalog in XenServerCatalog.
+        '''
+        super(BaseComponent, self).index_object(idxs=idxs)
+        getXenServerCatalog(self.dmd).catalog_object(self, self.getPrimaryId())
+
+    def unindex_object(self):
+        '''
+        Overrides to also uncatalog in XenServerCatalog.
+        '''
+        super(BaseComponent, self).unindex_object()
+        getXenServerCatalog(self.dmd).uncatalog_object(self.getPrimaryId())
+
     def getRRDTemplateName(self):
         '''
         Return name of monitoring template to bind to this component.
@@ -261,3 +278,69 @@ class PooledComponentInfo(BaseComponentInfo):
     '''
 
     pool = RelationshipInfoProperty('pool')
+
+
+def getXenServerCatalog(dmd):
+    '''
+    Return the XenServerCatalog.
+
+    Creates the catalog if it doesn't already exist.
+    '''
+    try:
+        return dmd.Devices.XenServer.XenServerCatalog
+    except AttributeError:
+        return createXenServerCatalog(dmd)
+
+
+def createXenServerCatalog(dmd):
+    '''
+    Create /zport/dmd/Devices/XenServer/XenServerCatalog and return it.
+
+    This allows for fast lookup of XenServer components by their XAPI
+    UUID.
+    '''
+    from Products.ZCatalog.Catalog import CatalogError
+    from Products.ZCatalog.ZCatalog import manage_addZCatalog
+
+    from Products.ZenUtils.Search import makeCaseSensitiveFieldIndex
+    from Products.Zuul.interfaces import ICatalogTool
+
+    catalog_name = 'XenServerCatalog'
+    device_class = dmd.Devices.createOrganizer('/XenServer')
+
+    if not hasattr(device_class, catalog_name):
+        LOG.info('Creating XenServer catalog')
+        manage_addZCatalog(device_class, catalog_name, catalog_name)
+
+    zcatalog = device_class._getOb(catalog_name)
+    catalog = zcatalog._catalog
+
+    try:
+        catalog.addIndex(
+            'xapi_uuid',
+            makeCaseSensitiveFieldIndex('xapi_uuid'))
+
+    except CatalogError:
+        # Index already exists.
+        pass
+
+    else:
+        LOG.info('Reindexing all XenServer components')
+        brains = ICatalogTool(dmd.primaryAq()).search(
+            'ZenPacks.zenoss.XenServer.utils.BaseComponent')
+
+        for brain in brains:
+            brain.getObject().index_object()
+
+    return catalog
+
+
+def findComponentByUUID(dmd, xapi_uuid):
+    '''
+    Return the first XenServer component matching XAPI uuid.
+    '''
+    if not xapi_uuid:
+        return
+
+    for brain in getXenServerCatalog(dmd)(xapi_uuid=xapi_uuid):
+        return brain.getObject()

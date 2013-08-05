@@ -13,9 +13,11 @@ LOG = logging.getLogger('zen.XenServer')
 import collections
 import math
 import re
+import time
 
 from cStringIO import StringIO
 from lxml import etree
+from xmlrpclib import DateTime
 
 from twisted.internet.defer import inlineCallbacks, returnValue
 
@@ -331,6 +333,80 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
             error = error.value
 
         LOG.error('error for %s rrd_updates: %s', config.id, error)
+        data = self.new_data()
+        data['events'].append(get_event(config, str(error), 5))
+        return data
+
+
+class XenServerMessagesPlugin(PythonDataSourcePlugin):
+    proxy_attributes = [
+        'xenserver_addresses',
+        'zXenServerUsername',
+        'zXenServerPassword',
+        ]
+
+    @classmethod
+    def config_key(cls, datasource, context):
+        return (
+            context.device().id,
+            datasource.getCycleTime(context),
+            )
+
+    @inlineCallbacks
+    def collect(self, config):
+        ds0 = config.datasources[0]
+
+        client = get_client(
+            ds0.xenserver_addresses,
+            ds0.zXenServerUsername,
+            ds0.zXenServerPassword)
+
+        message_api = client.xenapi.message
+
+        if not hasattr(self, 'last_datetime'):
+            self.last_datetime = DateTime('0')
+            messages = yield message_api.get_all_records()
+        else:
+            messages = yield message_api.get_since(self.last_datetime)
+
+        data = self.new_data()
+
+        for ref, message in messages.iteritems():
+            if message['timestamp'] > self.last_datetime:
+                self.last_datetime = message['timestamp']
+
+            summary = message.get('body') or \
+                message.get('name') or \
+                'no body or name provided'
+
+            timestamp = message['timestamp'].value.split('Z')[0]
+            rcvtime = time.mktime(
+                time.strptime(timestamp, '%Y%m%dT%H:%M:%S'))
+
+            data['events'].append({
+                'device': config.id,
+                'component': message.get('obj_uuid'),
+                'summary': summary,
+                'severity': message.get('priority', '0'),
+                'eventKey': message.get('uuid'),
+                'eventClassKey': 'XenServerMessage',
+                'rcvtime': rcvtime,
+                'xenserver_name': message.get('name'),
+                'xenserver_cls': message.get('cls'),
+                })
+
+        returnValue(data)
+
+    def onSuccess(self, data, config):
+        LOG.debug('success for %s messages', config.id)
+        data['events'].append(get_event(config, 'successful collection', 0))
+        return data
+
+    def onError(self, error, config):
+        if hasattr(error, 'value'):
+            error = error.value
+
+        LOG.error('error for %s messages: %s', config.id, error)
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
         return data
