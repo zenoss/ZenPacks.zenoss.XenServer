@@ -61,7 +61,7 @@ def get_event(config, message, severity):
         'device': config.id,
         'eventKey': eventKey,
         'summary': message,
-        'severity': 5,
+        'severity': severity,
         'eventClassKey': eventClassKey,
         }
 

@@ -1378,10 +1378,10 @@ ZenPacks.zenoss.XenServer.VM
 </object>
 </tomanycont>
 </object>
-<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'XAPICollectionError') -->
-<object id='/zport/dmd/Events/Status/instances/XAPICollectionError' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'XenServerCollectionError') -->
+<object id='/zport/dmd/Events/Status/instances/XenServerCollectionError' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
 <property type="string" id="eventClassKey" mode="w" >
-XAPICollectionError
+XenServerCollectionError
 </property>
 <property type="int" id="sequence" mode="w" >
 10
@@ -1390,10 +1390,10 @@ XAPICollectionError
 invalid response
 </property>
 </object>
-<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'XAPICollectionSuccess') -->
-<object id='/zport/dmd/Events/Status/instances/XAPICollectionSuccess' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'XenServerCollectionSuccess') -->
+<object id='/zport/dmd/Events/Status/instances/XenServerCollectionSuccess' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
 <property type="string" id="eventClassKey" mode="w" >
-XAPICollectionSuccess
+XenServerCollectionSuccess
 </property>
 <property type="int" id="sequence" mode="w" >
 10
