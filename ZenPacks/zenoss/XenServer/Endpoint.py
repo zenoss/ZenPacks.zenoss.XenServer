@@ -27,7 +27,7 @@ class Endpoint(Device):
     Model class for Endpoint.
     '''
 
-    meta_type = portal_type = 'Endpoint'
+    meta_type = portal_type = 'XenServerEndpoint'
 
     _relations = Device._relations + (
         ('hosts', ToManyCont(ToOne, MODULE_NAME['Host'], 'endpoint')),

@@ -6,6 +6,7 @@ var ZE = Ext.ns('Zenoss.extensions');
 
 /* Friendly Names for Component Types ***************************************/
 
+ZC.registerName('XenServerEndpoint', _t('Endpoint'), _t('Endpoints'));
 ZC.registerName('XenServerHost', _t('Host'), _t('Hosts'));
 ZC.registerName('XenServerHostCPU', _t('Host CPU'), _t('Host CPUs'));
 ZC.registerName('XenServerNetwork', _t('Network'), _t('Networks'));

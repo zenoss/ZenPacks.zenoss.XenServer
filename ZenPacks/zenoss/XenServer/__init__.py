@@ -20,7 +20,7 @@ from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.CMFCore.DirectoryView import registerDirectory
 from Products.Zuul.interfaces import ICatalogTool
-from Products.ZenUtils.Utils import unused, zenPath
+from Products.ZenUtils.Utils import monkeypatch, unused, zenPath
 
 unused(Globals)
 
@@ -149,3 +149,42 @@ class ZenPack(ZenPackBase):
     def _buildDeviceRelations(self):
         for d in self.dmd.Devices.getSubDevicesGen():
             d.buildRelations()
+
+
+@monkeypatch('Products.Zuul.routers.device.DeviceRouter')
+def getComponentTree(self, uid=None, id=None, **kwargs):
+    '''
+    Retrieves all of the components set up to be used in a
+    tree.
+
+    Overridden to sort XenServer component types in a reasonable way.
+
+    @type  uid: string
+    @param uid: Unique identifier of the root of the tree to retrieve
+    @type  id: string
+    @param id: not used
+    @rtype:   [dictionary]
+    @return:  Component properties in tree form
+    '''
+    # original is injected by monkeypatch decorator.
+    result = original(self, uid=uid, id=id, **kwargs)
+
+    if self._getFacade().getInfo(uid=uid).meta_type != 'XenServerEndpoint':
+        return result
+
+    order = [
+        'XenServerPool',
+        'XenServerHost',
+        'XenServerHostCPU',
+        'XenServerPBD',
+        'XenServerPIF',
+        'XenServerSR',
+        'XenServerVDI',
+        'XenServerNetwork',
+        'XenServerVMAppliance',
+        'XenServerVM',
+        'XenServerVBD',
+        'XenServerVIF',
+        ]
+
+    return sorted(result, key=lambda x: order.index(x['id']))
