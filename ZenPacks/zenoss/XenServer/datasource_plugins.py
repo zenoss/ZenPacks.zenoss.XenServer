@@ -50,13 +50,20 @@ def get_client(addresses, username, password):
     return clients[client_key]
 
 
-def iterparse(xml, tag):
+def get_event(config, message, severity):
     '''
-    Generate elements with given tag in xml string.
+    Return an event dictionary.
     '''
-    for _, element in etree.iterparse(StringIO(xml), tag=tag):
-        yield element
-        element.clear()
+    eventKey = 'XenServerCollection'
+    eventClassKey = ''.join((eventKey, 'Error' if severity else 'Success'))
+
+    return {
+        'device': config.id,
+        'eventKey': eventKey,
+        'summary': message,
+        'severity': 5,
+        'eventClassKey': eventClassKey,
+        }
 
 
 class XenServerXAPIDataSourcePlugin(PythonDataSourcePlugin):
@@ -125,7 +132,7 @@ class XenServerXAPIDataSourcePlugin(PythonDataSourcePlugin):
                 del(points[path])
 
             if points:
-                LOG.info(
+                LOG.debug(
                     "missing values for %s:%s:%s %s",
                     config.id,
                     datasource.component,
@@ -136,38 +143,33 @@ class XenServerXAPIDataSourcePlugin(PythonDataSourcePlugin):
             del(datasources[ref])
 
         if datasources:
-            LOG.info(
-                "missing records for %s:%s %s",
+            LOG.debug(
+                "missing XAPI data for %s:%s %s",
                 config.id,
-                config.datasources[0].datasource,
+                config.datasources[0].params['xapi_classname'],
                 datasources.keys())
 
-        data['events'].append({
-            'eventClassKey': 'XAPICollectionSuccess',
-            'eventKey': '|'.join(map(str, config.datasources[0].config_key)),
-            'summary': 'XAPI: successful collection',
-            'device': config.id,
-            'severity': 0,
-            })
+        LOG.debug(
+            'success for %s XAPI %s',
+            config.id,
+            config.datasources[0].params['xapi_classname'])
+
+        data['events'].append(get_event(config, 'successful collection', 0))
 
         return data
 
-    def onError(self, result, config):
+    def onError(self, error, config):
+        if hasattr(error, 'value'):
+            error = error.value
+
         LOG.error(
-            'error for %s %s: %s',
+            'error for %s XAPI %s: %s',
             config.id,
-            config.datasources[0].datasource,
-            result)
+            config.datasources[0].params['xapi_classname'],
+            error)
 
         data = self.new_data()
-        data['events'].append({
-            'eventClassKey': 'XAPICollectionError',
-            'eventKey': '|'.join(map(str, config.datasources[0].config_key)),
-            'summary': str(result),
-            'device': config.id,
-            'severity': 5,
-        })
-
+        data['events'].append(get_event(config, str(error), 5))
         return data
 
 
@@ -273,6 +275,7 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
                             rrd_tree[etype][euuid][elabel].append(value)
 
         data = self.new_data()
+        missing_data = collections.defaultdict(list)
 
         for datasource in config.datasources:
             prefix = datasource.params.get('prefix')
@@ -293,13 +296,41 @@ class XenServerRRDDataSourcePlugin(PythonDataSourcePlugin):
 
                 if datapoint_data:
                     value = aggregate_values(datapoint, datapoint_data)
+
+                    if datapoint.rpn:
+                        try:
+                            value = rpneval(value, datapoint.rpn)
+                        except Exception:
+                            LOG.exception(
+                                'Failed to evaluate RPN: %s',
+                                datapoint.rpn)
+
+                            continue
+
                     data['values'][datasource.component][datapoint.id] = (
                         value, 'N')
                 else:
-                    LOG.info(
-                        "missing RRD data for %s:%s:%s",
-                        config.id,
-                        datasource.datasource,
-                        datapoint.id)
+                    missing_data[datasource.component].append(datapoint.id)
+
+        for component, datapoint_ids in missing_data.items():
+            LOG.debug(
+                "missing RRD data for %s:%s %s",
+                config.id,
+                component,
+                datapoint_ids)
 
         returnValue(data)
+
+    def onSuccess(self, data, config):
+        LOG.debug('success for %s rrd_updates', config.id)
+        data['events'].append(get_event(config, 'successful collection', 0))
+        return data
+
+    def onError(self, error, config):
+        if hasattr(error, 'value'):
+            error = error.value
+
+        LOG.error('error for %s rrd_updates: %s', config.id, error)
+        data = self.new_data()
+        data['events'].append(get_event(config, str(error), 5))
+        return data

@@ -210,9 +210,10 @@ class SR(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        host_uuid = self.host().xapi_uuid
-        if host_uuid and self.xapi_uuid:
-            return ('host', host_uuid, '_'.join(('sr', self.xapi_uuid)))
+        # This is a guess at future support. XenServer 6.2 doesn't have
+        # any RRD data for SRs.
+        if self.xapi_uuid:
+            return ('sr', self.xapi_uuid, '')
 
 
 class ISRInfo(IPooledComponentInfo):

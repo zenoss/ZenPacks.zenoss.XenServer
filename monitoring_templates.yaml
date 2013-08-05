@@ -2,9 +2,8 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.Host"
 
   datasources:
-    host:
+    property:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: host
       xapi_ref: "${here/xapi_ref}"
 
@@ -12,9 +11,8 @@
         memoryOverhead:
           path: memory_overhead
 
-    hostMetrics:
+    metric:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: host_metrics
       xapi_ref: "${here/xapi_metrics_ref}"
 
@@ -25,9 +23,8 @@
         memoryTotal:
           path: memory_total
 
-    hostRRDs:
+    rrd:
       type: XenServer RRD
-      eventClass: /Ignore
 
       datapoints:
         memoryTotal:
@@ -68,8 +65,9 @@
         loadAvg:
           pattern: loadavg
 
-        srCacheSizeSum:
+        maxSRCacheSizeSum:
           pattern: _cache_size
+          time_aggregation: MAX
           group_aggregation: SUM
 
         maxSRCacheHitsSum:
@@ -87,15 +85,21 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.HostCPU"
 
   datasources:
-    hostCPU:
+    property:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: host_cpu
       xapi_ref: "${here/xapi_ref}"
 
       datapoints:
         utilisation:
           path: utilisation
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        cpu:
+          pattern: ""
 
 
 /XenServer/Network:
@@ -110,18 +114,17 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.PIF"
 
   datasources:
-    pifMetrics:
+    metric:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: PIF_metrics
       xapi_ref: "${here/xapi_metrics_ref}"
 
       datapoints:
-        ioReadKbs:
+        ioRead:
           path: io_read_kbs
           rpn: "8192,*"
 
-        ioWriteKbs:
+        ioWrite:
           path: io_write_kbs
           rpn: "8192,*"
 
@@ -129,14 +132,24 @@
           path: speed
           rpn: "1000000,*"
 
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        rx:
+          pattern: _rx
+          rpn: "8192,*"
+
+        tx:
+          pattern: _tx
+          rpn: "8192,*"
 
 /XenServer/Pool:
   targetPythonClass: "ZenPacks.zenoss.XenServer.Pool"
 
   datasources:
-    pool:
+    property:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: pool
       xapi_ref: "${here/xapi_ref}"
 
@@ -152,9 +165,8 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.SR"
 
   datasources:
-    sr:
+    property:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: SR
       xapi_ref: "${here/xapi_ref}"
 
@@ -175,28 +187,38 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.VBD"
 
   datasources:
-    vbdMetrics:
+    metric:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: VBD_metrics
       xapi_ref: "${here/xapi_metrics_ref}"
 
       datapoints:
-        ioReadKbs:
+        ioRead:
           path: io_read_kbs
           rpn: "1024,*"
 
-        ioWriteKbs:
+        ioWrite:
           path: io_write_kbs
+          rpn: "1024,*"
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        read:
+          pattern: _read
+          rpn: "1024,*"
+
+        write:
+          pattern: _write
           rpn: "1024,*"
 
 /XenServer/VDI:
   targetPythonClass: "ZenPacks.zenoss.XenServer.VDI"
 
   datasources:
-    vdi:
+    property:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: VDI
       xapi_ref: "${here/xapi_ref}"
 
@@ -214,19 +236,30 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.VIF"
 
   datasources:
-    vifMetrics:
+    metric:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: VIF_metrics
       xapi_ref: "${here/xapi_metrics_ref}"
 
       datapoints:
-        ioReadKbs:
+        ioRead:
           path: io_read_kbs
           rpn: "8192,*"
 
-        ioWriteKbs:
+        ioWrite:
           path: io_write_kbs
+          rpn: "8192,*"
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        rx:
+          pattern: _rx
+          rpn: "8192,*"
+
+        tx:
+          pattern: _tx
           rpn: "8192,*"
 
 
@@ -234,9 +267,8 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.VM"
 
   datasources:
-    vm:
+    property:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: VM
       xapi_ref: "${here/xapi_ref}"
 
@@ -259,9 +291,8 @@
         memoryTarget:
           path: memory_target
 
-    vmMetrics:
+    metric:
       type: XenServer XAPI
-      eventClass: /Ignore
       xapi_classname: VM_metrics
       xapi_ref: "${here/xapi_metrics_ref}"
 
@@ -273,6 +304,42 @@
         memoryActual:
           path: memory_actual
           rrdmin: 0
+
+    rrd:
+      type: XenServer RRD
+
+      datapoints:
+        cpuAvg:
+          pattern: cpu
+
+        memory:
+          pattern: memory
+
+        vifRXSum:
+          pattern: "vif_[^_]+_rx"
+          group_aggregation: SUM
+          rpn: "8192,*"
+
+        vifTXSum:
+          pattern: "vif_[^_]+_tx"
+          group_aggregation: SUM
+          rpn: "8192,*"
+
+        vbdReadSum:
+          pattern: "vbd_[^_]+_read"
+          group_aggregation: SUM
+          rpn: "1024,*"
+
+        vbdWriteSum:
+          pattern: "vbd_[^_]+_write"
+          group_aggregation: SUM
+          rpn: "1024,*"
+
+        memoryInternalFree:
+          pattern: memory_internal_free
+
+        memoryTarget:
+          pattern: memory_target
 
 
 /XenServer/VMGuest:

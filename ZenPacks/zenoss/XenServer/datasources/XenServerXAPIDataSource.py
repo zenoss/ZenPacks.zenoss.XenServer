@@ -37,6 +37,8 @@ class XenServerXAPIDataSource(PythonDataSource):
     # RRDDataSource
     component = '${here/id}'
     cycletime = 300
+    eventClass = '/Ignore'
+    severity = 0
 
     # PythonDataSource
     plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin'

@@ -14,6 +14,7 @@ Tracking tasks here at least until the first revision is done.
 ;Niceties
 # Add useful information to device overview screen.
 # zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
+# Vocabulary for XenServerRRDDataPointInfo *_aggregation properties.
 # Order component types on device screen sensibly.
 # Add bond interfaces. (Bond)
 # Add VLANs. (VLAN)

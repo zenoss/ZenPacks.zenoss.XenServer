@@ -63,7 +63,7 @@ class HostCPU(PooledComponent):
         '''
         host_uuid = self.host().xapi_uuid
         if host_uuid and self.number is not None:
-            return ('host', host_uuid, ''.join(('cpu', self.number)))
+            return ('host', host_uuid, ''.join(('cpu', str(self.number))))
 
 
 class IHostCPUInfo(IPooledComponentInfo):
