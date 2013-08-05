@@ -346,31 +346,31 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.VBD"
 
   datasources:
-    metric:
-      type: XenServer XAPI
-      xapi_classname: VBD_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
-
-      datapoints:
-        ioRead:
-          path: io_read_kbs
-          rpn: "1024,*"
-
-        ioWrite:
-          path: io_write_kbs
-          rpn: "1024,*"
-
     rrd:
       type: XenServer RRD
 
       datapoints:
         read:
           pattern: _read
-          rpn: "1024,*"
 
         write:
           pattern: _write
-          rpn: "1024,*"
+
+  graphs:
+    Throughput:
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Read:
+          dpName: "rrd_read"
+          format: "%7.2lf%s"
+
+        Write:
+          dpName: "rrd_write"
+          format: "%7.2lf%s"
+
 
 /XenServer/VDI:
   targetPythonClass: "ZenPacks.zenoss.XenServer.VDI"

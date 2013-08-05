@@ -1788,65 +1788,6 @@ AVERAGE
 ZenPacks.zenoss.XenServer.VBD
 </property>
 <tomanycont id='datasources'>
-<object id='metric' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
-<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
-</property>
-<property type="boolean" id="enabled" mode="w" >
-True
-</property>
-<property type="string" id="component" mode="w" >
-${here/id}
-</property>
-<property type="string" id="eventClass" mode="w" >
-/Ignore
-</property>
-<property type="int" id="severity" mode="w" >
-0
-</property>
-<property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
-</property>
-<property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
-</property>
-<property type="string" id="xapi_classname" >
-VBD_metrics
-</property>
-<property type="string" id="xapi_ref" >
-${here/xapi_metrics_ref}
-</property>
-<tomanycont id='datapoints'>
-<object id='ioRead' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="path" mode="w" >
-io_read_kbs
-</property>
-<property type="string" id="rpn" mode="w" >
-1024,*
-</property>
-</object>
-<object id='ioWrite' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="path" mode="w" >
-io_write_kbs
-</property>
-<property type="string" id="rpn" mode="w" >
-1024,*
-</property>
-</object>
-</tomanycont>
-</object>
 <object id='rrd' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 XenServer RRD
@@ -1880,9 +1821,6 @@ True
 <property type="string" id="pattern" mode="w" >
 _read
 </property>
-<property type="string" id="rpn" mode="w" >
-1024,*
-</property>
 <property type="string" id="time_aggregation" mode="w" >
 AVERAGE
 </property>
@@ -1900,13 +1838,101 @@ True
 <property type="string" id="pattern" mode="w" >
 _write
 </property>
-<property type="string" id="rpn" mode="w" >
-1024,*
-</property>
 <property type="string" id="time_aggregation" mode="w" >
 AVERAGE
 </property>
 <property type="string" id="group_aggregation" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<tomanycont id='graphDefs'>
+<object id='Throughput' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+bytes/sec
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+True
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='Read' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+rrd_read
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Write' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+rrd_write
+</property>
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
