@@ -11,18 +11,6 @@
         memoryOverhead:
           path: memory_overhead
 
-    metric:
-      type: XenServer XAPI
-      xapi_classname: host_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
-
-      datapoints:
-        memoryFree:
-          path: memory_free
-
-        memoryTotal:
-          path: memory_total
-
     rrd:
       type: XenServer RRD
 
@@ -61,45 +49,150 @@
 
         cpuAvg:
           pattern: cpu_avg
+          rpn: "100,*"
 
         loadAvg:
           pattern: loadavg
 
-        maxSRCacheSizeSum:
+        srCacheSizeSum:
           pattern: _cache_size
-          time_aggregation: MAX
           group_aggregation: SUM
 
-        maxSRCacheHitsSum:
+        srCacheHitsSum:
           pattern: _cache_hits
-          time_aggregation: MAX
           group_aggregation: SUM
 
-        maxSRCacheMissesSum:
+        srCacheMissesSum:
           pattern: _cache_misses
-          time_aggregation: MAX
           group_aggregation: SUM
+
+  graphs:
+    CPU Utilization:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: "rrd_cpuAvg"
+          format: "%7.2lf%%"
+
+    Memory Usage:
+      units: bytes
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: "rrd_memoryTotal"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Used:
+          dpName: "rrd_memoryFree"
+          rpn: "Total,EXC,-"
+          lineType: AREA
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Overhead:
+          dpName: "property_memoryOverhead"
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+          colorindex: 1
+
+    Network Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: "rrd_pifAggrRX"
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: "rrd_pifAggrTX"
+          format: "%7.2lf%s"
+
+    Control Domain Load:
+      units: processes
+      miny: 0
+
+      graphpoints:
+        Load Average:
+          dpName: "rrd_loadAvg"
+          format: "%7.2lf%s"
+
+    Storage Repositories Cache Size:
+      units: bytes
+      miny: 0
+
+      graphpoints:
+        Total Size:
+          dpName: "rrd_srCacheSizeSum"
+          format: "%7.2lf%s"
+
+    Storage Repositories Cache Rates:
+      units: ops/sec
+      miny: 0
+
+      graphpoints:
+        Hits:
+          dpName: "rrd_srCacheHitsSum"
+          format: "%7.2lf%s"
+
+        Misses:
+          dpName: "rrd_srCacheMissesSum"
+          format: "%7.2lf%s"
+
+    Agent Memory:
+      units: bytes
+      miny: 0
+
+      graphpoints:
+        Usage:
+          dpName: "rrd_xapiMemoryUsage"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Allocation:
+          dpName: "rrd_xapiAllocation"
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Live:
+          dpName: "rrd_xapiLiveMemory"
+          format: "%7.2lf%s"
+          colorindex: 1
+
+        Free:
+          dpName: "rrd_xapiFreeMemory"
+          format: "%7.2lf%s"
+          colorindex: 2
 
 
 /XenServer/HostCPU:
   targetPythonClass: "ZenPacks.zenoss.XenServer.HostCPU"
 
   datasources:
-    property:
-      type: XenServer XAPI
-      xapi_classname: host_cpu
-      xapi_ref: "${here/xapi_ref}"
-
-      datapoints:
-        utilisation:
-          path: utilisation
-
     rrd:
       type: XenServer RRD
 
       datapoints:
         cpu:
           pattern: ""
+          rpn: "100,*"
+
+  graphs:
+    CPU Utilization:
+      units: "percent"
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: "rrd_cpu"
+          format: "%7.2lf%%"
 
 
 /XenServer/Network:
