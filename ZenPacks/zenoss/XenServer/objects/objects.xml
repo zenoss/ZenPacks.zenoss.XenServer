@@ -46,7 +46,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -88,7 +88,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
@@ -1017,7 +1017,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
@@ -1138,7 +1138,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1150,34 +1150,6 @@ PIF_metrics
 ${here/xapi_metrics_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='ioRead' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="path" mode="w" >
-io_read_kbs
-</property>
-<property type="string" id="rpn" mode="w" >
-8192,*
-</property>
-</object>
-<object id='ioWrite' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="path" mode="w" >
-io_write_kbs
-</property>
-<property type="string" id="rpn" mode="w" >
-8192,*
-</property>
-</object>
 <object id='speed' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -1211,7 +1183,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
@@ -1228,7 +1200,7 @@ True
 _rx
 </property>
 <property type="string" id="rpn" mode="w" >
-8192,*
+8,*
 </property>
 <property type="string" id="time_aggregation" mode="w" >
 AVERAGE
@@ -1248,12 +1220,205 @@ True
 _tx
 </property>
 <property type="string" id="rpn" mode="w" >
-8192,*
+8,*
 </property>
 <property type="string" id="time_aggregation" mode="w" >
 AVERAGE
 </property>
 <property type="string" id="group_aggregation" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<tomanycont id='graphDefs'>
+<object id='Throughput' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+bits/sec
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='Limit' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property type="string" id="color" mode="w" >
+000000
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+metric_speed
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Receive_m' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property type="string" id="color" mode="w" >
+00cc00
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+metric_ioRead
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Receive_r' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+3
+</property>
+<property type="string" id="color" mode="w" >
+00cc00
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+rrd_rx
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Send_m' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+2
+</property>
+<property type="string" id="color" mode="w" >
+0000ff
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+metric_ioWrite
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Send_r' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+4
+</property>
+<property type="string" id="color" mode="w" >
+0000ff
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+rrd_tx
+</property>
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
@@ -1283,7 +1448,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1343,7 +1508,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1414,7 +1579,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1473,7 +1638,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
@@ -1545,7 +1710,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1605,7 +1770,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1664,7 +1829,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
@@ -1681,7 +1846,7 @@ True
 _rx
 </property>
 <property type="string" id="rpn" mode="w" >
-8192,*
+8,*
 </property>
 <property type="string" id="time_aggregation" mode="w" >
 AVERAGE
@@ -1701,7 +1866,7 @@ True
 _tx
 </property>
 <property type="string" id="rpn" mode="w" >
-8192,*
+8,*
 </property>
 <property type="string" id="time_aggregation" mode="w" >
 AVERAGE
@@ -1736,7 +1901,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1789,7 +1954,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
@@ -1886,7 +2051,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerRRDCollectionInterval}
+${here/zXenServerCollectionInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin

@@ -213,14 +213,6 @@
       xapi_ref: "${here/xapi_metrics_ref}"
 
       datapoints:
-        ioRead:
-          path: io_read_kbs
-          rpn: "8192,*"
-
-        ioWrite:
-          path: io_write_kbs
-          rpn: "8192,*"
-
         speed:
           path: speed
           rpn: "1000000,*"
@@ -231,11 +223,43 @@
       datapoints:
         rx:
           pattern: _rx
-          rpn: "8192,*"
+          rpn: "8,*"
 
         tx:
           pattern: _tx
-          rpn: "8192,*"
+          rpn: "8,*"
+
+  graphs:
+    Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Limit:
+          dpName: "metric_speed"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Receive_m:
+          dpName: "metric_ioRead"
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Send_m:
+          dpName: "metric_ioWrite"
+          format: "%7.2lf%s"
+          colorindex: 1
+
+        Receive_r:
+          dpName: "rrd_rx"
+          format: "%7.2lf%s"
+          colorindex: 0
+
+        Send_r:
+          dpName: "rrd_tx"
+          format: "%7.2lf%s"
+          colorindex: 1
+
 
 /XenServer/Pool:
   targetPythonClass: "ZenPacks.zenoss.XenServer.Pool"
@@ -349,11 +373,11 @@
       datapoints:
         rx:
           pattern: _rx
-          rpn: "8192,*"
+          rpn: "8,*"
 
         tx:
           pattern: _tx
-          rpn: "8192,*"
+          rpn: "8,*"
 
 
 /XenServer/VM:
