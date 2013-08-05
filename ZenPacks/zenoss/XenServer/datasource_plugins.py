@@ -363,6 +363,14 @@ class XenServerMessagesPlugin(PythonDataSourcePlugin):
 
         message_api = client.xenapi.message
 
+        severity_map = {
+            '1': 5,
+            '2': 4,
+            '3': 3,
+            '4': 0,
+            '5': 2,
+            }
+
         if not hasattr(self, 'last_datetime'):
             self.last_datetime = DateTime('0')
             messages = yield message_api.get_all_records()
@@ -379,6 +387,8 @@ class XenServerMessagesPlugin(PythonDataSourcePlugin):
                 message.get('name') or \
                 'no body or name provided'
 
+            severity = severity_map.get(message.get('priority', '5'), 2)
+
             timestamp = message['timestamp'].value.split('Z')[0]
             rcvtime = time.mktime(
                 time.strptime(timestamp, '%Y%m%dT%H:%M:%S'))
@@ -387,7 +397,7 @@ class XenServerMessagesPlugin(PythonDataSourcePlugin):
                 'device': config.id,
                 'component': message.get('obj_uuid'),
                 'summary': summary,
-                'severity': message.get('priority', '0'),
+                'severity': severity,
                 'eventKey': message.get('uuid'),
                 'eventClassKey': 'XenServerMessage',
                 'rcvtime': rcvtime,
