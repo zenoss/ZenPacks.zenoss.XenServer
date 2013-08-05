@@ -36,7 +36,7 @@ class XenServerXAPIDataSource(PythonDataSource):
 
     # RRDDataSource
     component = '${here/id}'
-    cycletime = 300
+    cycletime = '${here/zXenServerCollectionInterval}'
     eventClass = '/Ignore'
     severity = 0
 
@@ -102,8 +102,6 @@ class XenServerXAPIDataSourceInfo(RRDDataSourceInfo):
     adapts(XenServerXAPIDataSource)
 
     testable = False
-
-    cycletime = ProxyProperty('cycletime')
 
     xapi_classname = ProxyProperty('xapi_classname')
     xapi_ref = ProxyProperty('xapi_ref')

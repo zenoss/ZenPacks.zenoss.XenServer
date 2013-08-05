@@ -78,11 +78,13 @@ _PACK_Z_PROPS = [
     ('zXenServerAddresses', [], 'lines'),
     ('zXenServerUsername', 'root', 'string'),
     ('zXenServerPassword', '', 'password'),
+    ('zXenServerCollectionInterval', 300, 'int'),
     ]
 
 setzPropertyCategory('zXenServerAddresses', 'XenServer')
 setzPropertyCategory('zXenServerUsername', 'XenServer')
 setzPropertyCategory('zXenServerPassword', 'XenServer')
+setzPropertyCategory('zXenServerCollectionInterval', 'XenServer')
 
 _plugins = (
     )

@@ -36,7 +36,7 @@ class XenServerRRDDataSource(PythonDataSource):
 
     # RRDDataSource
     component = '${here/id}'
-    cycletime = 300
+    cycletime = '${here/zXenServerCollectionInterval}'
     eventClass = '/Ignore'
     severity = 0
 
@@ -85,8 +85,6 @@ class XenServerRRDDataSourceInfo(RRDDataSourceInfo):
     adapts(XenServerRRDDataSource)
 
     testable = False
-
-    cycletime = ProxyProperty('cycletime')
 
 
 class XenServerRRDDataPoint(RRDDataPoint):
