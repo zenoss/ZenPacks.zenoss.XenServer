@@ -32,7 +32,7 @@ class VBD(PooledComponent):
 
     meta_type = portal_type = 'XenServerVBD'
 
-    xapi_metrics_ref = None
+    xenapi_metrics_ref = None
     allowed_operations = None
     bootable = None
     currently_attached = None
@@ -45,7 +45,7 @@ class VBD(PooledComponent):
     userdevice = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'bootable', 'type': 'boolean', 'mode': 'w'},
         {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
@@ -90,7 +90,7 @@ class VBD(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        vm_uuid = self.vm().xapi_uuid
+        vm_uuid = self.vm().xenapi_uuid
         if vm_uuid and self.vbd_device:
             return ('vm', vm_uuid, '_'.join(('vbd', self.vbd_device)))
 
@@ -126,7 +126,7 @@ class VBDInfo(PooledComponentInfo):
     vm = RelationshipInfoProperty('vm')
     vdi = RelationshipInfoProperty('vdi')
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     allowed_operations = ProxyProperty('allowed_operations')
     bootable = ProxyProperty('bootable')
     currently_attached = ProxyProperty('currently_attached')

@@ -8,7 +8,8 @@
 ##############################################################################
 
 '''
-Model XenServer pools using XenAPI (a.k.a. XAPI).
+Model XenServer pools, hosts, PBDs, PIFs, VMs, VBDs, VIFs,
+VMAppliances, SRs, VDIs and networks using the XenServer XenAPI.
 '''
 
 import logging
@@ -31,7 +32,7 @@ add_local_lib_path()
 import txxenapi
 
 
-XAPI_CLASSES = [
+XENAPI_CLASSES = [
     'SR',
     'VDI',
     'host_metrics',
@@ -190,10 +191,10 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             device.zXenServerPassword)
 
         # Simultaneously call client.xenapi.xxx.get_all_records() for
-        # each XAPI class.
+        # each XenAPI class.
         try:
             results = yield DeferredList([
-                client.xenapi[x].get_all_records() for x in XAPI_CLASSES])
+                client.xenapi[x].get_all_records() for x in XENAPI_CLASSES])
         except Exception, ex:
             LOG.error(
                 "%s %s XenAPI error: %s",
@@ -222,7 +223,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
                 (success, {'OpaqueRef:xxx-xxx': {...}}),
             ]
 
-        The list indexes map to the the indexes of XAPI_CLASSES.
+        The list indexes map to the the indexes of XENAPI_CLASSES.
         '''
         if results is None:
             return None
@@ -238,20 +239,20 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
 
         maps = []
 
-        # Call self.xxx_relmaps(self, respective_results) for each XAPI
-        # class.
-        for i, xapi_class in enumerate(XAPI_CLASSES):
+        # Call self.xxx_relmaps(self, respective_results) for each
+        # XenAPI class.
+        for i, xenapi_class in enumerate(XENAPI_CLASSES):
             if not results[i][0] or results[i][1] is None:
-                LOG.error("No %s response from %s", xapi_class, device.id)
+                LOG.error("No %s response from %s", xenapi_class, device.id)
                 continue
 
             maps.extend(
-                getattr(self, '%s_relmaps' % xapi_class.lower())(
+                getattr(self, '%s_relmaps' % xenapi_class.lower())(
                     results[i][1]))
 
         # Pick up any other maps that can be built with data cached
         # during the main process loop above. This allows for modeling
-        # object not represented 1-for-1 by XAPI_CLASSES.
+        # object not represented 1-for-1 by XENAPI_CLASSES.
         maps.extend(self.other_maps())
 
         self.cache_clear()
@@ -290,9 +291,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
-                'xapi_metrics_ref': properties.get('metrics'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
+                'xenapi_metrics_ref': properties.get('metrics'),
                 'api_version_major': properties.get('API_version_major'),
                 'api_version_minor': properties.get('API_version_minor'),
                 'api_version_vendor': properties.get('API_version_vendor'),
@@ -357,8 +358,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'family': int_or_none(properties.get('family')),
                 'features': properties.get('features'),
                 'flags': properties.get('flags'),
@@ -391,8 +392,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'mtu': properties.get('MTU'),
                 'allowed_operations': properties.get('allowed_operations'),
                 'bridge': properties.get('bridge'),
@@ -429,8 +430,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'currently_attached': properties.get('currently_attached'),
                 'dc_device': device_config.get('device'),
                 'dc_legacy_mode': to_boolean(device_config.get('legacy_mode')),
@@ -483,9 +484,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['host']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_metrics_ref': properties.get('metrics'),
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_metrics_ref': properties.get('metrics'),
+                'xenapi_uuid': properties.get('uuid'),
                 'dns': properties.get('dns'),
                 'ipv4_addresses': ipv4_addresses,
                 'ipv6_addresses': ipv6_addresses,
@@ -540,8 +541,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': pool_title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'ha_allow_overcommit': properties.get('ha_allow_overcommit'),
                 'ha_enabled': properties.get('ha_enabled'),
                 'ha_host_failures_to_tolerate': int_or_none(properties.get('ha_host_failures_to_tolerate')),
@@ -576,8 +577,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'allowed_operations': properties.get('allowed_operations'),
                 'content_type': properties.get('content_type'),
                 'local_cache_enabled': properties.get('local_cache_enabled'),
@@ -609,9 +610,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['VM']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_metrics_ref': properties.get('metrics'),
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_metrics_ref': properties.get('metrics'),
+                'xenapi_uuid': properties.get('uuid'),
                 'allowed_operations': properties.get('allowed_operations'),
                 'bootable': properties.get('bootable'),
                 'currently_attached': properties.get('currently_attached'),
@@ -646,8 +647,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['SR']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'allow_caching': properties.get('allow_caching'),
                 'allowed_operations': properties.get('allowed_operations'),
                 'is_a_snapshot': properties.get('is_a_snapshot'),
@@ -684,9 +685,9 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps[properties['VM']].append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_metrics_ref': properties.get('metrics'),
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_metrics_ref': properties.get('metrics'),
+                'xenapi_uuid': properties.get('uuid'),
                 'macaddress': properties.get('MAC'),
                 'mac_autogenerated': properties.get('MAC_autogenerated'),
                 'mtu': properties.get('MTU'),
@@ -742,10 +743,10 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_metrics_ref': properties.get('metrics'),
-                'xapi_guest_metrics_ref': guest_metrics_ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_metrics_ref': properties.get('metrics'),
+                'xenapi_guest_metrics_ref': guest_metrics_ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'hvm_shadow_multiplier': properties.get('HVM_shadow_multiplier'),
                 'vcpus_at_startup': int_or_none(properties.get('VCPUs_at_startup')),
                 'vcpus_max': int_or_none(properties.get('VCPUs_max')),
@@ -790,8 +791,8 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
             objmaps.append({
                 'id': id_from_ref(ref),
                 'title': title,
-                'xapi_ref': ref,
-                'xapi_uuid': properties.get('uuid'),
+                'xenapi_ref': ref,
+                'xenapi_uuid': properties.get('uuid'),
                 'allowed_operations': properties.get('allowed_operations'),
                 'name_description': properties.get('name_description'),
                 'name_label': properties.get('name_label'),
@@ -806,7 +807,7 @@ class XenServer(PythonPlugin, ModelerPluginCacheMixin):
     def other_maps(self):
         '''
         Yield DataMaps that don't map directly to one of the
-        XAPI_CLASSES through their respective *_relmaps methods.
+        XENAPI_CLASSES through their respective *_relmaps methods.
         '''
         # This information is gathered from the host call. So it should
         # be cached in the host_relmaps method.

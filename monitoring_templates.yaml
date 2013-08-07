@@ -1,11 +1,23 @@
+/XenServer/Endpoint:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Endpoint"
+
+  datasources:
+    messages:
+      type: Python
+      plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIMessagesPlugin"
+      eventClass: "/Ignore"
+      severity: "0"
+      cycletime: "60"
+
+
 /XenServer/Host:
   targetPythonClass: "ZenPacks.zenoss.XenServer.Host"
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: host
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: host
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         memoryOverhead:
@@ -211,9 +223,9 @@
 
   datasources:
     metric:
-      type: XenServer XAPI
-      xapi_classname: PIF_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: PIF_metrics
+      xenapi_ref: "${here/xenapi_metrics_ref}"
 
       datapoints:
         speed:
@@ -269,9 +281,9 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: pool
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: pool
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         haPlanExistsFor:
@@ -302,9 +314,9 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: SR
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: SR
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         physicalSize:
@@ -377,9 +389,9 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: VDI
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: VDI
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         physicalUtilisation:
@@ -445,18 +457,18 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: VM
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: VM
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         memoryOverhead:
           path: memory_overhead
 
     metric:
-      type: XenServer XAPI
-      xapi_classname: VM_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: VM_metrics
+      xenapi_ref: "${here/xenapi_metrics_ref}"
 
       datapoints:
         vcpusNumber:

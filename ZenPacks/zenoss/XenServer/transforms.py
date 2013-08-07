@@ -10,15 +10,15 @@
 from ZenPacks.zenoss.XenServer.utils import findComponentByUUID
 
 
-def get_component_id(dmd, xapi_uuid):
+def get_component_id(dmd, xenapi_uuid):
     '''
     Return the Zenoss component ID for a XenServer component given its
-    XAPI ref.
+    XenAPI UUID.
 
-    Returns the given xapi_uuid if no XenServer component can be found.
+    Returns the given xenapi_uuid if no XenServer component can be found.
     '''
-    component = findComponentByUUID(dmd, xapi_uuid)
+    component = findComponentByUUID(dmd, xenapi_uuid)
     if component:
         return component.id
 
-    return xapi_uuid
+    return xenapi_uuid

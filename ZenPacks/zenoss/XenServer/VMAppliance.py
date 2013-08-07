@@ -74,8 +74,8 @@ class VMAppliance(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for VMAppliances.
-        if self.xapi_uuid:
-            return ('vmappliance', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('vmappliance', self.xenapi_uuid, '')
 
 
 class IVMApplianceInfo(IPooledComponentInfo):

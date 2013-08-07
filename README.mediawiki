@@ -3,18 +3,17 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# Events.
 # Create Impact ERD.
 # Internal Impact adapters.
 # External Impact adapters.
 # Documentation.
 
 ;Niceties
+# Avoid duplicate collection of message events.
 # Add CloudStack Impact integration.
 # Add useful information to device overview screen.
 # zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
 # Vocabulary for XenServerRRDDataPointInfo *_aggregation properties.
-# Order component types on device screen sensibly.
 # Add bond interfaces. (Bond)
 # Add VLANs. (VLAN)
 # Targeted remodeling based on events.
@@ -27,7 +26,7 @@ Tidbits that are useful to me while developing the ZenPack.
 
 ;Add the XenServer endpoint.
 <pre>
-d = dmd.Devices.XenServer.createInstance('xenserver1')
+d = dmd.Devices.XenServer.createInstance('test-xenserver-pool')
 d.setPerformanceMonitor('localhost')
 d.setZenProperty('zXenServerAddresses', ['192.168.66.71'])
 d.setZenProperty('zXenServerUsername', 'root')

@@ -32,8 +32,8 @@ class VM(PooledComponent):
 
     meta_type = portal_type = 'XenServerVM'
 
-    xapi_metrics_ref = None
-    xapi_guest_metrics_ref = None
+    xenapi_metrics_ref = None
+    xenapi_guest_metrics_ref = None
     hvm_shadow_multiplier = None
     vcpus_at_startup = None
     vcpus_max = None
@@ -59,8 +59,8 @@ class VM(PooledComponent):
     version = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'xapi_guest_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_guest_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'hvm_shadow_multiplier', 'type': 'float', 'mode': 'w'},
         {'id': 'vcpus_at_startup', 'type': 'int', 'mode': 'w'},
         {'id': 'vcpus_max', 'type': 'int', 'mode': 'w'},
@@ -145,7 +145,7 @@ class VM(PooledComponent):
         template_names = [self.getRRDTemplateName()]
 
         # Bind the guest template only if guest metrics are available.
-        if self.xapi_guest_metrics_ref:
+        if self.xenapi_guest_metrics_ref:
             template_names.append('{0}Guest'.format(self.getRRDTemplateName()))
 
         templates = []
@@ -161,8 +161,8 @@ class VM(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        if self.xapi_uuid:
-            return ('vm', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('vm', self.xenapi_uuid, '')
 
 
 class IVMInfo(IPooledComponentInfo):
@@ -212,8 +212,8 @@ class VMInfo(PooledComponentInfo):
     host = RelationshipInfoProperty('host')
     vmappliance = RelationshipInfoProperty('vmappliance')
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
-    xapi_guest_metrics_ref = ProxyProperty('xapi_guest_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
+    xenapi_guest_metrics_ref = ProxyProperty('xenapi_guest_metrics_ref')
     hvm_shadow_multiplier = ProxyProperty('hvm_shadow_multiplier')
     vcpus_at_startup = ProxyProperty('vcpus_at_startup')
     vcpus_max = ProxyProperty('vcpus_max')

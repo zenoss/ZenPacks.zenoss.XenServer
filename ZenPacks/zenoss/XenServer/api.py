@@ -73,7 +73,7 @@ class XenServerFacade(ZuulFacade):
         # TODO: Fix this.
         # Sleep to make sure zenhub is ready to service the modeling job
         # when we run collectDevice below.
-        time.sleep(5)
+        time.sleep(10)
 
         # Schedule a modeling job for the new device.
         endpoint = devices.findDeviceByIdExact(device_id)

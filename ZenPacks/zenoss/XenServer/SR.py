@@ -212,8 +212,8 @@ class SR(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for SRs.
-        if self.xapi_uuid:
-            return ('sr', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('sr', self.xenapi_uuid, '')
 
 
 class ISRInfo(IPooledComponentInfo):

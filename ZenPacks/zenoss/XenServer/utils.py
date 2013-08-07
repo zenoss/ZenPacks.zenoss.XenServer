@@ -19,6 +19,7 @@ from Products.ZenModel.Device import Device
 from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
+from Products.ZenRelations.ToManyContRelationship import ToManyContRelationship
 from Products.ZenUtils.Utils import prepId
 from Products import Zuul
 from Products.Zuul.catalog.events import IndexingEvent
@@ -66,9 +67,18 @@ def updateToMany(relationship, root, type_, ids):
 
         if id_ in new_ids:
             relationship.addRelation(obj)
+
+            # Index remote object. It might have a custom path reporter.
+            notify(IndexingEvent(obj, 'path', False))
         else:
             relationship.removeRelation(obj)
 
+            # If the object was not deleted altogether..
+            if not isinstance(relationship, ToManyContRelationship):
+                # Index remote object. It might have a custom path reporter.
+                notify(IndexingEvent(obj, 'path', False))
+
+        # For componentSearch. Would be nice if we could target
         # Index remote object. It might have a custom path reporter.
         notify(IndexingEvent(obj, 'path', False))
 
@@ -90,6 +100,7 @@ def updateToOne(relationship, root, type_, id_):
     # Return with no action if the relationship is already correct.
     if (old_obj and old_obj.id == id_) or (not old_obj and not id_):
         return
+
     # Remove current object from relationship.
     if old_obj:
         relationship.removeRelation()
@@ -116,8 +127,7 @@ def updateToOne(relationship, root, type_, id_):
         # idxs=['getAllPaths'], but there's a chance that it won't exist
         # yet.
         new_obj.index_object()
-
-    return
+        break
 
 
 def RelationshipInfoProperty(relationship_name):
@@ -154,13 +164,13 @@ class BaseComponent(DeviceComponent, ManagedEntity):
     Abstract base class for components.
     '''
 
-    xapi_ref = None
-    xapi_uuid = None
+    xenapi_ref = None
+    xenapi_uuid = None
 
     # Explicit inheritence.
     _properties = ManagedEntity._properties + (
-        {'id': 'xapi_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'xapi_uuid', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_uuid', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = ManagedEntity._relations
@@ -235,8 +245,8 @@ class IBaseComponentInfo(IComponentInfo):
     '''
 
     endpoint = schema.Entity(title=_t('Endpoint'))
-    xapi_ref = schema.TextLine(title=_t(u'XenAPI Reference'))
-    xapi_uuid = schema.TextLine(title=_t(u'XenAPI UUID'))
+    xenapi_ref = schema.TextLine(title=_t(u'XenAPI Reference'))
+    xenapi_uuid = schema.TextLine(title=_t(u'XenAPI UUID'))
 
 
 class BaseComponentInfo(ComponentInfo):
@@ -245,8 +255,8 @@ class BaseComponentInfo(ComponentInfo):
     '''
 
     endpoint = RelationshipInfoProperty('device')
-    xapi_ref = ProxyProperty('xapi_ref')
-    xapi_uuid = ProxyProperty('xapi_uuid')
+    xenapi_ref = ProxyProperty('xenapi_ref')
+    xenapi_uuid = ProxyProperty('xenapi_uuid')
 
 
 class PooledComponent(BaseComponent):
@@ -296,7 +306,7 @@ def createXenServerCatalog(dmd):
     '''
     Create /zport/dmd/Devices/XenServer/XenServerCatalog and return it.
 
-    This allows for fast lookup of XenServer components by their XAPI
+    This allows for fast lookup of XenServer components by their XenAPI
     UUID.
     '''
     from Products.ZCatalog.Catalog import CatalogError
@@ -317,8 +327,8 @@ def createXenServerCatalog(dmd):
 
     try:
         catalog.addIndex(
-            'xapi_uuid',
-            makeCaseSensitiveFieldIndex('xapi_uuid'))
+            'xenapi_uuid',
+            makeCaseSensitiveFieldIndex('xenapi_uuid'))
 
     except CatalogError:
         # Index already exists.
@@ -335,12 +345,12 @@ def createXenServerCatalog(dmd):
     return catalog
 
 
-def findComponentByUUID(dmd, xapi_uuid):
+def findComponentByUUID(dmd, xenapi_uuid):
     '''
-    Return the first XenServer component matching XAPI uuid.
+    Return the first XenServer component matching XenAPI uuid.
     '''
-    if not xapi_uuid:
+    if not xenapi_uuid:
         return
 
-    for brain in getXenServerCatalog(dmd)(xapi_uuid=xapi_uuid):
+    for brain in getXenServerCatalog(dmd)(xenapi_uuid=xenapi_uuid):
         return brain.getObject()

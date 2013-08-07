@@ -95,8 +95,8 @@ class VDI(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for VDIs.
-        if self.xapi_uuid:
-            return ('vdi', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('vdi', self.xenapi_uuid, '')
 
 
 class IVDIInfo(IPooledComponentInfo):

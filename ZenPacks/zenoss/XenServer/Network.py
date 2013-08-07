@@ -112,8 +112,8 @@ class Network(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for networks.
-        if self.xapi_uuid:
-            return ('network', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('network', self.xenapi_uuid, '')
 
 
 class INetworkInfo(IPooledComponentInfo):

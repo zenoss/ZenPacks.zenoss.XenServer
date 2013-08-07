@@ -78,9 +78,9 @@ class PBD(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for PBDs.
-        host_uuid = self.host().xapi_uuid
-        if host_uuid and self.xapi_uuid:
-            return ('host', host_uuid, '_'.join(('pbd', self.xapi_uuid)))
+        host_uuid = self.host().xenapi_uuid
+        if host_uuid and self.xenapi_uuid:
+            return ('host', host_uuid, '_'.join(('pbd', self.xenapi_uuid)))
 
 
 class IPBDInfo(IPooledComponentInfo):

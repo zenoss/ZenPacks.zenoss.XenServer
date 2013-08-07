@@ -61,7 +61,7 @@ class HostCPU(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        host_uuid = self.host().xapi_uuid
+        host_uuid = self.host().xenapi_uuid
         if host_uuid and self.number is not None:
             return ('host', host_uuid, ''.join(('cpu', str(self.number))))
 

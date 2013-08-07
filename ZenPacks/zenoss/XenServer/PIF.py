@@ -31,7 +31,7 @@ class PIF(PooledComponent):
     '''
     meta_type = portal_type = 'XenServerPIF'
 
-    xapi_metrics_ref = None
+    xenapi_metrics_ref = None
     dns = None
     ipv4_addresses = None
     ipv6_addresses = None
@@ -56,7 +56,7 @@ class PIF(PooledComponent):
     vendor_name = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'dns', 'type': 'string', 'mode': 'w'},
         {'id': 'ipv4_addresses', 'type': 'lines', 'mode': 'w'},
         {'id': 'ipv6_addresses', 'type': 'lines', 'mode': 'w'},
@@ -113,7 +113,7 @@ class PIF(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        host_uuid = self.host().xapi_uuid
+        host_uuid = self.host().xenapi_uuid
         if host_uuid and self.pif_device:
             return ('host', host_uuid, '_'.join(('pif', self.pif_device)))
 
@@ -161,7 +161,7 @@ class PIFInfo(PooledComponentInfo):
     host = RelationshipInfoProperty('host')
     network = RelationshipInfoProperty('network')
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     dns = ProxyProperty('dns')
     ipv4_addresses = ProxyProperty('ipv4_addresses')
     ipv6_addresses = ProxyProperty('ipv6_addresses')

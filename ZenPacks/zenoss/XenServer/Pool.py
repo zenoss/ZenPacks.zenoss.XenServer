@@ -156,8 +156,8 @@ class Pool(BaseComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for pools.
-        if self.xapi_uuid:
-            return ('pool', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('pool', self.xenapi_uuid, '')
 
 
 class IPoolInfo(IBaseComponentInfo):

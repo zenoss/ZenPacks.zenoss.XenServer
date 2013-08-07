@@ -41,7 +41,7 @@ class XenServerRRDDataSource(PythonDataSource):
     severity = 0
 
     # PythonDataSource
-    plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin'
+    plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin'
 
     def getDescription(self):
         '''

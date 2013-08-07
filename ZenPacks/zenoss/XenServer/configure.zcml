@@ -25,15 +25,15 @@
 
     <!-- API: Info Adapters -->
     <adapter
-        provides=".datasources.XenServerXAPIDataSource.IXenServerXAPIDataSourceInfo"
-        for=".datasources.XenServerXAPIDataSource.XenServerXAPIDataSource"
-        factory=".datasources.XenServerXAPIDataSource.XenServerXAPIDataSourceInfo"
+        provides=".datasources.XenServerXenAPIDataSource.IXenServerXenAPIDataSourceInfo"
+        for=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataSource"
+        factory=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataSourceInfo"
         />
 
     <adapter
-        provides=".datasources.XenServerXAPIDataSource.IXenServerXAPIDataPointInfo"
-        for=".datasources.XenServerXAPIDataSource.XenServerXAPIDataPoint"
-        factory=".datasources.XenServerXAPIDataSource.XenServerXAPIDataPointInfo"
+        provides=".datasources.XenServerXenAPIDataSource.IXenServerXenAPIDataPointInfo"
+        for=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataPoint"
+        factory=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataPointInfo"
         />
 
     <adapter

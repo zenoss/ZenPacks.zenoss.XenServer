@@ -31,7 +31,7 @@ class Host(PooledComponent):
 
     meta_type = portal_type = 'XenServerHost'
 
-    xapi_metrics_ref = None
+    xenapi_metrics_ref = None
     api_version_major = None
     api_version_minor = None
     api_version_vendor = None
@@ -49,7 +49,7 @@ class Host(PooledComponent):
     memory_total = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_major', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_minor', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_vendor', 'type': 'string', 'mode': 'w'},
@@ -197,8 +197,8 @@ class Host(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        if self.xapi_uuid:
-            return ('host', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('host', self.xenapi_uuid, '')
 
 
 class IHostInfo(IPooledComponentInfo):
@@ -242,7 +242,7 @@ class HostInfo(PooledComponentInfo):
     implements(IHostInfo)
     adapts(Host)
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     api_version_major = ProxyProperty('api_version_major')
     api_version_minor = ProxyProperty('api_version_minor')
     api_version_vendor = ProxyProperty('api_version_vendor')
