@@ -11,6 +11,7 @@
 from zope.component import adapts
 from zope.interface import implements
 
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -21,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
+    id_from_ref, ids_from_refs, to_boolean,
     )
 
 
@@ -62,6 +64,36 @@ class Network(PooledComponent):
         ('pifs', ToMany(ToOne, MODULE_NAME['PIF'], 'network')),
         ('vifs', ToMany(ToOne, MODULE_NAME['VIF'], 'network')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI network ref and properties.
+        '''
+        title = properties.get('name_label') or properties['uuid']
+
+        other_config = properties.get('other_config', {})
+
+        return ObjectMap(data={
+            'relname': 'networks',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'mtu': properties.get('MTU'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'bridge': properties.get('bridge'),
+            'default_locking_mode': properties.get('default_locking_mode'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'ipv4_begin': other_config.get('ip_begin'),
+            'ipv4_end': other_config.get('ip_end'),
+            'is_guest_installer_network': to_boolean(other_config.get('is_guest_installer_network')),
+            'is_host_internal_management_network': to_boolean(other_config.get('is_host_internal_management_network')),
+            'ipv4_netmask': other_config.get('ipv4_netmask'),
+            'setPIFs': ids_from_refs(properties.get('PIFs', [])),
+            'setVIFs': ids_from_refs(properties.get('VIFs', [])),
+            }, modname=cls.__module__)
 
     def getPIFs(self):
         '''

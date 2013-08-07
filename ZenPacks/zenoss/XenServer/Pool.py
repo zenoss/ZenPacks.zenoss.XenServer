@@ -11,6 +11,7 @@
 from zope.component import adapts
 from zope.interface import implements
 
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -21,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
     RelationshipInfoProperty,
     updateToOne,
+    id_from_ref, int_or_none,
     )
 
 
@@ -60,6 +62,36 @@ class Pool(BaseComponent):
         ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for_pools')),
         ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for_pools')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI pool ref and properties.
+        '''
+        pool_title = properties.get('name_label') or 'default'
+
+        other_config = properties.get('other_config', {})
+
+        return ObjectMap(data={
+            'relname': 'pools',
+            'id': id_from_ref(ref),
+            'title': pool_title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'ha_allow_overcommit': properties.get('ha_allow_overcommit'),
+            'ha_enabled': properties.get('ha_enabled'),
+            'ha_host_failures_to_tolerate': int_or_none(properties.get('ha_host_failures_to_tolerate')),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'oc_cpuid_feature_mask': other_config.get('cpuid_feature_mask'),
+            'oc_memory_ratio_hvm': other_config.get('memory-ratio-hvm'),
+            'oc_memory_ratio_pv': other_config.get('memory-ratio-pv'),
+            'vswitch_controller': properties.get('vswitch_controller'),
+            'setMaster': id_from_ref(properties.get('master')),
+            'setDefaultSR': id_from_ref(properties.get('default_SR')),
+            'setSuspendImageSR': id_from_ref(properties.get('suspend_image_SR')),
+            'setCrashDumpSR': id_from_ref(properties.get('crash_dump_SR')),
+            }, modname=cls.__module__)
 
     def getMaster(self):
         '''

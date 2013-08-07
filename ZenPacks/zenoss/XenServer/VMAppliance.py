@@ -11,6 +11,7 @@
 from zope.component import adapts
 from zope.interface import implements
 
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -21,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
+    id_from_ref, ids_from_refs,
     )
 
 
@@ -42,9 +44,29 @@ class VMAppliance(PooledComponent):
         )
 
     _relations = PooledComponent._relations + (
-        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vmappliances',)),
+        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vmappliances')),
         ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'vmappliance')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI vm_appliance ref and
+        properties.
+        '''
+        title = properties.get('name_label') or properties['uuid']
+
+        return ObjectMap(data={
+            'relname': 'vmappliances',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'setVMs': ids_from_refs(properties.get('VMs', [])),
+            }, modname=cls.__module__)
 
     def getVMs(self):
         '''

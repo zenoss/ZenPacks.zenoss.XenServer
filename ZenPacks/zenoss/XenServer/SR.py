@@ -11,6 +11,7 @@
 from zope.component import adapts
 from zope.interface import implements
 
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -21,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
+    id_from_ref, ids_from_refs,
     )
 
 
@@ -64,6 +66,33 @@ class SR(PooledComponent):
         ('crash_dump_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'crash_dump_sr')),
         ('local_cache_for_hosts', ToMany(ToOne, MODULE_NAME['Host'], 'local_cache_sr')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI SR ref and properties.
+        '''
+        title = properties.get('name_label') or properties['uuid']
+
+        sm_config = properties.get('sm_config', {})
+
+        return ObjectMap(data={
+            'relname': 'srs',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'content_type': properties.get('content_type'),
+            'local_cache_enabled': properties.get('local_cache_enabled'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'physical_size': properties.get('physical_size'),
+            'shared': properties.get('shared'),
+            'sm_type': sm_config.get('type'),
+            'sr_type': properties.get('type'),
+            'setPBDs': ids_from_refs(properties.get('PBDs', []))
+            }, modname=cls.__module__)
 
     def getPBDs(self):
         '''

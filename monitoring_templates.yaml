@@ -2,6 +2,13 @@
   targetPythonClass: "ZenPacks.zenoss.XenServer.Endpoint"
 
   datasources:
+    events:
+      type: Python
+      plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin"
+      eventClass: "/Ignore"
+      severity: "0"
+      cycletime: "60"
+
     messages:
       type: Python
       plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIMessagesPlugin"
