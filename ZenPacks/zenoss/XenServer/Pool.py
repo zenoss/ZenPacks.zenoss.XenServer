@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -68,11 +67,17 @@ class Pool(BaseComponent):
         '''
         Return an ObjectMap given XenAPI pool ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'pools',
+                'id': id_from_ref(ref),
+                }
+
         pool_title = properties.get('name_label') or 'default'
 
         other_config = properties.get('other_config', {})
 
-        return ObjectMap(data={
+        return {
             'relname': 'pools',
             'id': id_from_ref(ref),
             'title': pool_title,
@@ -91,7 +96,7 @@ class Pool(BaseComponent):
             'setDefaultSR': id_from_ref(properties.get('default_SR')),
             'setSuspendImageSR': id_from_ref(properties.get('suspend_image_SR')),
             'setCrashDumpSR': id_from_ref(properties.get('crash_dump_SR')),
-            }, modname=cls.__module__)
+            }
 
     def getMaster(self):
         '''

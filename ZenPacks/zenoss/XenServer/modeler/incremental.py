@@ -73,6 +73,7 @@ class DataMapProducer(object):
         self.client = client
         self.last_token = ''
         self.backrefs = {}
+        self.parentrefs = {}
 
     @inlineCallbacks
     def getmaps(self, timeout=0.0):
@@ -109,6 +110,40 @@ class DataMapProducer(object):
 
         returnValue(maps)
 
+    def get_objectmap(self, event):
+        '''
+        Return the appropriate ObjectMap for event.
+        '''
+        model_class = XENAPI_CLASSMAP[event['class']]
+
+        # Building the ObjectMap differs for _metrics classes
+        # because they unfortunately don't contain their own back-
+        # reference to the object they provide metrics for.
+        if event['class'].endswith('_metrics'):
+            if 'snapshot' not in event:
+                # No sense processing a metric with no snapshot.
+                return
+
+            ref = self.backrefs.get(event['ref'])
+            if not ref:
+                # The container for this object doesn't exist.
+                return
+
+            model_method = model_class.objectmap_metrics
+        else:
+            ref = event['ref']
+            model_method = model_class.objectmap
+
+            # Nested components need some help in knowing their parent.
+            if 'snapshot' not in event:
+                parent = self.parentrefs.get(ref)
+                if parent:
+                    event['snapshot'] = {'parent': parent}
+
+        data = model_method(ref, event.get('snapshot'))
+        if data:
+            return ObjectMap(data=data, modname=model_class.__module__)
+
     def full_datamaps(self, events):
         '''
         Return a list of datamaps representing a full model.
@@ -134,23 +169,7 @@ class DataMapProducer(object):
                 # There should be no delete events in a full model.
                 continue
 
-            model_class = XENAPI_CLASSMAP[event['class']]
-
-            # Building the ObjectMap differs for _metrics classes
-            # because they unfortunately don't contain their own back-
-            # reference to the object they provide metrics for.
-            if event['class'].endswith('_metrics'):
-                ref = self.backrefs.get(event['ref'])
-                if not ref:
-                    # The container for this object doesn't exist.
-                    continue
-
-                model_method = model_class.objectmap_metrics
-            else:
-                ref = event['ref']
-                model_method = model_class.objectmap
-
-            om = model_method(ref, event['snapshot'])
+            om = self.get_objectmap(event)
             if not om:
                 continue
 
@@ -161,7 +180,11 @@ class DataMapProducer(object):
                 vdi_oms.setdefault(event['ref'], [])
 
             elif event['class'] == 'vdi':
-                vdi_oms[event['snapshot']['SR']].append(om)
+                sr_ref = event['snapshot']['SR']
+                vdi_oms[sr_ref].append(om)
+
+                # Need to track this to handle subcomponent deletion.
+                self.parentrefs[event['ref']] = sr_ref
 
             elif event['class'] == 'host':
                 host_oms.append(om)
@@ -185,21 +208,34 @@ class DataMapProducer(object):
                 host_oms.append(om)
 
             elif event['class'] == 'host_cpu':
-                host_cpu_oms[event['snapshot']['host']].append(om)
+                host_ref = event['snapshot']['host']
+                host_cpu_oms[host_ref].append(om)
+
+                # Need to track this to handle subcomponent deletion.
+                self.parentrefs[event['ref']] = host_ref
 
             elif event['class'] == 'pbd':
-                pbd_oms[event['snapshot']['host']].append(om)
+                host_ref = event['snapshot']['host']
+                pbd_oms[host_ref].append(om)
+
+                # Need to track this to handle subcomponent deletion.
+                self.parentrefs[event['ref']] = host_ref
 
             elif event['class'] == 'pif':
-                pif_oms[event['snapshot']['host']].append(om)
+                host_ref = event['snapshot']['host']
+                pif_oms[host_ref].append(om)
 
                 # Save metric -> pif mapping for pif_metrics events.
                 pif_metrics_ref = event['snapshot']['metrics']
                 self.backrefs[pif_metrics_ref] = (
                     event['ref'], event['snapshot']['host'])
 
+                # Need to track this to handle subcomponent deletion.
+                self.parentrefs[event['ref']] = host_ref
+
             elif event['class'] == 'pif_metrics':
-                pif_oms[ref[1]].append(om)
+                host_ref = self.backrefs[event['ref']][1]
+                pif_oms[host_ref].append(om)
 
             elif event['class'] == 'network':
                 network_oms.append(om)
@@ -219,10 +255,18 @@ class DataMapProducer(object):
                 vm_oms.append(om)
 
             elif event['class'] == 'vbd':
-                vbd_oms[event['snapshot']['VM']].append(om)
+                vm_ref = event['snapshot']['VM']
+                vbd_oms[vm_ref].append(om)
+
+                # Need to track this to handle subcomponent deletion.
+                self.parentrefs[event['ref']] = vm_ref
 
             elif event['class'] == 'vif':
-                vif_oms[event['snapshot']['VM']].append(om)
+                vm_ref = event['snapshot']['VM']
+                vif_oms[vm_ref].append(om)
+
+                # Need to track this to handle subcomponent deletion.
+                self.parentrefs[event['ref']] = vm_ref
 
             elif event['class'] == 'vm_appliance':
                 vm_appliance_oms.append(om)
@@ -304,9 +348,32 @@ class DataMapProducer(object):
 
     def incremental_datamaps(self, events):
         '''
-        Return a list of datamaps representing incremental model updates.
+        Generate datamaps representing incremental model updates.
         '''
-        pass
+        for event in events:
+            om = self.get_objectmap(event)
+            if not om:
+                continue
+
+            if event['operation'] == 'del':
+                om.remove = True
+                yield om
+                continue
+
+            # Incremental parent ref tracking.
+            parent_key = {
+                'vdi': 'SR',
+                'host_cpu': 'host',
+                'pbd': 'host',
+                'pif': 'host',
+                'vbd': 'VM',
+                'vif': 'VM',
+                }.get(event['class'])
+
+            if parent_key:
+                self.parentrefs[event['ref']] = event['snapshot'][parent_key]
+
+            yield om
 
     def objectmap_endpoint_os(self, host_properties):
         '''

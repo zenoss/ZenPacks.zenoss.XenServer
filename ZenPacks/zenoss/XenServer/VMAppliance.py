@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -54,9 +53,15 @@ class VMAppliance(PooledComponent):
         Return an ObjectMap given XenAPI vm_appliance ref and
         properties.
         '''
+        if not properties:
+            return {
+                'relname': 'vmappliances',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('name_label') or properties['uuid']
 
-        return ObjectMap(data={
+        return {
             'relname': 'vmappliances',
             'id': id_from_ref(ref),
             'title': title,
@@ -66,7 +71,7 @@ class VMAppliance(PooledComponent):
             'name_description': properties.get('name_description'),
             'name_label': properties.get('name_label'),
             'setVMs': ids_from_refs(properties.get('VMs', [])),
-            }, modname=cls.__module__)
+            }
 
     def getVMs(self):
         '''

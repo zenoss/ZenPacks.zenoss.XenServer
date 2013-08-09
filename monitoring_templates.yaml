@@ -7,7 +7,7 @@
       plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin"
       eventClass: "/Ignore"
       severity: "0"
-      cycletime: "60"
+      cycletime: "5"
 
     messages:
       type: Python

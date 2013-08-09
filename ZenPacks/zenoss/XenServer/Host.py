@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -86,6 +85,12 @@ class Host(PooledComponent):
         '''
         Return an ObjectMap given XenAPI host ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'hosts',
+                'id': id_from_ref,
+                }
+
         title = properties.get('name_label') or properties.get('hostname')
 
         cpu_info = properties.get('cpu_info', {})
@@ -94,7 +99,7 @@ class Host(PooledComponent):
         if cpu_speed:
             cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
 
-        return ObjectMap(data={
+        return {
             'relname': 'hosts',
             'id': id_from_ref(ref),
             'title': title,
@@ -119,7 +124,7 @@ class Host(PooledComponent):
             'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
             'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
             'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
-            }, modname=cls.__module__)
+            }
 
     @classmethod
     def objectmap_metrics(cls, ref, properties):
@@ -127,11 +132,11 @@ class Host(PooledComponent):
         Return an ObjectMap given XenAPI host ref and host_metrics
         properties.
         '''
-        return ObjectMap(data={
+        return {
             'relname': 'hosts',
             'id': id_from_ref(ref),
             'memory_total': int_or_none(properties.get('memory_total')),
-            }, modname=cls.__module__)
+            }
 
     @property
     def is_pool_master(self):

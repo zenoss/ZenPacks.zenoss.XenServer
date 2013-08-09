@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
@@ -101,6 +100,12 @@ class VM(PooledComponent):
         '''
         Return an ObjectMap given XenAPI VM ref and properties.
         '''
+        if not properties:
+            return {
+                'relname': 'vms',
+                'id': id_from_ref(ref),
+                }
+
         if properties.get('is_a_snapshot') or \
                 properties.get('is_snapshot_from_vmpp') or \
                 properties.get('is_a_template'):
@@ -113,7 +118,7 @@ class VM(PooledComponent):
         if guest_metrics_ref == 'OpaqueRef:NULL':
             guest_metrics_ref = None
 
-        return ObjectMap(data={
+        return {
             'relname': 'vms',
             'id': id_from_ref(ref),
             'title': title,
@@ -145,7 +150,7 @@ class VM(PooledComponent):
             'version': int_or_none(properties.get('version')),
             'setHost': id_from_ref(properties.get('resident_on')),
             'setVMAppliance': id_from_ref(properties.get('appliance')),
-            }, modname=cls.__module__)
+            }
 
     @classmethod
     def objectmap_metrics(cls, ref, properties):
@@ -153,11 +158,11 @@ class VM(PooledComponent):
         Return an ObjectMap given XenAPI host ref and host_metrics
         properties.
         '''
-        return ObjectMap(data={
+        return {
             'relname': 'vms',
             'id': id_from_ref(ref),
             'memory_actual': int_or_none(properties.get('memory_actual')),
-            }, modname=cls.__module__)
+            }
 
     def getHost(self):
         '''

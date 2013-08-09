@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -74,11 +73,18 @@ class VDI(PooledComponent):
         '''
         Return an ObjectMap given XenAPI VDI ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'srs/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'vdis',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('name_label') or \
             properties.get('location') or \
             properties['uuid']
 
-        return ObjectMap(data={
+        return {
             'compname': 'srs/{}'.format(id_from_ref(properties.get('SR'))),
             'relname': 'vdis',
             'id': id_from_ref(ref),
@@ -100,7 +106,7 @@ class VDI(PooledComponent):
             'vdi_type': properties.get('type'),
             'virtual_size': properties.get('virtual_size'),
             'setVBDs': ids_from_refs(properties.get('VBDs', [])),
-            }, modname=cls.__module__)
+            }
 
     def getVBDs(self):
         '''

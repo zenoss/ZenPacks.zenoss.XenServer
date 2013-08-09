@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
@@ -68,9 +67,16 @@ class VIF(PooledComponent):
         '''
         Return an ObjectMap given XenAPI VIF ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'vms/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'vifs',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('device') or properties['uuid']
 
-        return ObjectMap(data={
+        return {
             'compname': 'vms/{}'.format(id_from_ref(properties.get('VM'))),
             'relname': 'vifs',
             'id': id_from_ref(ref),
@@ -88,7 +94,7 @@ class VIF(PooledComponent):
             'ipv6_allowed': properties.get('ipv6_allowed'),
             'locking_mode': properties.get('locking_mode'),
             'setNetwork': id_from_ref(properties.get('network')),
-            }, modname=cls.__module__)
+            }
 
     def getNetwork(self):
         '''

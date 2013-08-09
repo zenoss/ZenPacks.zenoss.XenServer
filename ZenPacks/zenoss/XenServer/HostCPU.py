@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -63,13 +62,20 @@ class HostCPU(PooledComponent):
         '''
         Return an ObjectMap given XenAPI host_cpu ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'hostcpus',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('number') or properties['uuid']
 
         cpu_speed = int_or_none(properties.get('speed'))
         if cpu_speed:
             cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
 
-        return ObjectMap(data={
+        return {
             'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
             'relname': 'hostcpus',
             'id': id_from_ref(ref),
@@ -85,7 +91,7 @@ class HostCPU(PooledComponent):
             'speed': cpu_speed,
             'stepping': int_or_none(properties.get('stepping')),
             'vendor': properties.get('vendor'),
-            })
+            }
 
     def xenrrd_prefix(self):
         '''

@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -72,11 +71,17 @@ class SR(PooledComponent):
         '''
         Return an ObjectMap given XenAPI SR ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'sr',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('name_label') or properties['uuid']
 
         sm_config = properties.get('sm_config', {})
 
-        return ObjectMap(data={
+        return {
             'relname': 'srs',
             'id': id_from_ref(ref),
             'title': title,
@@ -92,7 +97,7 @@ class SR(PooledComponent):
             'sm_type': sm_config.get('type'),
             'sr_type': properties.get('type'),
             'setPBDs': ids_from_refs(properties.get('PBDs', []))
-            }, modname=cls.__module__)
+            }
 
     def getPBDs(self):
         '''

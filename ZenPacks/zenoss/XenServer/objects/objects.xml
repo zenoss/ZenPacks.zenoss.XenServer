@@ -43,7 +43,7 @@ True
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-60
+5
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin

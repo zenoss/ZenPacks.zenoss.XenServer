@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
@@ -56,14 +55,22 @@ class PBD(PooledComponent):
         '''
         Return an ObjectMap given XenAPI PBD ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'pbds',
+                'id': id_from_ref(ref),
+                }
+
         device_config = properties.get('device_config', {})
 
         title = device_config.get('location') or \
             device_config.get('device') or \
             properties['uuid']
 
-        return ObjectMap(data={
+        return {
             'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
+            'relname': 'pbds',
             'id': id_from_ref(ref),
             'title': title,
             'xenapi_ref': ref,
@@ -73,7 +80,7 @@ class PBD(PooledComponent):
             'dc_legacy_mode': to_boolean(device_config.get('legacy_mode')),
             'dc_location': device_config.get('location'),
             'setSR': id_from_ref(properties.get('SR')),
-            }, modname=cls.__module__)
+            }
 
     def getSR(self):
         '''

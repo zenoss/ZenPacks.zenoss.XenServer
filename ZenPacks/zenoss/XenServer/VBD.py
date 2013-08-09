@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
@@ -70,11 +69,18 @@ class VBD(PooledComponent):
         '''
         Return an ObjectMap given XenAPI VBD ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'vms/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'vbds',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('device') or \
             properties.get('userdevice') or \
             properties['uuid']
 
-        return ObjectMap(data={
+        return {
             'compname': 'vms/{}'.format(id_from_ref(properties.get('VM'))),
             'relname': 'vbds',
             'id': id_from_ref(ref),
@@ -93,7 +99,7 @@ class VBD(PooledComponent):
             'unpluggable': properties.get('unpluggable'),
             'userdevice': properties.get('userdevice'),
             'setVDI': id_from_ref(properties.get('VDI')),
-            }, modname=cls.__module__)
+            }
 
     def getVDI(self):
         '''

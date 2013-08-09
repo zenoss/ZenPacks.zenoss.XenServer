@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -70,11 +69,17 @@ class Network(PooledComponent):
         '''
         Return an ObjectMap given XenAPI network ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'networks',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('name_label') or properties['uuid']
 
         other_config = properties.get('other_config', {})
 
-        return ObjectMap(data={
+        return {
             'relname': 'networks',
             'id': id_from_ref(ref),
             'title': title,
@@ -93,7 +98,7 @@ class Network(PooledComponent):
             'ipv4_netmask': other_config.get('ipv4_netmask'),
             'setPIFs': ids_from_refs(properties.get('PIFs', [])),
             'setVIFs': ids_from_refs(properties.get('VIFs', [])),
-            }, modname=cls.__module__)
+            }
 
     def getPIFs(self):
         '''

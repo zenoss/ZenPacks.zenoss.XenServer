@@ -213,10 +213,11 @@ class XenAPIEventsPlugin(BasePlugin):
         if not hasattr(self, 'producer'):
             self.producer = DataMapProducer(client)
 
-        timeout = float(max(ds0.cycletime - 5, 1))
+        maps = yield self.producer.getmaps()
 
         data = self.new_data()
-        data['maps'] = yield self.producer.getmaps(timeout)
+        data['maps'].extend(maps)
+
         returnValue(data)
 
     def onSuccess(self, data, config):

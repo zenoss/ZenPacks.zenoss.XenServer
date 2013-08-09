@@ -11,7 +11,6 @@
 from zope.component import adapts
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
@@ -93,6 +92,13 @@ class PIF(PooledComponent):
         '''
         Return an ObjectMap given XenAPI PIF ref and properties.
         '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'pifs',
+                'id': id_from_ref(ref),
+                }
+
         title = properties.get('device') or properties['uuid']
 
         # IP is a single string whereas IPv6 is a list.
@@ -103,7 +109,7 @@ class PIF(PooledComponent):
         if vlan == '-1':
             vlan = None
 
-        return ObjectMap(data={
+        return {
             'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
             'relname': 'pifs',
             'id': id_from_ref(ref),
@@ -129,7 +135,7 @@ class PIF(PooledComponent):
             'physical': properties.get('physical'),
             'primary_address_type': properties.get('primary_address_type'),
             'setNetwork': id_from_ref(properties.get('network')),
-            }, modname=cls.__module__)
+            }
 
     @classmethod
     def objectmap_metrics(cls, ref, properties):
@@ -145,7 +151,7 @@ class PIF(PooledComponent):
         if speed:
             speed = speed * 1e6  # Convert from Mbps to bps.
 
-        return ObjectMap(data={
+        return {
             'compname': 'hosts/{}'.format(id_from_ref(host_ref)),
             'relname': 'pifs',
             'id': id_from_ref(ref),
@@ -154,7 +160,7 @@ class PIF(PooledComponent):
             'pif_device_name': properties.get('device_name'),
             'speed': speed,
             'vendor_name': properties.get('vendor_name'),
-            }, modname=cls.__module__)
+            }
 
     def getNetwork(self):
         '''
