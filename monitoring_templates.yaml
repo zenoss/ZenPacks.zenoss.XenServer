@@ -255,22 +255,12 @@
           format: "%7.2lf%s"
           color: "000000"
 
-        Receive_m:
-          dpName: "metric_ioRead"
-          format: "%7.2lf%s"
-          colorindex: 0
-
-        Send_m:
-          dpName: "metric_ioWrite"
-          format: "%7.2lf%s"
-          colorindex: 1
-
-        Receive_r:
+        Receive:
           dpName: "rrd_rx"
           format: "%7.2lf%s"
           colorindex: 0
 
-        Send_r:
+        Send:
           dpName: "rrd_tx"
           format: "%7.2lf%s"
           colorindex: 1
@@ -416,6 +406,7 @@
 
         Physical:
           dpName: "property_physicalUtilisation"
+          lineType: AREA
           colorindex: 0
           format: "%7.2lf%s"
 
