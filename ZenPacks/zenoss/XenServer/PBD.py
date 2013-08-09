@@ -22,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
     updateToOne,
+    id_from_ref, to_boolean,
     )
 
 
@@ -48,6 +49,38 @@ class PBD(PooledComponent):
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'pbds')),
         ('sr', ToOne(ToMany, MODULE_NAME['SR'], 'pbds')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI PBD ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'pbds',
+                'id': id_from_ref(ref),
+                }
+
+        device_config = properties.get('device_config', {})
+
+        title = device_config.get('location') or \
+            device_config.get('device') or \
+            properties['uuid']
+
+        return {
+            'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
+            'relname': 'pbds',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'currently_attached': properties.get('currently_attached'),
+            'dc_device': device_config.get('device'),
+            'dc_legacy_mode': to_boolean(device_config.get('legacy_mode')),
+            'dc_location': device_config.get('location'),
+            'setSR': id_from_ref(properties.get('SR')),
+            }
 
     def getSR(self):
         '''

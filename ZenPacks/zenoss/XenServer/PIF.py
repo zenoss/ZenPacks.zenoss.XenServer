@@ -22,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
     updateToOne,
+    id_from_ref, int_or_none,
     )
 
 
@@ -85,6 +86,81 @@ class PIF(PooledComponent):
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'pifs')),
         ('network', ToOne(ToMany, MODULE_NAME['Network'], 'pifs')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI PIF ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'pifs',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('device') or properties['uuid']
+
+        # IP is a single string whereas IPv6 is a list.
+        ipv4_addresses = [x for x in [properties.get('IP')] if x]
+        ipv6_addresses = [x for x in properties.get('IPv6', []) if x]
+
+        vlan = properties.get('VLAN')
+        if vlan == '-1':
+            vlan = None
+
+        return {
+            'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
+            'relname': 'pifs',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'xenapi_uuid': properties.get('uuid'),
+            'dns': properties.get('dns'),
+            'ipv4_addresses': ipv4_addresses,
+            'ipv6_addresses': ipv6_addresses,
+            'macaddress': properties.get('MAC'),
+            'mtu': properties.get('MTU'),
+            'vlan': vlan,
+            'currently_attached': properties.get('currently_attached'),
+            'pif_device': properties.get('device'),
+            'disallow_unplug': properties.get('disallow_unplug'),
+            'ipv4_gateway': properties.get('gateway'),
+            'ipv4_configuration_mode': properties.get('ip_configuration_mode'),
+            'ipv6_configuration_mode': properties.get('ipv6_configuration_mode'),
+            'ipv6_gateway': properties.get('ipv6_gateway'),
+            'management': properties.get('management'),
+            'ipv4_netmask': properties.get('netmask'),
+            'physical': properties.get('physical'),
+            'primary_address_type': properties.get('primary_address_type'),
+            'setNetwork': id_from_ref(properties.get('network')),
+            }
+
+    @classmethod
+    def objectmap_metrics(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and host_metrics
+        properties.
+        '''
+
+        # Extract nested refs.
+        ref, host_ref = ref
+
+        speed = int_or_none(properties.get('speed'))
+        if speed:
+            speed = speed * 1e6  # Convert from Mbps to bps.
+
+        return {
+            'compname': 'hosts/{}'.format(id_from_ref(host_ref)),
+            'relname': 'pifs',
+            'id': id_from_ref(ref),
+            'carrier': properties.get('carrier'),
+            'pif_device_id': properties.get('device_id'),
+            'pif_device_name': properties.get('device_name'),
+            'speed': speed,
+            'vendor_name': properties.get('vendor_name'),
+            }
 
     def getNetwork(self):
         '''

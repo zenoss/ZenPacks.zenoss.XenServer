@@ -88,6 +88,54 @@ def updateToMany(relationship, root, type_, ids):
         obj.index_object()
 
 
+def addToMany(relationship, root, type_, id_):
+    '''
+    Update ToMany relationship given search root, type and id.
+
+    Adds a new ID to this relationship, without disturbing existing
+    objects.
+    '''
+    root = root.primaryAq()
+    query = Eq('id', id_)
+
+    for result in ICatalogTool(root).search(types=[type_], query=query):
+        obj = result.getObject()
+        relationship.addRelation(obj)
+
+        # Index remote object. It might have a custom path reporter.
+        notify(IndexingEvent(obj, 'path', False))
+
+        # For componentSearch. Would be nice if we could target
+        # idxs=['getAllPaths'], but there's a chance that it won't exist
+        # yet.
+        obj.index_object()
+        break
+
+
+def removeToMany(relationship, root, type_, id_):
+    '''
+    Update ToMany relationship given search root, type and id.
+
+    Removes a single ID from this relationship, without disturbing
+    existing objects.
+    '''
+    root = root.primaryAq()
+    query = Eq('id', id_)
+
+    for result in ICatalogTool(root).search(types=[type_], query=query):
+        obj = result.getObject()
+        relationship.removeRelation()
+
+        # Index remote object. It might have a custom path reporter.
+        notify(IndexingEvent(obj, 'path', False))
+
+        # For componentSearch. Would be nice if we could target
+        # idxs=['getAllPaths'], but there's a chance that it won't exist
+        # yet.
+        obj.index_object()
+        break
+
+
 def updateToOne(relationship, root, type_, id_):
     '''
     Update ToOne relationship given search root, type and ids.
@@ -238,6 +286,27 @@ class BaseComponent(DeviceComponent, ManagedEntity):
         '''
         return None
 
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI ref and properties.
+
+        No generic implementation exists. Must be overridden in
+        subclasses that are modeled.
+        '''
+        return None
+
+    @classmethod
+    def objectmap_metrics(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI ref and metrics properties.
+
+        No generic implementation exists. Must be overridden in
+        subclasses that have properties modeled from their corresponding
+        _metrics class.
+        '''
+        return None
+
 
 class IBaseComponentInfo(IComponentInfo):
     '''
@@ -354,3 +423,61 @@ def findComponentByUUID(dmd, xenapi_uuid):
 
     for brain in getXenServerCatalog(dmd)(xenapi_uuid=xenapi_uuid):
         return brain.getObject()
+
+
+def id_from_ref(ref):
+    '''
+    Return a component id given a XenAPI OpaqueRef.
+    '''
+    if not ref or ref == 'OpaqueRef:NULL':
+        return None
+
+    return prepId(ref.split(':', 1)[1])
+
+
+def ids_from_refs(refs):
+    '''
+    Return list of component ids given a list of XenAPI OpaqueRefs.
+
+    Null references won't be included in the returned list. So it's
+    possible that the returned list will be shorter than the passed
+    list.
+    '''
+    ids = []
+
+    for ref in refs:
+        id_ = id_from_ref(ref)
+        if id_:
+            ids.append(id_)
+
+    return ids
+
+
+def int_or_none(value):
+    '''
+    Return value converted to int or None if conversion fails.
+    '''
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def float_or_none(value):
+    '''
+    Return value converted to float or None if conversion fails.
+    '''
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def to_boolean(value, true_value='true'):
+    '''
+    Return value converted to boolean.
+    '''
+    if value == true_value:
+        return True
+    else:
+        return False

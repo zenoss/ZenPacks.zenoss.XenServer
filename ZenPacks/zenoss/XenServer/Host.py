@@ -21,6 +21,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToMany, updateToOne,
+    id_from_ref, ids_from_refs, int_or_none, float_or_none,
     )
 
 
@@ -78,6 +79,64 @@ class Host(PooledComponent):
         ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for_hosts')),
         ('local_cache_sr', ToOne(ToMany, MODULE_NAME['SR'], 'local_cache_for_hosts')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'hosts',
+                'id': id_from_ref,
+                }
+
+        title = properties.get('name_label') or properties.get('hostname')
+
+        cpu_info = properties.get('cpu_info', {})
+
+        cpu_speed = float_or_none(cpu_info.get('speed'))
+        if cpu_speed:
+            cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
+
+        return {
+            'relname': 'hosts',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'api_version_major': properties.get('API_version_major'),
+            'api_version_minor': properties.get('API_version_minor'),
+            'api_version_vendor': properties.get('API_version_vendor'),
+            'address': properties.get('address'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'capabilities': properties.get('capabilities'),
+            'cpu_count': int_or_none(cpu_info.get('cpu_count')),
+            'cpu_speed': cpu_speed,
+            'edition': properties.get('edition'),
+            'enabled': properties.get('enabled'),
+            'hostname': properties.get('hostname'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'sched_policy': properties.get('sched_policy'),
+            'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
+            'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
+            'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
+            'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
+            }
+
+    @classmethod
+    def objectmap_metrics(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and host_metrics
+        properties.
+        '''
+        return {
+            'relname': 'hosts',
+            'id': id_from_ref(ref),
+            'memory_total': int_or_none(properties.get('memory_total')),
+            }
 
     @property
     def is_pool_master(self):

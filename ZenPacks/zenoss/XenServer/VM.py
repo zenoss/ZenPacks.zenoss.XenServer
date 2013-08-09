@@ -22,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToOne,
+    id_from_ref, int_or_none,
     )
 
 
@@ -93,6 +94,75 @@ class VM(PooledComponent):
         ('host', ToOne(ToMany, MODULE_NAME['Host'], 'vms')),
         ('vmappliance', ToOne(ToMany, MODULE_NAME['VMAppliance'], 'vms')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI VM ref and properties.
+        '''
+        if not properties:
+            return {
+                'relname': 'vms',
+                'id': id_from_ref(ref),
+                }
+
+        if properties.get('is_a_snapshot') or \
+                properties.get('is_snapshot_from_vmpp') or \
+                properties.get('is_a_template'):
+
+            return
+
+        title = properties.get('name_label') or properties['uuid']
+
+        guest_metrics_ref = properties.get('guest_metrics')
+        if guest_metrics_ref == 'OpaqueRef:NULL':
+            guest_metrics_ref = None
+
+        return {
+            'relname': 'vms',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'xenapi_guest_metrics_ref': guest_metrics_ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'hvm_shadow_multiplier': properties.get('HVM_shadow_multiplier'),
+            'vcpus_at_startup': int_or_none(properties.get('VCPUs_at_startup')),
+            'vcpus_max': int_or_none(properties.get('VCPUs_max')),
+            'actions_after_crash': properties.get('actions_after_crash'),
+            'actions_after_reboot': properties.get('actions_after_reboot'),
+            'actions_after_shutdown': properties.get('actions_after_shutdown'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'domarch': properties.get('domarch'),
+            'domid': int_or_none(properties.get('domid')),
+            'ha_always_run': properties.get('ha_always_run'),
+            'ha_restart_priority': properties.get('ha_restart_priority'),
+            'is_a_snapshot': properties.get('is_a_snapshot'),
+            'is_a_template': properties.get('is_a_template'),
+            'is_control_domain': properties.get('is_control_domain'),
+            'is_snapshot_from_vmpp': properties.get('is_snapshot_from_vmpp'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'power_state': properties.get('power_state'),
+            'shutdown_delay': int_or_none(properties.get('shutdown_delay')),
+            'start_delay': int_or_none(properties.get('start_delay')),
+            'user_version': int_or_none(properties.get('user_version')),
+            'version': int_or_none(properties.get('version')),
+            'setHost': id_from_ref(properties.get('resident_on')),
+            'setVMAppliance': id_from_ref(properties.get('appliance')),
+            }
+
+    @classmethod
+    def objectmap_metrics(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and host_metrics
+        properties.
+        '''
+        return {
+            'relname': 'vms',
+            'id': id_from_ref(ref),
+            'memory_actual': int_or_none(properties.get('memory_actual')),
+            }
 
     def getHost(self):
         '''

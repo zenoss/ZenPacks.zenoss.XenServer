@@ -29,6 +29,26 @@ True
 ZenPacks.zenoss.XenServer.Endpoint
 </property>
 <tomanycont id='datasources'>
+<object id='events' module='ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource' class='PythonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Python
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="eventClass" mode="w" >
+/Ignore
+</property>
+<property type="int" id="severity" mode="w" >
+0
+</property>
+<property type="string" id="cycletime" mode="w" >
+5
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin
+</property>
+</object>
 <object id='messages' module='ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource' class='PythonDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Python

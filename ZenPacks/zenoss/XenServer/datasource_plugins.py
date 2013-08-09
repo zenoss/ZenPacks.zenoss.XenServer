@@ -26,6 +26,7 @@ from Products.ZenModel.MinMaxThreshold import rpneval
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import \
     PythonDataSourcePlugin
 
+from ZenPacks.zenoss.XenServer.modeler.incremental import DataMapProducer
 from ZenPacks.zenoss.XenServer.utils import add_local_lib_path
 
 # Allows txxenapi to be imported.
@@ -95,13 +96,6 @@ class BasePlugin(PythonDataSourcePlugin):
         'zXenServerPassword',
         ]
 
-    @classmethod
-    def config_key(cls, datasource, context):
-        return (
-            context.device().id,
-            datasource.getCycleTime(context),
-            )
-
     def collect(self, config):
         ds0 = config.datasources[0]
 
@@ -120,9 +114,7 @@ class XenAPIPlugin(BasePlugin):
 
     @classmethod
     def config_key(cls, datasource, context):
-        return (
-            context.device().id,
-            datasource.getCycleTime(context),
+        return BasePlugin.config_key(datasource, context) + (
             datasource.xenapi_classname,
             )
 
@@ -206,6 +198,38 @@ class XenAPIPlugin(BasePlugin):
             config.datasources[0].params['xenapi_classname'],
             error)
 
+        data = self.new_data()
+        data['events'].append(get_event(config, str(error), 5))
+        return data
+
+
+class XenAPIEventsPlugin(BasePlugin):
+    '''
+    Collect model updates from the XenAPI events API.
+    '''
+
+    @inlineCallbacks
+    def collect_xen(self, config, ds0, client):
+        if not hasattr(self, 'producer'):
+            self.producer = DataMapProducer(client)
+
+        maps = yield self.producer.getmaps()
+
+        data = self.new_data()
+        data['maps'].extend(maps)
+
+        returnValue(data)
+
+    def onSuccess(self, data, config):
+        LOG.debug('success for %s events', config.id)
+        data['events'].append(get_event(config, 'successful collection', 0))
+        return data
+
+    def onError(self, error, config):
+        if hasattr(error, 'value'):
+            error = error.value
+
+        LOG.error('error for %s events: %s', config.id, error)
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
         return data

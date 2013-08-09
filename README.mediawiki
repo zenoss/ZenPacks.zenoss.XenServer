@@ -9,14 +9,12 @@ Tracking tasks here at least until the first revision is done.
 # Documentation.
 
 ;Niceties
-# Avoid duplicate collection of message events.
 # Add CloudStack Impact integration.
 # Add useful information to device overview screen.
 # zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
 # Vocabulary for XenServerRRDDataPointInfo *_aggregation properties.
 # Add bond interfaces. (Bond)
 # Add VLANs. (VLAN)
-# Targeted remodeling based on events.
 # Fix sleep(5) workaround in add_xenserver facade method.
 # Screencast.
 

@@ -22,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
     updateToOne,
+    id_from_ref,
     )
 
 
@@ -62,6 +63,43 @@ class VBD(PooledComponent):
         ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vbds')),
         ('vdi', ToOne(ToMany, MODULE_NAME['VDI'], 'vbds')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI VBD ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'vms/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'vbds',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('device') or \
+            properties.get('userdevice') or \
+            properties['uuid']
+
+        return {
+            'compname': 'vms/{}'.format(id_from_ref(properties.get('VM'))),
+            'relname': 'vbds',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'xenapi_uuid': properties.get('uuid'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'bootable': properties.get('bootable'),
+            'currently_attached': properties.get('currently_attached'),
+            'vbd_device': properties.get('device'),
+            'empty': properties.get('empty'),
+            'mode': properties.get('mode'),
+            'storage_lock': properties.get('storage_lock'),
+            'vbd_type': properties.get('type'),
+            'unpluggable': properties.get('unpluggable'),
+            'userdevice': properties.get('userdevice'),
+            'setVDI': id_from_ref(properties.get('VDI')),
+            }
 
     def getVDI(self):
         '''

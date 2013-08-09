@@ -21,6 +21,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToMany,
+    id_from_ref, ids_from_refs,
     )
 
 
@@ -66,6 +67,46 @@ class VDI(PooledComponent):
         ('sr', ToOne(ToManyCont, MODULE_NAME['SR'], 'vdis')),
         ('vbds', ToMany(ToOne, MODULE_NAME['VBD'], 'vdi')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI VDI ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'srs/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'vdis',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('name_label') or \
+            properties.get('location') or \
+            properties['uuid']
+
+        return {
+            'compname': 'srs/{}'.format(id_from_ref(properties.get('SR'))),
+            'relname': 'vdis',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'allow_caching': properties.get('allow_caching'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'is_a_snapshot': properties.get('is_a_snapshot'),
+            'location': properties.get('location'),
+            'managed': properties.get('managed'),
+            'missing': properties.get('missing'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'on_boot': properties.get('on_boot'),
+            'read_only': properties.get('read_only'),
+            'sharable': properties.get('sharable'),
+            'storage_lock': properties.get('storage_lock'),
+            'vdi_type': properties.get('type'),
+            'virtual_size': properties.get('virtual_size'),
+            'setVBDs': ids_from_refs(properties.get('VBDs', [])),
+            }
 
     def getVBDs(self):
         '''
