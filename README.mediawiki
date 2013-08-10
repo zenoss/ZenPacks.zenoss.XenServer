@@ -3,8 +3,7 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# Create Impact ERD.
-# Internal Impact adapters.
+# Icons.
 # External Impact adapters.
 # Documentation.
 
