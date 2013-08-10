@@ -19,7 +19,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
-    RelationshipInfoProperty,
+    RelationshipInfoProperty, RelationshipLengthProperty,
     updateToOne,
     id_from_ref, int_or_none,
     )
@@ -186,6 +186,24 @@ class Pool(BaseComponent):
             type_=CLASS_NAME['SR'],
             id_=sr_id)
 
+    def hosts(self):
+        '''
+        Return the hosts belonging to this pool.
+
+        This assumes that we only manage one pool per endpoint and
+        therefore returns all known hosts.
+        '''
+        return self.endpoint().hosts()
+
+    def vms(self):
+        '''
+        Return the VMs belonging to this pool.
+
+        This assumes that we only manage one pool per endpoint and
+        therefore returns all known VMs.
+        '''
+        return self.endpoint().vms()
+
     def xenrrd_prefix(self):
         '''
         Return prefix under which XenServer stores RRD data about this
@@ -217,6 +235,9 @@ class IPoolInfo(IBaseComponentInfo):
     name_label = schema.TextLine(title=_t(u'Label'))
     vswitch_controller = schema.TextLine(title=_t(u'vSwitch Controller'))
 
+    host_count = schema.Int(title=_t(u'Number of Hosts'))
+    vm_count = schema.Int(title=_t(u'Number of VMs'))
+
 
 class PoolInfo(BaseComponentInfo):
     '''
@@ -240,3 +261,6 @@ class PoolInfo(BaseComponentInfo):
     oc_memory_ratio_hvm = ProxyProperty('oc_memory_ratio_hvm')
     oc_memory_ratio_pv = ProxyProperty('oc_memory_ratio_pv')
     vswitch_controller = ProxyProperty('vswitch_controller')
+
+    host_count = RelationshipLengthProperty('hosts')
+    vm_count = RelationshipLengthProperty('vms')

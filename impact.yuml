@@ -6,6 +6,7 @@
 [Pool{bg:aquamarine}]0..1-0..*>[VM{bg:aquamarine}]
 [PBD{bg:aquamarine}]0..*-0..1>[SR{bg:aquamarine}]
 [PBD{bg:aquamarine}]1..*-1>[Host{bg:aquamarine}]
+[SR{bg:aquamarine}]1-0..*>[Host{bg:aquamarine}]
 [SR{bg:aquamarine}]1-0..*>[Pool{bg:aquamarine}]
 [SR{bg:aquamarine}]1-0..*>[VDI{bg:aquamarine}]
 [VDI{bg:aquamarine}]0..1-0..*>[VBD{bg:aquamarine}]
