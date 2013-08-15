@@ -4,11 +4,15 @@ Tracking tasks here at least until the first revision is done.
 
 ;Musts
 # Icons.
+# Tunable Collection Intervals:
+#* zXenServerPerfInterval
+#* zXenServerModelInterval
+#* zXenServerEventsInterval
 # External Impact adapters.
+# CloudStack Impact adapters.
 # Documentation.
 
 ;Niceties
-# Add CloudStack Impact integration.
 # Add useful information to device overview screen.
 # zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
 # Vocabulary for XenServerRRDDataPointInfo *_aggregation properties.
