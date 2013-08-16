@@ -132,6 +132,12 @@ class VBD(PooledComponent):
         if vm_uuid and self.vbd_device:
             return ('vm', vm_uuid, '_'.join(('vbd', self.vbd_device)))
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-disk.png'
+
 
 class IVBDInfo(IPooledComponentInfo):
     '''

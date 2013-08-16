@@ -115,6 +115,12 @@ class PBD(PooledComponent):
         if host_uuid and self.xenapi_uuid:
             return ('host', host_uuid, '_'.join(('pbd', self.xenapi_uuid)))
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-disk.png'
+
 
 class IPBDInfo(IPooledComponentInfo):
     '''

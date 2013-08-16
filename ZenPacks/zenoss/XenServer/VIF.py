@@ -127,6 +127,12 @@ class VIF(PooledComponent):
         if vm_uuid and self.vif_device:
             return ('vm', vm_uuid, '_'.join(('vif', self.vif_device)))
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-network-interface.png'
+
 
 class IVIFInfo(IPooledComponentInfo):
     '''

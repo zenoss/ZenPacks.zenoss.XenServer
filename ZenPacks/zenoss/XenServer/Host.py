@@ -259,6 +259,12 @@ class Host(PooledComponent):
         if self.xenapi_uuid:
             return ('host', self.xenapi_uuid, '')
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/host.png'
+
 
 class IHostInfo(IPooledComponentInfo):
     '''

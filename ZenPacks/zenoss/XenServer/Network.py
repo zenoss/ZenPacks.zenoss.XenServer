@@ -152,6 +152,12 @@ class Network(PooledComponent):
         if self.xenapi_uuid:
             return ('network', self.xenapi_uuid, '')
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-network-interface.png'
+
 
 class INetworkInfo(IPooledComponentInfo):
     '''

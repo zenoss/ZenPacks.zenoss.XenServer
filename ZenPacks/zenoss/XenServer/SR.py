@@ -249,6 +249,12 @@ class SR(PooledComponent):
         if self.xenapi_uuid:
             return ('sr', self.xenapi_uuid, '')
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/storage-domain.png'
+
 
 class ISRInfo(IPooledComponentInfo):
     '''

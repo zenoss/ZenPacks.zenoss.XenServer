@@ -53,6 +53,12 @@ class Endpoint(Device):
 
         return addresses
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/xenserver.png'
+
 
 class IEndpointInfo(IDeviceInfo):
     '''

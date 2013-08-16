@@ -234,6 +234,12 @@ class VM(PooledComponent):
         if self.xenapi_uuid:
             return ('vm', self.xenapi_uuid, '')
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-server.png'
+
 
 class IVMInfo(IPooledComponentInfo):
     '''

@@ -193,6 +193,12 @@ class PIF(PooledComponent):
         if host_uuid and self.pif_device:
             return ('host', host_uuid, '_'.join(('pif', self.pif_device)))
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-network-interface.png'
+
 
 class IPIFInfo(IPooledComponentInfo):
     '''

@@ -214,6 +214,12 @@ class Pool(BaseComponent):
         if self.xenapi_uuid:
             return ('pool', self.xenapi_uuid, '')
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/cluster.png'
+
 
 class IPoolInfo(IBaseComponentInfo):
     '''

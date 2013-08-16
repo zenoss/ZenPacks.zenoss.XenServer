@@ -139,6 +139,12 @@ class VDI(PooledComponent):
         if self.xenapi_uuid:
             return ('vdi', self.xenapi_uuid, '')
 
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-disk.png'
+
 
 class IVDIInfo(IPooledComponentInfo):
     '''
