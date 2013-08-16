@@ -471,6 +471,23 @@ class TestImpact(BaseTestCase):
             'vm1' in impacted_by,
             'missing impact: {} -> {}'.format('vm1', vapp1))
 
+    ### Platform #############################################################
+
+    @require_zenpack('ZenPacks.zenoss.Impact')
+    def test_Platform_Physical(self):
+        pass
+
+    @require_zenpack('ZenPacks.zenoss.Impact')
+    def test_Platform_Virtual(self):
+        pass
+
+    ### CloudStack ###########################################################
+
+    @require_zenpack('ZenPacks.zenoss.Impact')
+    @require_zenpack('ZenPacks.zenoss.StorageBase')
+    def test_CloudStack(self):
+        pass
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
