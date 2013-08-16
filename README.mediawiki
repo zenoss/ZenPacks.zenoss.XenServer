@@ -3,7 +3,6 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# Icons.
 # Tunable Collection Intervals:
 #* zXenServerPerfInterval
 #* zXenServerModelInterval
