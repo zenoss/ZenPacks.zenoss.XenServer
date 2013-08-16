@@ -51,7 +51,9 @@ for product_name in productNames:
 setzPropertyCategory('zXenServerAddresses', 'XenServer')
 setzPropertyCategory('zXenServerUsername', 'XenServer')
 setzPropertyCategory('zXenServerPassword', 'XenServer')
-setzPropertyCategory('zXenServerCollectionInterval', 'XenServer')
+setzPropertyCategory('zXenServerPerfInterval', 'XenServer')
+setzPropertyCategory('zXenServerModelInterval', 'XenServer')
+setzPropertyCategory('zXenServerEventsInterval', 'XenServer')
 
 
 class ZenPack(ZenPackBase):
@@ -59,14 +61,16 @@ class ZenPack(ZenPackBase):
         ('zXenServerAddresses', [], 'lines'),
         ('zXenServerUsername', 'root', 'string'),
         ('zXenServerPassword', '', 'password'),
-        ('zXenServerCollectionInterval', 300, 'int'),
+        ('zXenServerPerfInterval', 300, 'int'),
+        ('zXenServerModelInterval', 60, 'int'),
+        ('zXenServerEventsInterval', 60, 'int'),
         ]
 
     def install(self, app):
         super(ZenPack, self).install(app)
 
-        # TODO: Create catalog(s).
-        pass
+        from ZenPacks.zenoss.XenServer.utils import createXenServerCatalog
+        createXenServerCatalog(app.zport.dmd)
 
 
 # Patch last to avoid import recursion problems.

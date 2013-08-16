@@ -7,14 +7,14 @@
       plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin"
       eventClass: "/Ignore"
       severity: "0"
-      cycletime: "5"
+      cycletime: "${here/zXenServerModelInterval}"
 
     messages:
       type: Python
       plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIMessagesPlugin"
       eventClass: "/Ignore"
       severity: "0"
-      cycletime: "60"
+      cycletime: "${here/zXenServerEventsInterval}"
 
 
 /XenServer/Host:

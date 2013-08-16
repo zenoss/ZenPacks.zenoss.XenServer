@@ -404,12 +404,13 @@ def createXenServerCatalog(dmd):
         pass
 
     else:
-        LOG.info('Reindexing all XenServer components')
-        brains = ICatalogTool(dmd.primaryAq()).search(
+        results = ICatalogTool(dmd.primaryAq()).search(
             'ZenPacks.zenoss.XenServer.utils.BaseComponent')
 
-        for brain in brains:
-            brain.getObject().index_object()
+        if results.total:
+            LOG.info('Reindexing all XenServer components')
+            for brain in results:
+                brain.getObject().index_object()
 
     return catalog
 

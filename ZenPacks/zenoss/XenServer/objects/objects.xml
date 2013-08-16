@@ -43,7 +43,7 @@ True
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-5
+${here/zXenServerModelInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin
@@ -63,7 +63,7 @@ True
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-60
+${here/zXenServerEventsInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIMessagesPlugin
@@ -93,7 +93,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -135,7 +135,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
@@ -1064,7 +1064,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
@@ -1185,7 +1185,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -1230,7 +1230,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
@@ -1431,7 +1431,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -1588,7 +1588,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -1788,7 +1788,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
@@ -1945,7 +1945,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -2102,7 +2102,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
@@ -2265,7 +2265,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -2318,7 +2318,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
@@ -2360,7 +2360,7 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
