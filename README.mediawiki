@@ -3,10 +3,6 @@
 Tracking tasks here at least until the first revision is done.
 
 ;Musts
-# Tunable Collection Intervals:
-#* zXenServerPerfInterval
-#* zXenServerModelInterval
-#* zXenServerEventsInterval
 # External Impact adapters.
 # CloudStack Impact adapters.
 # Documentation.
