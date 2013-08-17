@@ -187,6 +187,16 @@
         permission="zope2.Public"
         />
 
+    <!-- Device Links -->
+    <configure zcml:condition="have zenoss:IExpandedLinkProvider">
+        <subscriber
+            provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
+            for='Products.ZenModel.Device.Device'
+            factory='.Host.DeviceLinkProvider'
+            />
+
+    </configure>
+
     <!-- Impact -->
     <configure zcml:condition="installed ZenPacks.zenoss.Impact">
         <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>

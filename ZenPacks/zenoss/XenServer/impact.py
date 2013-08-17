@@ -152,6 +152,14 @@ class HostRelationsProvider(BaseRelationsProvider):
 
     impact_relationships = ('pool', 'vms')
 
+    def getEdges(self):
+        for base_edge in BaseRelationsProvider.getEdges(self):
+            yield base_edge
+
+        server_device = self.adapted.server_device()
+        if server_device:
+            yield edge(guid(server_device), self.guid())
+
 
 class NetworkRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('pifs',)
@@ -161,9 +169,25 @@ class NetworkRelationsProvider(BaseRelationsProvider):
 class PBDRelationsProvider(BaseRelationsProvider):
     impact_relationships = ('sr', 'host')
 
+    def getEdges(self):
+        for base_edge in BaseRelationsProvider.getEdges(self):
+            yield base_edge
+
+        server_disk = self.adapted.server_disk()
+        if server_disk:
+            yield edge(guid(server_disk), self.guid())
+
 
 class PIFRelationsProvider(BaseRelationsProvider):
     impact_relationships = ('network', 'host')
+
+    def getEdges(self):
+        for base_edge in BaseRelationsProvider.getEdges(self):
+            yield base_edge
+
+        server_interface = self.adapted.server_interface()
+        if server_interface:
+            yield edge(guid(server_interface), self.guid())
 
 
 class PoolRelationsProvider(BaseRelationsProvider):

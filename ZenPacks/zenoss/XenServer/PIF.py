@@ -8,10 +8,14 @@
 #
 ######################################################################
 
+import logging
+LOG = logging.getLogger('zen.XenServer')
+
 from zope.component import adapts
 from zope.interface import implements
 
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenUtils.Utils import prepId
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -199,6 +203,36 @@ class PIF(PooledComponent):
         '''
         return '/++resource++xenserver/img/virtual-network-interface.png'
 
+    def index_object(self, idxs=None):
+        '''
+        Overrides to also catalog in pifCatalog.
+        '''
+        super(PIF, self).index_object(idxs)
+        getPIFCatalog(self.dmd).catalog_object(self, self.getPrimaryId())
+
+    def unindex_object(self):
+        '''
+        Overrides to also uncatalog in pifCatalog.
+        '''
+        super(PIF, self).unindex_object()
+        getPIFCatalog(self.dmd).uncatalog_object(self.getPrimaryId())
+
+    def server_interface(self):
+        '''
+        Return the server interface underlying this PIF.
+
+        The host on which this PIF resides may also be monitored as a
+        normal Linux server. Attempt to find that server and its
+        interface that's associated with this PIF.
+        '''
+        if not self.pif_device:
+            return
+
+        server_device = self.host().server_device()
+        if server_device:
+            return server_device.os.interfaces._getOb(
+                prepId(self.pif_device))
+
 
 class IPIFInfo(IPooledComponentInfo):
     '''
@@ -207,6 +241,7 @@ class IPIFInfo(IPooledComponentInfo):
 
     host = schema.Entity(title=_t(u'Host'))
     network = schema.Entity(title=_t(u'Network'))
+    server_interface = schema.Entity(title=_t(u'Server Interface'))
 
     dns = schema.TextLine(title=_t(u'DNS Server Address'))
     ipv4_addresses = schema.TextLine(title=_t(u'IPv4 Addresses'))
@@ -242,6 +277,7 @@ class PIFInfo(PooledComponentInfo):
 
     host = RelationshipInfoProperty('host')
     network = RelationshipInfoProperty('network')
+    server_interface = RelationshipInfoProperty('server_interface')
 
     xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     dns = ProxyProperty('dns')
@@ -281,3 +317,73 @@ class PIFPathReporter(DefaultPathReporter):
             paths.extend(relPath(network, 'endpoint'))
 
         return paths
+
+
+def getPIFCatalog(dmd):
+    '''
+    Return the pifCatalog.
+
+    Creates the catalog if it doesn't already exist.
+    '''
+    try:
+        return dmd.Devices.XenServer.pifCatalog
+    except AttributeError:
+        return createPIFCatalog(dmd)
+
+
+def createPIFCatalog(dmd):
+    '''
+    Create /zport/dmd/Devices/XenServer/pifCatalog and return it.
+
+    This allows for fast lookup of PIFs by MAC address.
+    '''
+    from Products.ZCatalog.Catalog import CatalogError
+    from Products.ZCatalog.ZCatalog import manage_addZCatalog
+
+    from Products.ZenUtils.Search import makeCaseInsensitiveFieldIndex
+    from Products.Zuul.interfaces import ICatalogTool
+
+    catalog_name = 'pifCatalog'
+    device_class = dmd.Devices.createOrganizer('/XenServer')
+
+    if not hasattr(device_class, catalog_name):
+        LOG.info('Creating PIF catalog')
+        manage_addZCatalog(device_class, catalog_name, catalog_name)
+
+    zcatalog = device_class._getOb(catalog_name)
+    catalog = zcatalog._catalog
+
+    try:
+        LOG.info('Adding MAC address index to PIF catalog')
+        catalog.addIndex(
+            'macaddress',
+            makeCaseInsensitiveFieldIndex('macaddress'))
+
+    except CatalogError:
+        # Index already exists.
+        pass
+
+    else:
+        LOG.info('Reindexing all pNICs')
+        pif_brains = ICatalogTool(dmd.primaryAq()).search(CLASS_NAME['PIF'])
+        for pif_brain in pif_brains:
+            pif_brain.getObject().index_object()
+
+    return catalog
+
+
+def findPIFByMAC(dmd, macaddresses):
+    '''
+    Return the first PIF matching macaddresses or None if no match.
+
+    macaddresses can be a single MAC address string or an iterable of
+    MAC address strings. It is expected to be formatted as follows.
+    Where each x must be a salid hexidecimal character of any case.
+
+        xx:xx:xx:xx:xx:xx
+    '''
+    if not macaddresses:
+        return
+
+    for brain in getPIFCatalog(dmd)(macaddress=macaddresses):
+        return brain.getObject()

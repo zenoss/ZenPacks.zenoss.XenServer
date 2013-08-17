@@ -426,6 +426,21 @@ def findComponentByUUID(dmd, xenapi_uuid):
         return brain.getObject()
 
 
+def findIpInterfacesByMAC(dmd, macaddresses, interfaceType=None):
+    '''
+    Yield IpInterface objects that match the parameters.
+    '''
+    if not macaddresses:
+        return
+
+    layer2_catalog = dmd.ZenLinkManager._getCatalog(layer=2)
+    if layer2_catalog is not None:
+        for result in layer2_catalog(macaddress=macaddresses):
+            iface = result.getObject()
+            if not interfaceType or isinstance(iface, interfaceType):
+                yield iface
+
+
 def id_from_ref(ref):
     '''
     Return a component id given a XenAPI OpaqueRef.

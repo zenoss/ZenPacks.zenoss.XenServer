@@ -21,7 +21,7 @@ def optional_import(module_name, patch_module_name):
     else:
         import_module(
             '.{0}'.format(patch_module_name),
-            'ZenPacks.zenoss.vSphere.patches')
+            'ZenPacks.zenoss.XenServer.patches')
 
 
 optional_import('Products.ZenModel', 'platform')

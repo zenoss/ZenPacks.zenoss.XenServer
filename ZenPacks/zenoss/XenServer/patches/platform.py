@@ -16,6 +16,24 @@ from Products.ZenEvents.ZenEventClasses import Change_Remove, Change_Remove_Bloc
 from Products.ZenModel.Lockable import Lockable
 from Products.ZenUtils.Utils import monkeypatch
 
+from ZenPacks.zenoss.XenServer.PIF import findPIFByMAC
+
+
+@monkeypatch('Products.ZenModel.Device.Device')
+def xenserver_host(self):
+    '''
+    Return the XenServer Host running on this device.
+    '''
+    macaddresses = []
+    cat = self.dmd.ZenLinkManager._getCatalog(layer=2)
+    if cat is not None:
+        brains = cat(deviceId=self.getPrimaryId())
+        macaddresses.extend(b.macaddress for b in brains if b.macaddress)
+
+    pif = findPIFByMAC(self.dmd, macaddresses)
+    if pif:
+        return pif.host()
+
 
 @monkeypatch('Products.Zuul.routers.device.DeviceRouter')
 def getComponentTree(self, uid=None, id=None, **kwargs):

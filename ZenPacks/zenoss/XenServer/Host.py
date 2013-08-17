@@ -22,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToMany, updateToOne,
     id_from_ref, ids_from_refs, int_or_none, float_or_none,
+    findIpInterfacesByMAC,
     )
 
 
@@ -265,6 +266,27 @@ class Host(PooledComponent):
         '''
         return '/++resource++xenserver/img/host.png'
 
+    def server_device(self):
+        '''
+        Return the associated device on which this host runs.
+
+        Zenoss may also be monitoring the XenServer host as a normal
+        Linux server. This method will attempt to find that device by
+        matching the XenServer host's PIF MAC addresses then IP
+        addresses with those of other monitored devices.
+        '''
+        macaddresses = [x.macaddress for x in self.pifs() if x.macaddress]
+        if macaddresses:
+            for iface in findIpInterfacesByMAC(self.dmd, macaddresses):
+                return iface.device()
+
+        if self.address:
+            ip = self.endpoint.getNetworkRoot().findIp(self.address)
+            if ip:
+                device = ip.device()
+                if device:
+                    return device
+
 
 class IHostInfo(IPooledComponentInfo):
     '''
@@ -292,6 +314,7 @@ class IHostInfo(IPooledComponentInfo):
     suspend_image_sr = schema.Entity(title=_t(u'Suspend Image Storage Repository'))
     crash_dump_sr = schema.Entity(title=_t(u'Crash Dump Storage Repository'))
     local_cache_sr = schema.Entity(title=_t(u'Local Cache Storage Repository'))
+    server_device = schema.Entity(title=_t(u'Server Device'))
 
     hostcpu_count = schema.Int(title=_t(u'Number of Host CPUs'))
     pbd_count = schema.Int(title=_t(u'Number of Block Devices'))
@@ -329,8 +352,33 @@ class HostInfo(PooledComponentInfo):
     suspend_image_sr = RelationshipInfoProperty('suspend_image_sr')
     crash_dump_sr = RelationshipInfoProperty('crash_dump_sr')
     local_cache_sr = RelationshipInfoProperty('local_cache_sr')
+    server_device = RelationshipInfoProperty('server_device')
 
     hostcpu_count = RelationshipLengthProperty('hostcpus')
     pbd_count = RelationshipLengthProperty('pbds')
     pif_count = RelationshipLengthProperty('pifs')
     vm_count = RelationshipLengthProperty('vms')
+
+
+class DeviceLinkProvider(object):
+    '''
+    Provides a link to this host on the overview screen of the Linux
+    server device underlying this host.
+    '''
+    def __init__(self, device):
+        self.device = device
+
+    def getExpandedLinks(self):
+        host = self.device.xenserver_host()
+        if host:
+            endpoint = host.endpoint()
+
+            return [
+                'XenServer Host: <a href="{}">{}</a> on <a href="{}">{}</a>'.format(
+                    host.getPrimaryUrlPath(),
+                    host.titleOrId(),
+                    endpoint.getPrimaryUrlPath(),
+                    endpoint.titleOrId())]
+            str.format
+
+        return []

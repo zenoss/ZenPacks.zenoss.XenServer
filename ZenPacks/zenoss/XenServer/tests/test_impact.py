@@ -475,7 +475,45 @@ class TestImpact(BaseTestCase):
 
     @require_zenpack('ZenPacks.zenoss.Impact')
     def test_Platform_Physical(self):
-        pass
+        linux_dc = self.dmd.Devices.createOrganizer('/Server/Linux')
+        linux_server = linux_dc.createInstance('test-linux-host1')
+
+        from Products.ZenModel.IpInterface import IpInterface
+        linux_iface = add_contained(linux_server.os, 'interfaces', IpInterface('eth0'))
+        linux_iface.macaddress = '00:0c:29:fe:ab:bc'
+        linux_iface.index_object()
+
+        from Products.ZenModel.HardDisk import HardDisk
+        linux_disk = add_contained(linux_server.hw, 'harddisks', HardDisk('sda3'))
+
+        host1 = self.endpoint().getObjByPath('hosts/host1')
+        host1.address = '192.168.66.71'
+
+        pif1 = self.endpoint().getObjByPath('hosts/host1/pifs/pif1')
+        pif1.pif_device = linux_iface.id
+        pif1.macaddress = linux_iface.macaddress
+
+        pbd1 = self.endpoint().getObjByPath('hosts/host1/pbds/pbd1')
+        pbd1.dc_device = '/dev/{}'.format(linux_disk.id)
+
+        host1_impacts, host1_impacted_by = impacts_for(host1)
+        pbd1_impacts, pbd1_impacted_by = impacts_for(pbd1)
+        pif1_impacts, pif1_impacted_by = impacts_for(pif1)
+
+        # Physical Server -> Host
+        self.assertTrue(
+            linux_server.id in host1_impacted_by,
+            'missing impact: {} -> {}'.format(linux_server, host1))
+
+        # Physical Server IpInterface -> PIF
+        self.assertTrue(
+            linux_iface.id in pif1_impacted_by,
+            'missing impact: {} -> {}'.format(linux_iface, pif1))
+
+        # Physical Server HardDisk -> PBD
+        self.assertTrue(
+            linux_disk.id in pbd1_impacted_by,
+            'missing impact: {} -> {}'.format(linux_disk, pbd1))
 
     @require_zenpack('ZenPacks.zenoss.Impact')
     def test_Platform_Virtual(self):
