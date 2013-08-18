@@ -201,6 +201,7 @@
     <configure zcml:condition="installed ZenPacks.zenoss.Impact">
         <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
 
+        <!-- XenServer Internal Impact Adapters -->
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
             for=".Endpoint.Endpoint"
@@ -271,6 +272,25 @@
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
             for=".VMAppliance.VMAppliance"
             factory=".impact.VMApplianceRelationsProvider"
+            />
+
+        <!-- Platform Impact Adaptres -->
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for="Products.ZenModel.Device.Device"
+            factory=".impact.DeviceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for="Products.ZenModel.HardDisk.HardDisk"
+            factory=".impact.HardDiskRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for="Products.ZenModel.IpInterface.IpInterface"
+            factory=".impact.IpInterfaceRelationsProvider"
             />
 
     </configure>

@@ -35,6 +35,27 @@ def xenserver_host(self):
         return pif.host()
 
 
+@monkeypatch('Products.ZenModel.HardDisk.HardDisk')
+def xenserver_pbd(self):
+    '''
+    Return the XenServer PBD using this disk.
+    '''
+    xenserver_host = self.device().xenserver_host()
+    if xenserver_host:
+        pbd_dc_device = '/dev/{}'.format(self.id)
+        for pbd in xenserver_host.pbds():
+            if pbd.dc_device and pbd.dc_device == pbd_dc_device:
+                return pbd
+
+
+@monkeypatch('Products.ZenModel.IpInterface.IpInterface')
+def xenserver_pif(self):
+    '''
+    Return the XenServer PIF using this interface.
+    '''
+    return findPIFByMAC(self.dmd, self.macaddress)
+
+
 @monkeypatch('Products.Zuul.routers.device.DeviceRouter')
 def getComponentTree(self, uid=None, id=None, **kwargs):
     '''

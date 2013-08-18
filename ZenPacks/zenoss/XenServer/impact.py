@@ -236,3 +236,26 @@ class VMRelationsProvider(BaseRelationsProvider):
 
 class VMApplianceRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('vms',)
+
+
+### Platform Impact Providers ################################################
+
+class DeviceRelationsProvider(BaseRelationsProvider):
+    def getEdges(self):
+        xenserver_host = self.adapted.xenserver_host()
+        if xenserver_host:
+            yield edge(self.guid(), guid(xenserver_host))
+
+
+class HardDiskRelationsProvider(BaseRelationsProvider):
+    def getEdges(self):
+        xenserver_pbd = self.adapted.xenserver_pbd()
+        if xenserver_pbd:
+            yield edge(self.guid(), guid(xenserver_pbd))
+
+
+class IpInterfaceRelationsProvider(BaseRelationsProvider):
+    def getEdges(self):
+        xenserver_pif = self.adapted.xenserver_pif()
+        if xenserver_pif:
+            yield edge(self.guid(), guid(xenserver_pif))

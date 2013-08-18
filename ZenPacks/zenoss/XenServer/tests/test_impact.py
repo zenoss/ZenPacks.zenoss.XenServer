@@ -492,6 +492,7 @@ class TestImpact(BaseTestCase):
         pif1 = self.endpoint().getObjByPath('hosts/host1/pifs/pif1')
         pif1.pif_device = linux_iface.id
         pif1.macaddress = linux_iface.macaddress
+        pif1.index_object()
 
         pbd1 = self.endpoint().getObjByPath('hosts/host1/pbds/pbd1')
         pbd1.dc_device = '/dev/{}'.format(linux_disk.id)
@@ -500,20 +501,36 @@ class TestImpact(BaseTestCase):
         pbd1_impacts, pbd1_impacted_by = impacts_for(pbd1)
         pif1_impacts, pif1_impacted_by = impacts_for(pif1)
 
+        server_impacts, server_impacted_by = impacts_for(linux_server)
+        iface_impacts, iface_impacted_by = impacts_for(linux_iface)
+        disk_impacts, disk_impacted_by = impacts_for(linux_disk)
+
         # Physical Server -> Host
         self.assertTrue(
             linux_server.id in host1_impacted_by,
             'missing impact: {} -> {}'.format(linux_server, host1))
+
+        self.assertTrue(
+            host1.id in server_impacts,
+            'missing impact: {} <- {}'.format(host1, linux_server))
 
         # Physical Server IpInterface -> PIF
         self.assertTrue(
             linux_iface.id in pif1_impacted_by,
             'missing impact: {} -> {}'.format(linux_iface, pif1))
 
+        self.assertTrue(
+            pif1.id in iface_impacts,
+            'missing impact: {} <- {}'.format(pif1, linux_iface))
+
         # Physical Server HardDisk -> PBD
         self.assertTrue(
             linux_disk.id in pbd1_impacted_by,
             'missing impact: {} -> {}'.format(linux_disk, pbd1))
+
+        self.assertTrue(
+            pbd1.id in disk_impacts,
+            'missing impact: {} <- {}'.format(pbd1, linux_disk))
 
     @require_zenpack('ZenPacks.zenoss.Impact')
     def test_Platform_Virtual(self):
