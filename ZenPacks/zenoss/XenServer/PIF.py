@@ -231,7 +231,7 @@ class PIF(PooledComponent):
         server_device = self.host().server_device()
         if server_device:
             return server_device.os.interfaces._getOb(
-                prepId(self.pif_device))
+                prepId(self.pif_device), None)
 
 
 class IPIFInfo(IPooledComponentInfo):
@@ -364,7 +364,7 @@ def createPIFCatalog(dmd):
         pass
 
     else:
-        LOG.info('Reindexing all pNICs')
+        LOG.info('Reindexing all PIFs')
         pif_brains = ICatalogTool(dmd.primaryAq()).search(CLASS_NAME['PIF'])
         for pif_brain in pif_brains:
             pif_brain.getObject().index_object()
