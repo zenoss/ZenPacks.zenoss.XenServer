@@ -66,12 +66,6 @@ class ZenPack(ZenPackBase):
         ('zXenServerEventsInterval', 60, 'int'),
         ]
 
-    def install(self, app):
-        super(ZenPack, self).install(app)
-
-        from ZenPacks.zenoss.XenServer.utils import createXenServerCatalog
-        createXenServerCatalog(app.zport.dmd)
-
 
 # Patch last to avoid import recursion problems.
 from ZenPacks.zenoss.XenServer import patches
