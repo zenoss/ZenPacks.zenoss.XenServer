@@ -8,10 +8,14 @@
 #
 ######################################################################
 
+import logging
+LOG = logging.getLogger('xen.XenServer')
+
 from zope.component import adapts
 from zope.interface import implements
 
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenUtils.Utils import prepId
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -133,6 +137,32 @@ class VIF(PooledComponent):
         '''
         return '/++resource++xenserver/img/virtual-network-interface.png'
 
+    def index_object(self, idxs=None):
+        '''
+        Overrides to also catalog in pifCatalog.
+        '''
+        super(VIF, self).index_object(idxs)
+        getVIFCatalog(self.dmd).catalog_object(self, self.getPrimaryId())
+
+    def unindex_object(self):
+        '''
+        Overrides to also uncatalog in pifCatalog.
+        '''
+        super(VIF, self).unindex_object()
+        getVIFCatalog(self.dmd).uncatalog_object(self.getPrimaryId())
+
+    def guest_interface(self):
+        '''
+        Return the guest interface associated with this VIF.
+        '''
+        if not self.vif_device:
+            return
+
+        guest_device = self.vm().guest_device()
+        if guest_device:
+            return guest_device.os.interfaces._getOb(
+                prepId(self.vif_device), None)
+
 
 class IVIFInfo(IPooledComponentInfo):
     '''
@@ -193,3 +223,73 @@ class VIFPathReporter(DefaultPathReporter):
             paths.extend(relPath(vapp, 'endpoint'))
 
         return paths
+
+
+def getVIFCatalog(dmd):
+    '''
+    Return the vifCatalog.
+
+    Creates the catalog if it doesn't already exist.
+    '''
+    try:
+        return dmd.Devices.XenServer.vifCatalog
+    except AttributeError:
+        return createVIFCatalog(dmd)
+
+
+def createVIFCatalog(dmd):
+    '''
+    Create /zport/dmd/Devices/XenServer/vifCatalog and return it.
+
+    This allows for fast lookup of VIFs by MAC address.
+    '''
+    from Products.ZCatalog.Catalog import CatalogError
+    from Products.ZCatalog.ZCatalog import manage_addZCatalog
+
+    from Products.ZenUtils.Search import makeCaseInsensitiveFieldIndex
+    from Products.Zuul.interfaces import ICatalogTool
+
+    catalog_name = 'vifCatalog'
+    device_class = dmd.Devices.createOrganizer('/XenServer')
+
+    if not hasattr(device_class, catalog_name):
+        LOG.info('Creating VIF catalog')
+        manage_addZCatalog(device_class, catalog_name, catalog_name)
+
+    zcatalog = device_class._getOb(catalog_name)
+    catalog = zcatalog._catalog
+
+    try:
+        LOG.info('Adding MAC address index to VIF catalog')
+        catalog.addIndex(
+            'macaddress',
+            makeCaseInsensitiveFieldIndex('macaddress'))
+
+    except CatalogError:
+        # Index already exists.
+        pass
+
+    else:
+        LOG.info('Reindexing all VIFs')
+        vif_brains = ICatalogTool(dmd.primaryAq()).search(CLASS_NAME['VIF'])
+        for vif_brain in vif_brains:
+            vif_brain.getObject().index_object()
+
+    return catalog
+
+
+def findVIFByMAC(dmd, macaddresses):
+    '''
+    Return the first VIF matching macaddresses or None if no match.
+
+    macaddresses can be a single MAC address string or an iterable of
+    MAC address strings. It is expected to be formatted as follows.
+    Where each x must be a salid hexidecimal character of any case.
+
+        xx:xx:xx:xx:xx:xx
+    '''
+    if not macaddresses:
+        return
+
+    for brain in getVIFCatalog(dmd)(macaddress=macaddresses):
+        return brain.getObject()

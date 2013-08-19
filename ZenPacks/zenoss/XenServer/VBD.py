@@ -138,6 +138,17 @@ class VBD(PooledComponent):
         '''
         return '/++resource++xenserver/img/virtual-disk.png'
 
+    def guest_disk(self):
+        '''
+        Return the guest disk associated with this VBD.
+        '''
+        if not self.vbd_device:
+            return
+
+        guest_device = self.vm().guest_device()
+        if guest_device:
+            return guest_device.hw.harddisks._getOb(self.vbd_device, None)
+
 
 class IVBDInfo(IPooledComponentInfo):
     '''

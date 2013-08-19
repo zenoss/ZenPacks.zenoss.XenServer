@@ -534,7 +534,61 @@ class TestImpact(BaseTestCase):
 
     @require_zenpack('ZenPacks.zenoss.Impact')
     def test_Platform_Virtual(self):
-        pass
+        linux_dc = self.dmd.Devices.createOrganizer('/Server/Linux')
+        linux_server = linux_dc.createInstance('test-linux-guest1')
+
+        from Products.ZenModel.IpInterface import IpInterface
+        linux_iface = add_contained(linux_server.os, 'interfaces', IpInterface('eth0'))
+        linux_iface.macaddress = '00:0c:29:fe:ab:bc'
+        linux_iface.index_object()
+
+        from Products.ZenModel.HardDisk import HardDisk
+        linux_disk = add_contained(linux_server.hw, 'harddisks', HardDisk('xvda'))
+
+        vm1 = self.endpoint().getObjByPath('vms/vm1')
+
+        vif1 = self.endpoint().getObjByPath('vms/vm1/vifs/vif1')
+        vif1.vif_device = linux_iface.id
+        vif1.macaddress = linux_iface.macaddress
+        vif1.index_object()
+
+        vbd1 = self.endpoint().getObjByPath('vms/vm1/vbds/vbd1')
+        vbd1.vbd_device = linux_disk.id
+
+        vm1_impacts, vm1_impacted_by = impacts_for(vm1)
+        vbd1_impacts, vbd1_impacted_by = impacts_for(vbd1)
+        vif1_impacts, vif1_impacted_by = impacts_for(vif1)
+
+        server_impacts, server_impacted_by = impacts_for(linux_server)
+        iface_impacts, iface_impacted_by = impacts_for(linux_iface)
+        disk_impacts, disk_impacted_by = impacts_for(linux_disk)
+
+        # VM -> Guest Device
+        self.assertTrue(
+            vm1.id in server_impacted_by,
+            'missing impact: {} -> {}'.format(vm1, linux_server))
+
+        self.assertTrue(
+            linux_server.id in vm1_impacts,
+            'missing impact: {} <- {}'.format(linux_server, vm1))
+
+        # PIF -> Guest IpInterface
+        self.assertTrue(
+            vif1.id in iface_impacted_by,
+            'missing impact: {} -> {}'.format(vif1, linux_iface))
+
+        self.assertTrue(
+            linux_iface.id in vif1_impacts,
+            'missing impact: {} <- {}'.format(linux_iface, vif1))
+
+        # PBD -> Guest HardDisk
+        self.assertTrue(
+            vbd1.id in disk_impacted_by,
+            'missing impact: {} -> {}'.format(vbd1, linux_disk))
+
+        self.assertTrue(
+            linux_disk.id in vbd1_impacts,
+            'missing impact: {} <- {}'.format(linux_disk, vbd1))
 
     ### CloudStack ###########################################################
 

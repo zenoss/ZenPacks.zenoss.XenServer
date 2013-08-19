@@ -17,6 +17,20 @@ from Products.ZenModel.Lockable import Lockable
 from Products.ZenUtils.Utils import monkeypatch
 
 from ZenPacks.zenoss.XenServer.PIF import findPIFByMAC
+from ZenPacks.zenoss.XenServer.VIF import findVIFByMAC
+
+
+def device_macaddresses(device):
+    '''
+    Return all MAC addresses associated with device.
+    '''
+    macaddresses = []
+    cat = device.dmd.ZenLinkManager._getCatalog(layer=2)
+    if cat is not None:
+        brains = cat(deviceId=device.getPrimaryId())
+        macaddresses.extend(b.macaddress for b in brains if b.macaddress)
+
+    return macaddresses
 
 
 @monkeypatch('Products.ZenModel.Device.Device')
@@ -24,15 +38,19 @@ def xenserver_host(self):
     '''
     Return the XenServer Host running on this device.
     '''
-    macaddresses = []
-    cat = self.dmd.ZenLinkManager._getCatalog(layer=2)
-    if cat is not None:
-        brains = cat(deviceId=self.getPrimaryId())
-        macaddresses.extend(b.macaddress for b in brains if b.macaddress)
-
-    pif = findPIFByMAC(self.dmd, macaddresses)
+    pif = findPIFByMAC(self.dmd, device_macaddresses(self))
     if pif:
         return pif.host()
+
+
+@monkeypatch('Products.ZenModel.Device.Device')
+def xenserver_vm(self):
+    '''
+    Return the XenServer VM on which this device is a guest.
+    '''
+    vif = findVIFByMAC(self.dmd, device_macaddresses(self))
+    if vif:
+        return vif.vm()
 
 
 @monkeypatch('Products.ZenModel.HardDisk.HardDisk')
@@ -48,12 +66,32 @@ def xenserver_pbd(self):
                 return pbd
 
 
+@monkeypatch('Products.ZenModel.HardDisk.HardDisk')
+def xenserver_vbd(self):
+    '''
+    Return the XenServer VBD underlying this disk.
+    '''
+    xenserver_vm = self.device().xenserver_vm()
+    if xenserver_vm:
+        for vbd in xenserver_vm.vbds():
+            if vbd.vbd_device and vbd.vbd_device == self.id:
+                return vbd
+
+
 @monkeypatch('Products.ZenModel.IpInterface.IpInterface')
 def xenserver_pif(self):
     '''
     Return the XenServer PIF using this interface.
     '''
     return findPIFByMAC(self.dmd, self.macaddress)
+
+
+@monkeypatch('Products.ZenModel.IpInterface.IpInterface')
+def xenserver_vif(self):
+    '''
+    Return the XenServer VIF underlying this interface.
+    '''
+    return findVIFByMAC(self.dmd, self.macaddress)
 
 
 @monkeypatch('Products.Zuul.routers.device.DeviceRouter')
@@ -105,7 +143,7 @@ def _updateRelationship(self, device, relmap):
 
     Return True if a change was made or false if no change was made.
     '''
-    if not isinstance(ObjectMap, relmap):
+    if not isinstance(relmap, ObjectMap):
         # original is injected by monkeypatch decorator.
         return original(self, device, relmap)
 

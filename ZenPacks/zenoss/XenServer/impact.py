@@ -218,6 +218,14 @@ class VBDRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('vdi',)
     impact_relationships = ('vms',)
 
+    def getEdges(self):
+        for base_edge in BaseRelationsProvider.getEdges(self):
+            yield base_edge
+
+        guest_disk = self.adapted.guest_disk()
+        if guest_disk:
+            yield edge(self.guid(), guid(guest_disk))
+
 
 class VDIRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('sr',)
@@ -228,10 +236,26 @@ class VIFRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('network',)
     impact_relationships = ('vm',)
 
+    def getEdges(self):
+        for base_edge in BaseRelationsProvider.getEdges(self):
+            yield base_edge
+
+        guest_interface = self.adapted.guest_interface()
+        if guest_interface:
+            yield edge(self.guid(), guid(guest_interface))
+
 
 class VMRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('host', 'pool', 'vbds', 'vifs')
     impact_relationships = ('vmappliances',)
+
+    def getEdges(self):
+        for base_edge in BaseRelationsProvider.getEdges(self):
+            yield base_edge
+
+        guest_device = self.adapted.guest_device()
+        if guest_device:
+            yield edge(self.guid(), guid(guest_device))
 
 
 class VMApplianceRelationsProvider(BaseRelationsProvider):
@@ -246,6 +270,10 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         if xenserver_host:
             yield edge(self.guid(), guid(xenserver_host))
 
+        xenserver_vm = self.adapted.xenserver_vm()
+        if xenserver_vm:
+            yield edge(guid(xenserver_vm), self.guid())
+
 
 class HardDiskRelationsProvider(BaseRelationsProvider):
     def getEdges(self):
@@ -253,9 +281,17 @@ class HardDiskRelationsProvider(BaseRelationsProvider):
         if xenserver_pbd:
             yield edge(self.guid(), guid(xenserver_pbd))
 
+        xenserver_vbd = self.adapted.xenserver_vbd()
+        if xenserver_vbd:
+            yield edge(guid(xenserver_vbd), self.guid())
+
 
 class IpInterfaceRelationsProvider(BaseRelationsProvider):
     def getEdges(self):
         xenserver_pif = self.adapted.xenserver_pif()
         if xenserver_pif:
             yield edge(self.guid(), guid(xenserver_pif))
+
+        xenserver_vif = self.adapted.xenserver_vif()
+        if xenserver_vif:
+            yield edge(guid(xenserver_vif), self.guid())

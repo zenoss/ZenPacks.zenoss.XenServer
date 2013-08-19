@@ -23,6 +23,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToOne,
     id_from_ref, int_or_none,
+    findIpInterfacesByMAC,
     )
 
 
@@ -239,6 +240,15 @@ class VM(PooledComponent):
         Return URL to icon representing objects of this class.
         '''
         return '/++resource++xenserver/img/virtual-server.png'
+
+    def guest_device(self):
+        '''
+        Return the guest device running in the VM.
+        '''
+        macaddresses = [x.macaddress for x in self.vifs() if x.macaddress]
+        if macaddresses:
+            for iface in findIpInterfacesByMAC(self.dmd, macaddresses):
+                return iface.device()
 
 
 class IVMInfo(IPooledComponentInfo):
