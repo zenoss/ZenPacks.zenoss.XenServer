@@ -7,9 +7,6 @@
 #
 ##############################################################################
 
-import functools
-import importlib
-
 
 def add_contained(obj, relname, target):
     '''
@@ -26,37 +23,3 @@ def add_noncontained(obj, relname, target):
     '''
     rel = getattr(obj, relname)
     rel.addRelation(target)
-
-
-def require_zenpack(zenpack_name, default=None):
-    '''
-    Decorator with mandatory zenpack_name argument.
-
-    If zenpack_name can't be imported, the decorated function or method
-    will return default. Otherwise it will execute and return as
-    written.
-
-    Usage looks like the following:
-
-        @require_zenpack('ZenPacks.zenoss.Impact')
-        @require_zenpack('ZenPacks.zenoss.vCloud')
-        def dothatthingyoudo(args):
-            return "OK"
-
-        @require_zenpack('ZenPacks.zenoss.Impact', [])
-        def returnalistofthings(args):
-            return [1, 2, 3]
-    '''
-    def wrap(f):
-        @functools.wraps(f)
-        def wrapper(*args, **kwargs):
-            try:
-                importlib.import_module(zenpack_name)
-            except ImportError:
-                return
-
-            return f(*args, **kwargs)
-
-        return wrapper
-
-    return wrap

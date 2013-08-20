@@ -21,9 +21,9 @@ from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from Products.ZenUtils.guid.interfaces import IGUIDManager
 from Products.ZenUtils.Utils import monkeypatch
 
+from ZenPacks.zenoss.XenServer.utils import require_zenpack
 from ZenPacks.zenoss.XenServer.tests.utils import (
     add_contained, add_noncontained,
-    require_zenpack,
     )
 
 
@@ -593,9 +593,18 @@ class TestImpact(BaseTestCase):
     ### CloudStack ###########################################################
 
     @require_zenpack('ZenPacks.zenoss.Impact')
-    @require_zenpack('ZenPacks.zenoss.StorageBase')
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
     def test_CloudStack(self):
-        pass
+        host1 = self.endpoint().getObjByPath('hosts/host1')
+        vm1 = self.endpoint().getObjByPath('vms/vm1')
+
+        # VM -> CloudStack RouterVM
+
+        # VM -> CloudStack SystemVM
+
+        # VM -> CloudStack VirtualMachine
+
+        # Host -> CloudStack Host
 
 
 def test_suite():

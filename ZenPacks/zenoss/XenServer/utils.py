@@ -11,6 +11,9 @@
 import logging
 LOG = logging.getLogger('zen.XenServer')
 
+import functools
+import importlib
+
 from zope.event import notify
 
 from Products.AdvancedQuery import Eq, Or
@@ -20,6 +23,7 @@ from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.ZenRelations.ToManyContRelationship import ToManyContRelationship
+from Products.ZenUtils.Search import makeFieldIndex, makeKeywordIndex
 from Products.ZenUtils.Utils import prepId
 from Products import Zuul
 from Products.Zuul.catalog.events import IndexingEvent
@@ -39,6 +43,40 @@ def add_local_lib_path():
     import site
 
     site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
+
+
+def require_zenpack(zenpack_name, default=None):
+    '''
+    Decorator with mandatory zenpack_name argument.
+
+    If zenpack_name can't be imported, the decorated function or method
+    will return default. Otherwise it will execute and return as
+    written.
+
+    Usage looks like the following:
+
+        @require_zenpack('ZenPacks.zenoss.Impact')
+        @require_zenpack('ZenPacks.zenoss.vCloud')
+        def dothatthingyoudo(args):
+            return "OK"
+
+        @require_zenpack('ZenPacks.zenoss.Impact', [])
+        def returnalistofthings(args):
+            return [1, 2, 3]
+    '''
+    def wrap(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            try:
+                importlib.import_module(zenpack_name)
+            except ImportError:
+                return
+
+            return f(*args, **kwargs)
+
+        return wrapper
+
+    return wrap
 
 
 def updateToMany(relationship, root, type_, ids):
@@ -207,7 +245,156 @@ def RelationshipLengthProperty(relationship_name):
     return property(getter)
 
 
-class BaseComponent(DeviceComponent, ManagedEntity):
+class CatalogMixin(object):
+    '''
+    Abstract class mixin to ease the creation and use of
+    component-specific catalogs.
+
+    To use this mixin to create a component catalog you should define
+    a _catalog property such as the following on your mixed-in class::
+
+        _catalogs = dict({
+            'catalogName', {
+                'deviceclass': '/Example/Device/Class',
+                'indexes': {
+                    'ipv4_addresses': {'type': 'keyword'},
+                    'mac_addresses': {'type': 'keyword'},
+                    },
+                },
+            }, **BaseClass._catalogs)
+
+    The second item in each indexes tuple can either be keyword or
+    field. These correspond to Zope case-insensitive KeywordIndex and
+    FieldIndex.
+    '''
+
+    _catalogs = {}
+
+    @classmethod
+    def _catalog_spec(cls, name):
+        spec = cls._catalogs.get(name)
+        if not spec:
+            LOG.error("%s catalog definition is missing", name)
+            return
+
+        if not isinstance(spec, dict):
+            LOG.error("%s catalog definition is not a dict", name)
+            return
+
+        if not spec.get('indexes'):
+            LOG.error("%s catalog definition has no indexes", name)
+            return
+
+        if not spec.get('deviceclass'):
+            LOG.error("%s catalog definition has no deviceclass.", name)
+            return
+
+        return spec
+
+    @classmethod
+    def _create_catalog(cls, dmd, name):
+        from Products.ZCatalog.Catalog import CatalogError
+        from Products.ZCatalog.ZCatalog import manage_addZCatalog
+
+        from Products.Zuul.interfaces import ICatalogTool
+
+        spec = cls._catalog_spec(name)
+        if not spec:
+            return
+
+        deviceclass = dmd.Devices.createOrganizer(spec['deviceclass'])
+
+        if not hasattr(deviceclass, name):
+            manage_addZCatalog(deviceclass, name, name)
+
+        zcatalog = deviceclass._getOb(name)
+        catalog = zcatalog._catalog
+
+        for propname, propdata in spec['indexes'].items():
+            index_type = propdata.get('type')
+            if not index_type:
+                LOG.error("%s index has no type", propname)
+                return
+
+            index_factory = {
+                'field': makeFieldIndex,
+                'keyword': makeKeywordIndex,
+                }.get(index_type.lower())
+
+            if not index_factory:
+                LOG.error("%s is not a valid index type", index_type)
+                return
+
+            try:
+                catalog.addIndex(propname, index_factory(propname))
+            except CatalogError:
+                # Index already exists.
+                pass
+            else:
+                fqcn = '.'.join((cls.__module__, cls.__name__))
+                results = ICatalogTool(dmd.primaryAq()).search(fqcn)
+                for brain in results:
+                    brain.getObject().index_object()
+
+        return zcatalog
+
+    @classmethod
+    def _get_catalog(cls, dmd, name):
+        spec = cls._catalog_spec(name)
+        if not spec:
+            return
+
+        deviceclass = dmd.Devices.createOrganizer(spec['deviceclass'])
+
+        try:
+            return getattr(deviceclass, name)
+        except AttributeError:
+            return cls._create_catalog(dmd, name)
+
+    @classmethod
+    def search(cls, dmd, name, **kwargs):
+        '''
+        Generate instances of this object that match keyword arguments.
+        '''
+        catalog = cls._get_catalog(dmd, name)
+        if not catalog:
+            return
+
+        for brain in catalog(**kwargs):
+            yield brain.getObject()
+
+    def index_object(self, idxs=None):
+        '''
+        Index the mixed-in instance in its catalogs.
+
+        We rely on subclasses to explicitely call this method in
+        addition to their primary inheritence index_object method as in
+        the following override::
+
+            def index_object(self, idxs=None):
+                for superclass in (ManagedEntity, CatalogMixin):
+                    superclass.index_object(self, idxs=idxs)
+        '''
+        for catalog in (self._get_catalog(self.dmd, x) for x in self._catalogs):
+            catalog.catalog_object(self, self.getPrimaryId())
+
+    def unindex_object(self):
+        '''
+        Unindex the mixed-in instance from its catalogs.
+
+        We rely on subclasses to explicitely call this method in
+        addition to their primary inheritence unindex_object method as
+        in the following override::
+
+            def unindex_object(self):
+                for superclass in (ManagedEntity, CatalogMixin):
+                    superclass.unindex_object(self)
+        '''
+        for catalog in (self._get_catalog(self.dmd, x) for x in self._catalogs):
+            catalog.uncatalog_object(self.getPrimaryId())
+
+
+class BaseComponent(DeviceComponent, ManagedEntity, CatalogMixin):
     '''
     Abstract base class for components.
     '''
@@ -223,6 +410,15 @@ class BaseComponent(DeviceComponent, ManagedEntity):
 
     _relations = ManagedEntity._relations
 
+    _catalogs = {
+        'XenServerCatalog': {
+            'deviceclass': '/XenServer',
+            'indexes': {
+                'xenapi_uuid': {'type': 'field'},
+                },
+            },
+        }
+
     factory_type_information = ({
         'actions': ({
             'id': 'perfConf',
@@ -231,6 +427,14 @@ class BaseComponent(DeviceComponent, ManagedEntity):
             'permissions': (ZEN_CHANGE_DEVICE,),
             },),
         },)
+
+    @classmethod
+    def findByUUID(cls, dmd, xenapi_uuid):
+        '''
+        Return the first XenServer component matching XenAPI uuid.
+        '''
+        return next(cls.search(
+            dmd, 'XenServerCatalog', xenapi_uuid=xenapi_uuid), None)
 
     def device(self):
         '''
@@ -252,17 +456,17 @@ class BaseComponent(DeviceComponent, ManagedEntity):
 
     def index_object(self, idxs=None):
         '''
-        Overrides to also catalog in XenServerCatalog.
+        Index object according to ManagedEntity and CatalogMixin.
         '''
-        super(BaseComponent, self).index_object(idxs=idxs)
-        getXenServerCatalog(self.dmd).catalog_object(self, self.getPrimaryId())
+        for superclass in (ManagedEntity, CatalogMixin):
+            superclass.index_object(self, idxs=idxs)
 
     def unindex_object(self):
         '''
-        Overrides to also uncatalog in XenServerCatalog.
+        Unindex object according to ManagedEntity and CatalogMixin.
         '''
-        super(BaseComponent, self).unindex_object()
-        getXenServerCatalog(self.dmd).uncatalog_object(self.getPrimaryId())
+        for superclass in (ManagedEntity, CatalogMixin):
+            superclass.unindex_object(self)
 
     def getRRDTemplateName(self):
         '''
@@ -357,73 +561,6 @@ class PooledComponentInfo(BaseComponentInfo):
     '''
 
     pool = RelationshipInfoProperty('pool')
-
-
-def getXenServerCatalog(dmd):
-    '''
-    Return the XenServerCatalog.
-
-    Creates the catalog if it doesn't already exist.
-    '''
-    try:
-        return dmd.Devices.XenServer.XenServerCatalog
-    except AttributeError:
-        return createXenServerCatalog(dmd)
-
-
-def createXenServerCatalog(dmd):
-    '''
-    Create /zport/dmd/Devices/XenServer/XenServerCatalog and return it.
-
-    This allows for fast lookup of XenServer components by their XenAPI
-    UUID.
-    '''
-    from Products.ZCatalog.Catalog import CatalogError
-    from Products.ZCatalog.ZCatalog import manage_addZCatalog
-
-    from Products.ZenUtils.Search import makeCaseSensitiveFieldIndex
-    from Products.Zuul.interfaces import ICatalogTool
-
-    catalog_name = 'XenServerCatalog'
-    device_class = dmd.Devices.createOrganizer('/XenServer')
-
-    if not hasattr(device_class, catalog_name):
-        LOG.info('Creating XenServer catalog')
-        manage_addZCatalog(device_class, catalog_name, catalog_name)
-
-    zcatalog = device_class._getOb(catalog_name)
-    catalog = zcatalog._catalog
-
-    try:
-        catalog.addIndex(
-            'xenapi_uuid',
-            makeCaseSensitiveFieldIndex('xenapi_uuid'))
-
-    except CatalogError:
-        # Index already exists.
-        pass
-
-    else:
-        results = ICatalogTool(dmd.primaryAq()).search(
-            'ZenPacks.zenoss.XenServer.utils.BaseComponent')
-
-        if results.total:
-            LOG.info('Reindexing all XenServer components')
-            for brain in results:
-                brain.getObject().index_object()
-
-    return catalog
-
-
-def findComponentByUUID(dmd, xenapi_uuid):
-    '''
-    Return the first XenServer component matching XenAPI uuid.
-    '''
-    if not xenapi_uuid:
-        return
-
-    for brain in getXenServerCatalog(dmd)(xenapi_uuid=xenapi_uuid):
-        return brain.getObject()
 
 
 def findIpInterfacesByMAC(dmd, macaddresses, interfaceType=None):

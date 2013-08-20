@@ -7,7 +7,7 @@
 #
 ##############################################################################
 
-from ZenPacks.zenoss.XenServer.utils import findComponentByUUID
+from ZenPacks.zenoss.XenServer.utils import BaseComponent
 
 
 def get_component_id(dmd, xenapi_uuid):
@@ -17,7 +17,7 @@ def get_component_id(dmd, xenapi_uuid):
 
     Returns the given xenapi_uuid if no XenServer component can be found.
     '''
-    component = findComponentByUUID(dmd, xenapi_uuid)
+    component = BaseComponent.findByUUID(dmd, xenapi_uuid)
     if component:
         return component.id
 

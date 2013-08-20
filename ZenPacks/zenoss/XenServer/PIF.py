@@ -91,6 +91,20 @@ class PIF(PooledComponent):
         ('network', ToOne(ToMany, MODULE_NAME['Network'], 'pifs')),
         )
 
+    _catalogs = dict({
+        'PIFCatalog': {
+            'deviceclass': '/XenServer',
+            'indexes': {
+                'ipv4_addresses': {'type': 'keyword'},
+                'mac_addresses': {'type': 'keyword'},
+                },
+            },
+        }, **PooledComponent._catalogs)
+
+    @property
+    def mac_addresses(self):
+        return (self.macaddress,)
+
     @classmethod
     def objectmap(cls, ref, properties):
         '''
@@ -166,6 +180,14 @@ class PIF(PooledComponent):
             'vendor_name': properties.get('vendor_name'),
             }
 
+    @classmethod
+    def findByMAC(cls, dmd, mac_addresses):
+        '''
+        Return the first PIF matching one of mac_addresses.
+        '''
+        return next(cls.search(
+            dmd, 'PIFCatalog', mac_addresses=mac_addresses), None)
+
     def getNetwork(self):
         '''
         Return network id or None.
@@ -202,20 +224,6 @@ class PIF(PooledComponent):
         Return URL to icon representing objects of this class.
         '''
         return '/++resource++xenserver/img/virtual-network-interface.png'
-
-    def index_object(self, idxs=None):
-        '''
-        Overrides to also catalog in pifCatalog.
-        '''
-        super(PIF, self).index_object(idxs)
-        getPIFCatalog(self.dmd).catalog_object(self, self.getPrimaryId())
-
-    def unindex_object(self):
-        '''
-        Overrides to also uncatalog in pifCatalog.
-        '''
-        super(PIF, self).unindex_object()
-        getPIFCatalog(self.dmd).uncatalog_object(self.getPrimaryId())
 
     def server_interface(self):
         '''
@@ -317,73 +325,3 @@ class PIFPathReporter(DefaultPathReporter):
             paths.extend(relPath(network, 'endpoint'))
 
         return paths
-
-
-def getPIFCatalog(dmd):
-    '''
-    Return the pifCatalog.
-
-    Creates the catalog if it doesn't already exist.
-    '''
-    try:
-        return dmd.Devices.XenServer.pifCatalog
-    except AttributeError:
-        return createPIFCatalog(dmd)
-
-
-def createPIFCatalog(dmd):
-    '''
-    Create /zport/dmd/Devices/XenServer/pifCatalog and return it.
-
-    This allows for fast lookup of PIFs by MAC address.
-    '''
-    from Products.ZCatalog.Catalog import CatalogError
-    from Products.ZCatalog.ZCatalog import manage_addZCatalog
-
-    from Products.ZenUtils.Search import makeCaseInsensitiveFieldIndex
-    from Products.Zuul.interfaces import ICatalogTool
-
-    catalog_name = 'pifCatalog'
-    device_class = dmd.Devices.createOrganizer('/XenServer')
-
-    if not hasattr(device_class, catalog_name):
-        LOG.info('Creating PIF catalog')
-        manage_addZCatalog(device_class, catalog_name, catalog_name)
-
-    zcatalog = device_class._getOb(catalog_name)
-    catalog = zcatalog._catalog
-
-    try:
-        LOG.info('Adding MAC address index to PIF catalog')
-        catalog.addIndex(
-            'macaddress',
-            makeCaseInsensitiveFieldIndex('macaddress'))
-
-    except CatalogError:
-        # Index already exists.
-        pass
-
-    else:
-        LOG.info('Reindexing all PIFs')
-        pif_brains = ICatalogTool(dmd.primaryAq()).search(CLASS_NAME['PIF'])
-        for pif_brain in pif_brains:
-            pif_brain.getObject().index_object()
-
-    return catalog
-
-
-def findPIFByMAC(dmd, macaddresses):
-    '''
-    Return the first PIF matching macaddresses or None if no match.
-
-    macaddresses can be a single MAC address string or an iterable of
-    MAC address strings. It is expected to be formatted as follows.
-    Where each x must be a salid hexidecimal character of any case.
-
-        xx:xx:xx:xx:xx:xx
-    '''
-    if not macaddresses:
-        return
-
-    for brain in getPIFCatalog(dmd)(macaddress=macaddresses):
-        return brain.getObject()

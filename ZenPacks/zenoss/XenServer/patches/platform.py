@@ -16,8 +16,8 @@ from Products.ZenEvents.ZenEventClasses import Change_Remove, Change_Remove_Bloc
 from Products.ZenModel.Lockable import Lockable
 from Products.ZenUtils.Utils import monkeypatch
 
-from ZenPacks.zenoss.XenServer.PIF import findPIFByMAC
-from ZenPacks.zenoss.XenServer.VIF import findVIFByMAC
+from ZenPacks.zenoss.XenServer.PIF import PIF
+from ZenPacks.zenoss.XenServer.VIF import VIF
 
 
 def device_macaddresses(device):
@@ -38,7 +38,7 @@ def xenserver_host(self):
     '''
     Return the XenServer Host running on this device.
     '''
-    pif = findPIFByMAC(self.dmd, device_macaddresses(self))
+    pif = PIF.findByMAC(self.dmd, device_macaddresses(self))
     if pif:
         return pif.host()
 
@@ -48,7 +48,7 @@ def xenserver_vm(self):
     '''
     Return the XenServer VM on which this device is a guest.
     '''
-    vif = findVIFByMAC(self.dmd, device_macaddresses(self))
+    vif = VIF.findByMAC(self.dmd, device_macaddresses(self))
     if vif:
         return vif.vm()
 
@@ -83,7 +83,7 @@ def xenserver_pif(self):
     '''
     Return the XenServer PIF using this interface.
     '''
-    return findPIFByMAC(self.dmd, self.macaddress)
+    return PIF.findByMAC(self.dmd, self.macaddress)
 
 
 @monkeypatch('Products.ZenModel.IpInterface.IpInterface')
@@ -91,7 +91,7 @@ def xenserver_vif(self):
     '''
     Return the XenServer VIF underlying this interface.
     '''
-    return findVIFByMAC(self.dmd, self.macaddress)
+    return VIF.findByMAC(self.dmd, self.macaddress)
 
 
 @monkeypatch('Products.Zuul.routers.device.DeviceRouter')
