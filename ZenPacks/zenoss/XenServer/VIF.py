@@ -119,6 +119,14 @@ class VIF(PooledComponent):
             }
 
     @classmethod
+    def findByIP(cls, dmd, ipv4_addresses):
+        '''
+        Return the first VIF matching one of ipv4_addresses.
+        '''
+        return next(cls.search(
+            dmd, 'VIFCatalog', ipv4_addresses=ipv4_addresses), None)
+
+    @classmethod
     def findByMAC(cls, dmd, mac_addresses):
         '''
         Return the first VIF matching one of mac_addresses.
