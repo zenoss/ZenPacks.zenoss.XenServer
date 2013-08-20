@@ -274,7 +274,7 @@
             factory=".impact.VMApplianceRelationsProvider"
             />
 
-        <!-- Platform Impact Adaptres -->
+        <!-- Platform Impact Adapters -->
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
             for="Products.ZenModel.Device.Device"
