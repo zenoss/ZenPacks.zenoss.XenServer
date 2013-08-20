@@ -369,16 +369,26 @@ class DeviceLinkProvider(object):
         self.device = device
 
     def getExpandedLinks(self):
+        links = []
+
         host = self.device.xenserver_host()
         if host:
             endpoint = host.endpoint()
-
-            return [
+            links.append(
                 'XenServer Host: <a href="{}">{}</a> on <a href="{}">{}</a>'.format(
                     host.getPrimaryUrlPath(),
                     host.titleOrId(),
                     endpoint.getPrimaryUrlPath(),
-                    endpoint.titleOrId())]
-            str.format
+                    endpoint.titleOrId()))
 
-        return []
+        vm = self.device.xenserver_vm()
+        if vm:
+            endpoint = vm.endpoint()
+            links.append(
+                'XenServer VM: <a href="{}">{}</a> on <a href="{}">{}</a>'.format(
+                    vm.getPrimaryUrlPath(),
+                    vm.titleOrId(),
+                    endpoint.getPrimaryUrlPath(),
+                    endpoint.titleOrId()))
+
+        return links
