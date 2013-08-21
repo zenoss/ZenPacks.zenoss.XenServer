@@ -8,6 +8,8 @@
 #
 ######################################################################
 
+import itertools
+
 from zope.component import adapts
 from zope.interface import implements
 
@@ -23,6 +25,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     updateToMany, updateToOne,
     id_from_ref, ids_from_refs, int_or_none, float_or_none,
     findIpInterfacesByMAC,
+    require_zenpack,
     )
 
 
@@ -81,6 +84,19 @@ class Host(PooledComponent):
         ('local_cache_sr', ToOne(ToMany, MODULE_NAME['SR'], 'local_cache_for_hosts')),
         )
 
+    @property
+    def is_pool_master(self):
+        return self.master_for() is not None
+
+    @property
+    def ipv4_addresses(self):
+        return tuple(itertools.chain.from_iterable(
+            x.ipv4_addresses for x in self.pifs() if x.ipv4_addresses))
+
+    @property
+    def mac_addresses(self):
+        return tuple(x.macaddress for x in self.pifs() if x.macaddress)
+
     @classmethod
     def objectmap(cls, ref, properties):
         '''
@@ -138,10 +154,6 @@ class Host(PooledComponent):
             'id': id_from_ref(ref),
             'memory_total': int_or_none(properties.get('memory_total')),
             }
-
-    @property
-    def is_pool_master(self):
-        return self.master_for() is not None
 
     def getVMs(self):
         '''
@@ -286,6 +298,20 @@ class Host(PooledComponent):
                 device = ip.device()
                 if device:
                     return device
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_host(self):
+        '''
+        Return the associated CloudStack host.
+        '''
+        from ZenPacks.zenoss.CloudStack.Host import Host
+
+        try:
+            return Host.findByIP(self.dmd, self.ipv4_addresses)
+        except AttributeError:
+            # The CloudStack Host class didn't gain the findByIP method
+            # until version 1.1 of the ZenPack.
+            pass
 
 
 class IHostInfo(IPooledComponentInfo):

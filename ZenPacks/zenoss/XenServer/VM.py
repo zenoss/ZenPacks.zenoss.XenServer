@@ -8,6 +8,8 @@
 #
 ######################################################################
 
+import itertools
+
 from zope.component import adapts
 from zope.interface import implements
 
@@ -24,6 +26,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     updateToOne,
     id_from_ref, int_or_none,
     findIpInterfacesByMAC,
+    require_zenpack,
     )
 
 
@@ -95,6 +98,15 @@ class VM(PooledComponent):
         ('host', ToOne(ToMany, MODULE_NAME['Host'], 'vms')),
         ('vmappliance', ToOne(ToMany, MODULE_NAME['VMAppliance'], 'vms')),
         )
+
+    @property
+    def ipv4_addresses(self):
+        return tuple(itertools.chain.from_iterable(
+            x.ipv4_allowed for x in self.vifs() if x.ipv4_allowed))
+
+    @property
+    def mac_addresses(self):
+        return tuple(x.macaddress for x in self.vifs() if x.macaddress)
 
     @classmethod
     def objectmap(cls, ref, properties):
@@ -249,6 +261,48 @@ class VM(PooledComponent):
         if macaddresses:
             for iface in findIpInterfacesByMAC(self.dmd, macaddresses):
                 return iface.device()
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_routervm(self):
+        '''
+        Return the associated CloudStack router VM.
+        '''
+        from ZenPacks.zenoss.CloudStack.RouterVM import RouterVM
+
+        try:
+            return RouterVM.findByMAC(self.dmd, self.mac_addresses)
+        except AttributeError:
+            # The CloudStack RouterVM class didn't gain the findByMAC
+            # method until version 1.1 of the ZenPack.
+            pass
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_systemvm(self):
+        '''
+        Return the associated CloudStack system VM.
+        '''
+        from ZenPacks.zenoss.CloudStack.SystemVM import SystemVM
+
+        try:
+            return SystemVM.findByMAC(self.dmd, self.mac_addresses)
+        except AttributeError:
+            # The CloudStack SystemVM class didn't gain the findByMAC
+            # method until version 1.1 of the ZenPack.
+            pass
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_vm(self):
+        '''
+        Return the associated CloudStack VirtualMachine.
+        '''
+        from ZenPacks.zenoss.CloudStack.VirtualMachine import VirtualMachine
+
+        try:
+            return VirtualMachine.findByMAC(self.dmd, self.mac_addresses)
+        except AttributeError:
+            # The CloudStack VirtualMachine class didn't gain the
+            # findByMAC method until version 1.1 of the ZenPack.
+            pass
 
 
 class IVMInfo(IPooledComponentInfo):

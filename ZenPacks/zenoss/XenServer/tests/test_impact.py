@@ -598,7 +598,6 @@ class TestImpact(BaseTestCase):
         except ImportError:
             # CloudStack earlier than 1.1 which doesn't have hooks for
             # XenServer impact.
-            import pdb; pdb.set_trace()
             return
 
         from ZenPacks.zenoss.XenServer.VM import VM

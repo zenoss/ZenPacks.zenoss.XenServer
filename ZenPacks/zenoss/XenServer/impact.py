@@ -152,6 +152,10 @@ class HostRelationsProvider(BaseRelationsProvider):
         if server_device:
             yield edge(guid(server_device), self.guid())
 
+        cs_host = self.adapted.cloudstack_host()
+        if cs_host:
+            yield edge(self.guid(), guid(cs_host))
+
 
 class NetworkRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('pifs',)
@@ -248,6 +252,18 @@ class VMRelationsProvider(BaseRelationsProvider):
         guest_device = self.adapted.guest_device()
         if guest_device:
             yield edge(self.guid(), guid(guest_device))
+
+        cs_routervm = self.adapted.cloudstack_routervm()
+        if cs_routervm:
+            yield edge(self.guid(), guid(cs_routervm))
+
+        cs_systemvm = self.adapted.cloudstack_systemvm()
+        if cs_systemvm:
+            yield edge(self.guid(), guid(cs_systemvm))
+
+        cs_vm = self.adapted.cloudstack_vm()
+        if cs_vm:
+            yield edge(self.guid(), guid(cs_vm))
 
 
 class VMApplianceRelationsProvider(BaseRelationsProvider):
