@@ -1,3 +1,126 @@
+This ZenPack provides support for monitoring [http://xenserver.org/ XenServer]. Monitoring is performed using [http://xenproject.org/developers/teams/xapi.html XenAPI].
+
+== Gallery ==
+<gallery widths=250px heights=127px>
+TODO.png
+</gallery>
+
+== Features ==
+
+The features added by this ZenPack can be summarized as follows. They are each detailed further below.
+
+* Initial discovery and continual synchronization of relevant components.
+* Performance monitoring.
+* Event management.
+* Service impact and root cause analysis. (Requires Zenoss Service Dynamics)
+
+=== Discovery ===
+
+The following components will be automatically discovered through the XenServer host, username and password you provide. The properties and relationships will be continually maintained by way consuming events from the host.
+
+[[File:TODO.png|thumb|320px|TODO]]
+
+;Pool
+: Properties:
+: Relationships:
+
+;Host
+: Properties:
+: Relationships:
+
+;HostCPU
+: Properties:
+: Relationships:
+
+;PBD
+: Properties:
+: Relationships:
+
+;PIF
+: Properties:
+: Relationships:
+
+;SR
+: Properties:
+: Relationships:
+
+;VDI
+: Properties:
+: Relationships:
+
+;Network
+: Properties:
+: Relationships:
+
+;VMAppliance
+: Properties:
+: Relationships:
+
+;VM
+: Properties:
+: Relationships:
+
+;VBD
+: Properties:
+: Relationships:
+
+;VIF
+: Properties:
+: Relationships:
+
+=== Performance Monitoring ===
+
+The following metrics will be collected every 5 minutes by default. Any metric that is available either via a XenAPI get_record or rrd_updates call can be collected by adding a new ''XenServer XenAPI'' or ''XenServer RRD'' datasource to the appropriate monitoring template. Note that as of XenServer 6.2, all available metrics are collected by default.
+
+;Pool
+* property_haPlanExistsFor: Number of future host failures we have managed to find a plan for. Once this reaches zero any future host failures will cause the failure of protected VMs.
+* property_haHostFailuresToTolerate: Number of host failures to tolerate before the Pool is declared to be overcommitted.
+
+;Host
+* property_memoryOverhead: Virtualization memory overhead (bytes).
+* rrd_memoryTotal: TODO (Left off here)
+* rrd_memoryFree:
+* rrd_xapiMemoryUsage:
+* rrd_xapiFreeMemory:
+* rrd_xapiLiveMemory:
+* rrd_xapiAllocation:
+* rrd_pifAggrRX
+* rrd_pifAggrTX
+* rrd_cpuAvg:
+* rrd_loadAvg:
+* rrd_srCacheHitsSum:
+* rrd_srCacheMissesSum:
+
+;HostCPU
+*
+
+;PBD
+*
+
+;PIF
+*
+
+;SR
+*
+
+;VDI
+*
+
+;Network
+*
+
+;VMAppliance
+*
+
+;VM
+*
+
+;VBD
+*
+
+;VIF
+*
+
 == TODOs ==
 
 Tracking tasks here at least until the first revision is done.
