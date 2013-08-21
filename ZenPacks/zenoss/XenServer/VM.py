@@ -258,6 +258,7 @@ class IVMInfo(IPooledComponentInfo):
 
     host = schema.Entity(title=_t(u'Host'))
     vmappliance = schema.Entity(title=_t(u'vApp'))
+    guest_device = schema.Entity(title=_t(u'Guest Device'))
 
     hvm_shadow_multiplier = schema.Float(title=_t(u'HVM Shadow Multiplier'))
     vcpus_at_startup = schema.Int(title=_t(u'vCPUs at Startup'))
@@ -297,6 +298,7 @@ class VMInfo(PooledComponentInfo):
 
     host = RelationshipInfoProperty('host')
     vmappliance = RelationshipInfoProperty('vmappliance')
+    guest_device = RelationshipInfoProperty('guest_device')
 
     xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     xenapi_guest_metrics_ref = ProxyProperty('xenapi_guest_metrics_ref')

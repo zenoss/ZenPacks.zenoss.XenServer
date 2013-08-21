@@ -157,6 +157,7 @@ class IVBDInfo(IPooledComponentInfo):
 
     vm = schema.Entity(title=_t(u'VM'))
     vdi = schema.Entity(title=_t(u'VDI'))
+    guest_disk = schema.Entity(title=_t(u'Guest Disk'))
 
     allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
     bootable = schema.TextLine(title=_t(u'Bootable'))
@@ -180,6 +181,7 @@ class VBDInfo(PooledComponentInfo):
 
     vm = RelationshipInfoProperty('vm')
     vdi = RelationshipInfoProperty('vdi')
+    guest_disk = RelationshipInfoProperty('guest_disk')
 
     xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     allowed_operations = ProxyProperty('allowed_operations')
