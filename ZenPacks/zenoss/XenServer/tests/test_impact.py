@@ -21,7 +21,7 @@ from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from Products.ZenUtils.guid.interfaces import IGUIDManager
 from Products.ZenUtils.Utils import monkeypatch
 
-from ZenPacks.zenoss.XenServer.utils import require_zenpack
+from ZenPacks.zenoss.XenServer.utils import guid, require_zenpack
 from ZenPacks.zenoss.XenServer.tests.utils import (
     add_contained, add_noncontained,
     )
@@ -64,12 +64,10 @@ def impacts_for(thing):
     guid_manager = IGUIDManager(thing.getDmd())
     for subscriber in subscribers([thing], IRelationshipDataProvider):
         for edge in subscriber.getEdges():
-            source = guid_manager.getObject(edge.source)
-            impacted = guid_manager.getObject(edge.impacted)
-            if source.id == thing.id:
-                impacted_by.append(impacted.id)
-            elif impacted.id == thing.id:
-                impacting.append(source.id)
+            if edge.source == guid(thing):
+                impacted_by.append(guid_manager.getObject(edge.impacted).id)
+            elif edge.impacted == guid(thing):
+                impacting.append(guid_manager.getObject(edge.source).id)
 
     return (impacted_by, impacting)
 
@@ -595,16 +593,83 @@ class TestImpact(BaseTestCase):
     @require_zenpack('ZenPacks.zenoss.Impact')
     @require_zenpack('ZenPacks.zenoss.CloudStack')
     def test_CloudStack(self):
-        host1 = self.endpoint().getObjByPath('hosts/host1')
-        vm1 = self.endpoint().getObjByPath('vms/vm1')
+        try:
+            from ZenPacks.zenoss.CloudStack.tests.test_impact import create_cloud
+        except ImportError:
+            # CloudStack earlier than 1.1 which doesn't have hooks for
+            # XenServer impact.
+            import pdb; pdb.set_trace()
+            return
 
-        # VM -> CloudStack RouterVM
+        from ZenPacks.zenoss.XenServer.VM import VM
+        from ZenPacks.zenoss.XenServer.VIF import VIF
 
-        # VM -> CloudStack SystemVM
+        # Create CloudStack configuration.
+        cs_cloud = create_cloud(self.dmd)
 
-        # VM -> CloudStack VirtualMachine
+        cs_host = cs_cloud.getObjByPath('zones/zone1/pods/pod1/clusters/cluster1/hosts/host1')
+        cs_host.ip_address = '10.11.12.13'
+        cs_host.index_object()
+
+        cs_routervm = cs_cloud.getObjByPath('zones/zone1/pods/pod1/routervms/routervm1')
+        cs_routervm.linklocal_macaddress = '00:0c:29:fe:ab:bc'
+        cs_routervm.index_object()
+
+        cs_systemvm = cs_cloud.getObjByPath('zones/zone1/pods/pod1/systemvms/systemvm1')
+        cs_systemvm.linklocal_macaddress = '00:0c:29:fe:ab:bd'
+        cs_systemvm.index_object()
+
+        cs_vm = cs_cloud.getObjByPath('zones/zone1/vms/vm1')
+        cs_vm.mac_address = '00:0c:29:fe:ab:be'
+        cs_vm.index_object()
+
+        # Create XenServer configuration.
+        xen_endpoint = self.endpoint()
+
+        xen_host = xen_endpoint.getObjByPath('hosts/host1')
+        xen_pif = xen_host.getObjByPath('pifs/pif1')
+        xen_pif.ipv4_addresses = [cs_host.ip_address]
+        xen_pif.index_object()
+
+        xen_routervm = add_contained(xen_endpoint, 'vms', VM('xen_routervm1'))
+        xen_routervm_vif = add_contained(xen_routervm, 'vifs', VIF('xen_routervm1_vif1'))
+        xen_routervm_vif.macaddress = cs_routervm.linklocal_macaddress
+        xen_routervm_vif.index_object()
+
+        xen_systemvm = add_contained(xen_endpoint, 'vms', VM('xen_systemvm1'))
+        xen_systemvm_vif = add_contained(xen_systemvm, 'vifs', VIF('xen_systemvm1_vif1'))
+        xen_systemvm_vif.macaddress = cs_systemvm.linklocal_macaddress
+        xen_systemvm_vif.index_object()
+
+        xen_vm = xen_endpoint.getObjByPath('vms/vm1')
+        xen_vm_vif = xen_vm.getObjByPath('vifs/vif1')
+        xen_vm_vif.macaddress = cs_vm.mac_address
+        xen_vm_vif.index_object()
+
+        xen_host_impacts, xen_host_impacted_by = impacts_for(xen_host)
+        xen_vm_impacts, vm_impacted_by = impacts_for(xen_vm)
+        xen_routervm_impacts, xen_routervm_impacted_by = impacts_for(xen_routervm)
+        xen_systemvm_impacts, xen_systemvm_impacted_by = impacts_for(xen_systemvm)
 
         # Host -> CloudStack Host
+        self.assertTrue(
+            cs_host.id in xen_host_impacts,
+            'missing impact: {0} <- {1}'.format(cs_host, xen_host))
+
+        # VM -> CloudStack RouterVM
+        self.assertTrue(
+            cs_routervm.id in xen_routervm_impacts,
+            'missing impact: {0} <- {1}'.format(cs_routervm, xen_routervm))
+
+        # VM -> CloudStack SystemVM
+        self.assertTrue(
+            cs_systemvm.id in xen_systemvm_impacts,
+            'missing impact: {0} <- {1}'.format(cs_systemvm, xen_systemvm))
+
+        # VM -> CloudStack VirtualMachine
+        self.assertTrue(
+            cs_vm.id in xen_vm_impacts,
+            'missing impact: {0} <- {1}'.format(cs_vm, xen_vm))
 
 
 def test_suite():

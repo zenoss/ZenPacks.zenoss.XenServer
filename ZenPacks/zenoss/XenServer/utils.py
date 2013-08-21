@@ -23,6 +23,7 @@ from Products.ZenModel.DeviceComponent import DeviceComponent
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
 from Products.ZenRelations.ToManyContRelationship import ToManyContRelationship
+from Products.ZenUtils.guid.interfaces import IGlobalIdentifier
 from Products.ZenUtils.Search import makeFieldIndex, makeKeywordIndex
 from Products.ZenUtils.Utils import prepId
 from Products import Zuul
@@ -43,6 +44,13 @@ def add_local_lib_path():
     import site
 
     site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
+
+
+def guid(obj):
+    '''
+    Return GUID for obj.
+    '''
+    return IGlobalIdentifier(obj).getGUID()
 
 
 def require_zenpack(zenpack_name, default=None):

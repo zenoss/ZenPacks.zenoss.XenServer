@@ -7,9 +7,8 @@
 #
 ##############################################################################
 
-from Products.ZenUtils.guid.interfaces import IGlobalIdentifier
-
 from ZenPacks.zenoss.XenServer import ZENPACK_NAME
+from ZenPacks.zenoss.XenServer.utils import guid
 
 # Lazy imports to make this module not require Impact.
 ImpactEdge = None
@@ -22,13 +21,6 @@ THRESHOLD = 'policyThresholdTrigger'
 DOWN = 'DOWN'
 DEGRADED = 'DEGRADED'
 ATRISK = 'ATRISK'
-
-
-def guid(obj):
-    '''
-    Return GUID for obj.
-    '''
-    return IGlobalIdentifier(obj).getGUID()
 
 
 def edge(source, target):
