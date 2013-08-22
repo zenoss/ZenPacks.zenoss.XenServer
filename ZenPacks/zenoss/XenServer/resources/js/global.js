@@ -15,22 +15,22 @@ ZC.registerName('XenServerPIF', _t('Physical NIC'), _t('Physical NICs'));
 ZC.registerName('XenServerPool', _t('Pool'), _t('Pools'));
 ZC.registerName('XenServerSR', _t('Storage Repository'), _t('Storage Repositories'));
 ZC.registerName('XenServerVBD', _t('Virtual Block Device'), _t('Virtual Block Devices'));
-ZC.registerName('XenServerVDI', _t('Virtual Disk'), _t('Virtual Disks'));
+ZC.registerName('XenServerVDI', _t('Virtual Disk Image'), _t('Virtual Disk Images'));
 ZC.registerName('XenServerVIF', _t('Virtual NIC'), _t('Virtual NICs'));
 ZC.registerName('XenServerVM', _t('VM'), _t('VMs'));
 ZC.registerName('XenServerVMAppliance', _t('vApp'), _t('vApps'));
 
 
-/* "Add XenServer" Dialog ***************************************************/
+/* "Add XenServer Endpoint" Dialog ******************************************/
 
 var add_xenserver = new Zenoss.Action({
-    text: _t('Add XenServer') + '...',
+    text: _t('Add XenServer Endpoint') + '...',
     id: 'add_xenserver-item',
     permission: 'Manage DMD',
     handler: function(btn, e) {
         var win = new Zenoss.dialog.CloseDialog({
             width: 400,
-            title: _t('Add XenServer'),
+            title: _t('Add XenServer Endpoint'),
             items: [{
                 xtype: 'form',
                 buttonAlign: 'left',
