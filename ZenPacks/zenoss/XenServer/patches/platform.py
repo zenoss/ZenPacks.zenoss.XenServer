@@ -148,25 +148,25 @@ def _updateRelationship(self, device, relmap):
         return original(self, device, relmap)
 
     remove = getattr(relmap, 'remove', False) is True
-
     if hasattr(relmap, 'remove'):
         del(relmap.remove)
 
+    relname = getattr(relmap, 'relname', None)
     if hasattr(relmap, 'relname'):
         del(relmap.relname)
 
-    rel = getattr(device, relmap.relname, None)
+    rel = getattr(device, relname, None)
     if not rel:
         return False
 
     if remove:
-        return self._removeRelObject(device, relmap, relmap.relname)
+        return self._removeRelObject(device, relmap, relname)
 
     obj = rel._getOb(relmap.id, None)
     if obj:
         return self._updateObject(obj, relmap)
 
-    return self._createRelObject(device, relmap, relmap.relname)[0]
+    return self._createRelObject(device, relmap, relname)[0]
 
 
 @monkeypatch('Products.DataCollector.ApplyDataMap.ApplyDataMap')
@@ -176,7 +176,7 @@ def _removeRelObject(self, device, objmap, relname):
 
     Return True if a change was made or False if no change was made.
     '''
-    rel = getattr(device, objmap.relname, None)
+    rel = getattr(device, relname, None)
     if not rel:
         return False
 
@@ -198,7 +198,7 @@ def _removeRelObject(self, device, objmap, relname):
     self.logChange(
         device, obj, Change_Remove,
         "removing object {} from rel {} on {}".format(
-            obj.id, objmap.relname, device.id))
+            obj.id, relname, device.id))
 
     rel._delObject(obj.id)
 
