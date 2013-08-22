@@ -592,5 +592,9 @@
           format: "%7.2lf%s"
 
 
+/XenServer/VMAppliance:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VMAppliance"
+
+
 /XenServer/VMGuest:
   targetPythonClass: "ZenPacks.zenoss.XenServer.VM"

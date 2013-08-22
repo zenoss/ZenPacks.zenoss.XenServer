@@ -331,7 +331,7 @@ class IVMInfo(IPooledComponentInfo):
     is_snapshot_from_vmpp = schema.Bool(title=_t(u'Is a Snapshot from VMPP'))
     memory_actual = schema.Int(title=_t(u'Actual Memory'))
     name_description = schema.TextLine(title=_t(u'Description'))
-    name_label = schema.TextLine(title=_t(u'Name'))
+    name_label = schema.TextLine(title=_t(u'Label'))
     power_state = schema.TextLine(title=_t(u'Power State'))
     shutdown_delay = schema.Int(title=_t(u'Shutdown Delay'))
     start_delay = schema.Int(title=_t(u'Start Delay'))
