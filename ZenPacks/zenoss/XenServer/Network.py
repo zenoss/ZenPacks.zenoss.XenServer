@@ -21,6 +21,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
+    id_from_ref, ids_from_refs, to_boolean,
     )
 
 
@@ -62,6 +63,42 @@ class Network(PooledComponent):
         ('pifs', ToMany(ToOne, MODULE_NAME['PIF'], 'network')),
         ('vifs', ToMany(ToOne, MODULE_NAME['VIF'], 'network')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI network ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'networks',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('name_label') or properties['uuid']
+
+        other_config = properties.get('other_config', {})
+
+        return {
+            'relname': 'networks',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'mtu': properties.get('MTU'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'bridge': properties.get('bridge'),
+            'default_locking_mode': properties.get('default_locking_mode'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'ipv4_begin': other_config.get('ip_begin'),
+            'ipv4_end': other_config.get('ip_end'),
+            'is_guest_installer_network': to_boolean(other_config.get('is_guest_installer_network')),
+            'is_host_internal_management_network': to_boolean(other_config.get('is_host_internal_management_network')),
+            'ipv4_netmask': other_config.get('ipv4_netmask'),
+            'setPIFs': ids_from_refs(properties.get('PIFs', [])),
+            'setVIFs': ids_from_refs(properties.get('VIFs', [])),
+            }
 
     def getPIFs(self):
         '''
@@ -112,8 +149,14 @@ class Network(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for networks.
-        if self.xapi_uuid:
-            return ('network', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('network', self.xenapi_uuid, '')
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-network-interface.png'
 
 
 class INetworkInfo(IPooledComponentInfo):

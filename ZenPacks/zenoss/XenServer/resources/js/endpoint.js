@@ -64,11 +64,29 @@ Ext.apply(Zenoss.render, {
                 isLink = true;
         }
 
-        if (isLink) {
-            return '<a href="javascript:Ext.getCmp(\'component_card\').componentgrid.jumpToEntity(\''+obj.uid+'\', \''+obj.meta_type+'\');">'+obj.title+'</a>';
-        } else {
-            return obj.title;
+        var related_suffix = '';
+        if (obj.meta_type == 'XenServerHost' && record.data.server_device) {
+            related_suffix = ' (' + '<a href="' + record.data.server_device.uid + '">server</a>)';
+        } else if (obj.meta_type == 'XenServerPBD' && record.data.server_disk) {
+            related_suffix = ' (' + '<a href="' + record.data.server_disk.uid + '">on server</a>)';
+        } else if (obj.meta_type == 'XenServerPIF' && record.data.server_interface) {
+            related_suffix = ' (' + '<a href="' + record.data.server_interface.uid + '">on server</a>)';
+        } else if (obj.meta_type == 'XenServerVBD' && record.data.guest_disk) {
+            related_suffix = ' (' + '<a href="' + record.data.guest_disk.uid + '">on guest</a>)';
+        } else if (obj.meta_type == 'XenServerVIF' && record.data.guest_interface) {
+            related_suffix = ' (' + '<a href="' + record.data.guest_interface.uid + '">on guest</a>)';
+        } else if (obj.meta_type == 'XenServerVM' && record.data.guest_device) {
+            related_suffix = ' (' + '<a href="' + record.data.guest_device.uid + '">guest</a>)';
         }
+
+        var link = null;
+        if (isLink) {
+            link = '<a href="javascript:Ext.getCmp(\'component_card\').componentgrid.jumpToEntity(\''+obj.uid+'\', \''+obj.meta_type+'\');">'+obj.title+'</a>';
+        } else {
+            link = obj.title;
+        }
+
+        return link + related_suffix;
     }
 });
 
@@ -164,14 +182,15 @@ ZC.XenServerHostPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
-                {name: 'usesMonitorAttribute'},
+                {name: 'server_device'},  // for name
                 {name: 'pool'},
                 {name: 'is_pool_master'},
                 {name: 'address'},
-                {name: 'cpu_count'},    // for cpu_combined
-                {name: 'cpu_speed'},    // for cpu_combined
+                {name: 'cpu_count'},  // for cpu_combined
+                {name: 'cpu_speed'},  // for cpu_combined
                 {name: 'memory_total'},
                 {name: 'vm_count'},
+                {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
                 {name: 'locking'}
@@ -431,6 +450,7 @@ ZC.XenServerPBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'server_disk'},  // for name
                 {name: 'host'},
                 {name: 'sr'},
                 {name: 'currently_attached'},
@@ -528,6 +548,7 @@ ZC.XenServerPIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'server_interface'},  // for name
                 {name: 'host'},
                 {name: 'network'},
                 {name: 'primary_address_type'},  // for address
@@ -846,6 +867,7 @@ ZC.XenServerVBDPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'guest_disk'},  // for name
                 {name: 'vm'},
                 {name: 'vdi'},
                 {name: 'vbd_type'},
@@ -1078,6 +1100,7 @@ ZC.XenServerVIFPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'guest_interface'},  // for name
                 {name: 'vm'},
                 {name: 'network'},
                 {name: 'locking_mode'},
@@ -1175,6 +1198,7 @@ ZC.XenServerVMPanel = Ext.extend(ZC.XenServerComponentGridPanel, {
                 {name: 'meta_type'},
                 {name: 'status'},
                 {name: 'severity'},
+                {name: 'guest_device'},  // for name
                 {name: 'host'},
                 {name: 'vmappliance'},
                 {name: 'vcpus_at_startup'},  // for combined_cpu

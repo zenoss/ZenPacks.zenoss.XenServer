@@ -8,6 +8,8 @@
 #
 ######################################################################
 
+import itertools
+
 from zope.component import adapts
 from zope.interface import implements
 
@@ -22,6 +24,9 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToOne,
+    id_from_ref, int_or_none,
+    findIpInterfacesByMAC,
+    require_zenpack,
     )
 
 
@@ -32,8 +37,8 @@ class VM(PooledComponent):
 
     meta_type = portal_type = 'XenServerVM'
 
-    xapi_metrics_ref = None
-    xapi_guest_metrics_ref = None
+    xenapi_metrics_ref = None
+    xenapi_guest_metrics_ref = None
     hvm_shadow_multiplier = None
     vcpus_at_startup = None
     vcpus_max = None
@@ -59,8 +64,8 @@ class VM(PooledComponent):
     version = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'xapi_guest_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_guest_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'hvm_shadow_multiplier', 'type': 'float', 'mode': 'w'},
         {'id': 'vcpus_at_startup', 'type': 'int', 'mode': 'w'},
         {'id': 'vcpus_max', 'type': 'int', 'mode': 'w'},
@@ -93,6 +98,84 @@ class VM(PooledComponent):
         ('host', ToOne(ToMany, MODULE_NAME['Host'], 'vms')),
         ('vmappliance', ToOne(ToMany, MODULE_NAME['VMAppliance'], 'vms')),
         )
+
+    @property
+    def ipv4_addresses(self):
+        return tuple(itertools.chain.from_iterable(
+            x.ipv4_allowed for x in self.vifs() if x.ipv4_allowed))
+
+    @property
+    def mac_addresses(self):
+        return tuple(x.macaddress for x in self.vifs() if x.macaddress)
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI VM ref and properties.
+        '''
+        if not properties:
+            return {
+                'relname': 'vms',
+                'id': id_from_ref(ref),
+                }
+
+        if properties.get('is_a_snapshot') or \
+                properties.get('is_snapshot_from_vmpp') or \
+                properties.get('is_a_template'):
+
+            return
+
+        title = properties.get('name_label') or properties['uuid']
+
+        guest_metrics_ref = properties.get('guest_metrics')
+        if guest_metrics_ref == 'OpaqueRef:NULL':
+            guest_metrics_ref = None
+
+        return {
+            'relname': 'vms',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'xenapi_guest_metrics_ref': guest_metrics_ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'hvm_shadow_multiplier': properties.get('HVM_shadow_multiplier'),
+            'vcpus_at_startup': int_or_none(properties.get('VCPUs_at_startup')),
+            'vcpus_max': int_or_none(properties.get('VCPUs_max')),
+            'actions_after_crash': properties.get('actions_after_crash'),
+            'actions_after_reboot': properties.get('actions_after_reboot'),
+            'actions_after_shutdown': properties.get('actions_after_shutdown'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'domarch': properties.get('domarch'),
+            'domid': int_or_none(properties.get('domid')),
+            'ha_always_run': properties.get('ha_always_run'),
+            'ha_restart_priority': properties.get('ha_restart_priority'),
+            'is_a_snapshot': properties.get('is_a_snapshot'),
+            'is_a_template': properties.get('is_a_template'),
+            'is_control_domain': properties.get('is_control_domain'),
+            'is_snapshot_from_vmpp': properties.get('is_snapshot_from_vmpp'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'power_state': properties.get('power_state'),
+            'shutdown_delay': int_or_none(properties.get('shutdown_delay')),
+            'start_delay': int_or_none(properties.get('start_delay')),
+            'user_version': int_or_none(properties.get('user_version')),
+            'version': int_or_none(properties.get('version')),
+            'setHost': id_from_ref(properties.get('resident_on')),
+            'setVMAppliance': id_from_ref(properties.get('appliance')),
+            }
+
+    @classmethod
+    def objectmap_metrics(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and host_metrics
+        properties.
+        '''
+        return {
+            'relname': 'vms',
+            'id': id_from_ref(ref),
+            'memory_actual': int_or_none(properties.get('memory_actual')),
+            }
 
     def getHost(self):
         '''
@@ -145,7 +228,7 @@ class VM(PooledComponent):
         template_names = [self.getRRDTemplateName()]
 
         # Bind the guest template only if guest metrics are available.
-        if self.xapi_guest_metrics_ref:
+        if self.xenapi_guest_metrics_ref:
             template_names.append('{0}Guest'.format(self.getRRDTemplateName()))
 
         templates = []
@@ -161,8 +244,65 @@ class VM(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        if self.xapi_uuid:
-            return ('vm', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('vm', self.xenapi_uuid, '')
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-server.png'
+
+    def guest_device(self):
+        '''
+        Return the guest device running in the VM.
+        '''
+        macaddresses = [x.macaddress for x in self.vifs() if x.macaddress]
+        if macaddresses:
+            for iface in findIpInterfacesByMAC(self.dmd, macaddresses):
+                return iface.device()
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_routervm(self):
+        '''
+        Return the associated CloudStack router VM.
+        '''
+        from ZenPacks.zenoss.CloudStack.RouterVM import RouterVM
+
+        try:
+            return RouterVM.findByMAC(self.dmd, self.mac_addresses)
+        except AttributeError:
+            # The CloudStack RouterVM class didn't gain the findByMAC
+            # method until version 1.1 of the ZenPack.
+            pass
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_systemvm(self):
+        '''
+        Return the associated CloudStack system VM.
+        '''
+        from ZenPacks.zenoss.CloudStack.SystemVM import SystemVM
+
+        try:
+            return SystemVM.findByMAC(self.dmd, self.mac_addresses)
+        except AttributeError:
+            # The CloudStack SystemVM class didn't gain the findByMAC
+            # method until version 1.1 of the ZenPack.
+            pass
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_vm(self):
+        '''
+        Return the associated CloudStack VirtualMachine.
+        '''
+        from ZenPacks.zenoss.CloudStack.VirtualMachine import VirtualMachine
+
+        try:
+            return VirtualMachine.findByMAC(self.dmd, self.mac_addresses)
+        except AttributeError:
+            # The CloudStack VirtualMachine class didn't gain the
+            # findByMAC method until version 1.1 of the ZenPack.
+            pass
 
 
 class IVMInfo(IPooledComponentInfo):
@@ -172,6 +312,7 @@ class IVMInfo(IPooledComponentInfo):
 
     host = schema.Entity(title=_t(u'Host'))
     vmappliance = schema.Entity(title=_t(u'vApp'))
+    guest_device = schema.Entity(title=_t(u'Guest Device'))
 
     hvm_shadow_multiplier = schema.Float(title=_t(u'HVM Shadow Multiplier'))
     vcpus_at_startup = schema.Int(title=_t(u'vCPUs at Startup'))
@@ -190,7 +331,7 @@ class IVMInfo(IPooledComponentInfo):
     is_snapshot_from_vmpp = schema.Bool(title=_t(u'Is a Snapshot from VMPP'))
     memory_actual = schema.Int(title=_t(u'Actual Memory'))
     name_description = schema.TextLine(title=_t(u'Description'))
-    name_label = schema.TextLine(title=_t(u'Name'))
+    name_label = schema.TextLine(title=_t(u'Label'))
     power_state = schema.TextLine(title=_t(u'Power State'))
     shutdown_delay = schema.Int(title=_t(u'Shutdown Delay'))
     start_delay = schema.Int(title=_t(u'Start Delay'))
@@ -211,9 +352,10 @@ class VMInfo(PooledComponentInfo):
 
     host = RelationshipInfoProperty('host')
     vmappliance = RelationshipInfoProperty('vmappliance')
+    guest_device = RelationshipInfoProperty('guest_device')
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
-    xapi_guest_metrics_ref = ProxyProperty('xapi_guest_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
+    xenapi_guest_metrics_ref = ProxyProperty('xenapi_guest_metrics_ref')
     hvm_shadow_multiplier = ProxyProperty('hvm_shadow_multiplier')
     vcpus_at_startup = ProxyProperty('vcpus_at_startup')
     vcpus_max = ProxyProperty('vcpus_max')

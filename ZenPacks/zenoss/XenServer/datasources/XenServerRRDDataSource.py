@@ -36,12 +36,12 @@ class XenServerRRDDataSource(PythonDataSource):
 
     # RRDDataSource
     component = '${here/id}'
-    cycletime = '${here/zXenServerCollectionInterval}'
+    cycletime = '${here/zXenServerPerfInterval}'
     eventClass = '/Ignore'
     severity = 0
 
     # PythonDataSource
-    plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin'
+    plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin'
 
     def getDescription(self):
         '''

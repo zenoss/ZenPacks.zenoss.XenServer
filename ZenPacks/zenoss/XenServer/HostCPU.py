@@ -20,6 +20,7 @@ from ZenPacks.zenoss.XenServer import MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
+    id_from_ref, int_or_none,
     )
 
 
@@ -56,12 +57,48 @@ class HostCPU(PooledComponent):
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'hostcpus')),
         )
 
+    @classmethod
+    def objectmap(self, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host_cpu ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'hostcpus',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('number') or properties['uuid']
+
+        cpu_speed = int_or_none(properties.get('speed'))
+        if cpu_speed:
+            cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
+
+        return {
+            'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
+            'relname': 'hostcpus',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'family': int_or_none(properties.get('family')),
+            'features': properties.get('features'),
+            'flags': properties.get('flags'),
+            'model': int_or_none(properties.get('model')),
+            'modelname': properties.get('modelname'),
+            'number': int_or_none(properties.get('number')),
+            'speed': cpu_speed,
+            'stepping': int_or_none(properties.get('stepping')),
+            'vendor': properties.get('vendor'),
+            }
+
     def xenrrd_prefix(self):
         '''
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        host_uuid = self.host().xapi_uuid
+        host_uuid = self.host().xenapi_uuid
         if host_uuid and self.number is not None:
             return ('host', host_uuid, ''.join(('cpu', str(self.number))))
 

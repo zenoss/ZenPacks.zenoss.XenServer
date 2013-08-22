@@ -1,5 +1,3 @@
-[note: XenServer Model ERD{bg:cornsilk}]
-//
 [Endpoint]<>1-0..1[Pool]
 [Endpoint]<>1-0..*[SR]
 [Endpoint]<>1-0..*[Host]

@@ -2,6 +2,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
     <!-- API: Routers -->
@@ -25,15 +26,15 @@
 
     <!-- API: Info Adapters -->
     <adapter
-        provides=".datasources.XenServerXAPIDataSource.IXenServerXAPIDataSourceInfo"
-        for=".datasources.XenServerXAPIDataSource.XenServerXAPIDataSource"
-        factory=".datasources.XenServerXAPIDataSource.XenServerXAPIDataSourceInfo"
+        provides=".datasources.XenServerXenAPIDataSource.IXenServerXenAPIDataSourceInfo"
+        for=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataSource"
+        factory=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataSourceInfo"
         />
 
     <adapter
-        provides=".datasources.XenServerXAPIDataSource.IXenServerXAPIDataPointInfo"
-        for=".datasources.XenServerXAPIDataSource.XenServerXAPIDataPoint"
-        factory=".datasources.XenServerXAPIDataSource.XenServerXAPIDataPointInfo"
+        provides=".datasources.XenServerXenAPIDataSource.IXenServerXenAPIDataPointInfo"
+        for=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataPoint"
+        factory=".datasources.XenServerXenAPIDataSource.XenServerXenAPIDataPointInfo"
         />
 
     <adapter
@@ -185,5 +186,113 @@
         class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
         permission="zope2.Public"
         />
+
+    <!-- Device Links -->
+    <configure zcml:condition="have zenoss:IExpandedLinkProvider">
+        <subscriber
+            provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
+            for='Products.ZenModel.Device.Device'
+            factory='.Host.DeviceLinkProvider'
+            />
+
+    </configure>
+
+    <!-- Impact -->
+    <configure zcml:condition="installed ZenPacks.zenoss.Impact">
+        <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
+
+        <!-- XenServer Internal Impact Adapters -->
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Endpoint.Endpoint"
+            factory=".impact.EndpointRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Host.Host"
+            factory=".impact.HostRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Network.Network"
+            factory=".impact.NetworkRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".PBD.PBD"
+            factory=".impact.PBDRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".PIF.PIF"
+            factory=".impact.PIFRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Pool.Pool"
+            factory=".impact.PoolRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".SR.SR"
+            factory=".impact.SRRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".VBD.VBD"
+            factory=".impact.VBDRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".VDI.VDI"
+            factory=".impact.VDIRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".VIF.VIF"
+            factory=".impact.VIFRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".VM.VM"
+            factory=".impact.VMRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".VMAppliance.VMAppliance"
+            factory=".impact.VMApplianceRelationsProvider"
+            />
+
+        <!-- Platform Impact Adapters -->
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for="Products.ZenModel.Device.Device"
+            factory=".impact.DeviceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for="Products.ZenModel.HardDisk.HardDisk"
+            factory=".impact.HardDiskRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for="Products.ZenModel.IpInterface.IpInterface"
+            factory=".impact.IpInterfaceRelationsProvider"
+            />
+
+    </configure>
 
 </configure>

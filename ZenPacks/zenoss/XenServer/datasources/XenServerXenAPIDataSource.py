@@ -24,51 +24,51 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource
 
 
-class XenServerXAPIDataSource(PythonDataSource):
+class XenServerXenAPIDataSource(PythonDataSource):
     '''
-    Datasource used to define XAPI requests for monitoring data.
+    Datasource used to define XenAPI requests for monitoring data.
     '''
 
     ZENPACKID = 'ZenPacks.zenoss.XenServer'
 
-    sourcetypes = ('XenServer XAPI',)
+    sourcetypes = ('XenServer XenAPI',)
     sourcetype = sourcetypes[0]
 
     # RRDDataSource
     component = '${here/id}'
-    cycletime = '${here/zXenServerCollectionInterval}'
+    cycletime = '${here/zXenServerPerfInterval}'
     eventClass = '/Ignore'
     severity = 0
 
     # PythonDataSource
-    plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin'
+    plugin_classname = 'ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin'
 
-    # XenServerXAPIDataSource
-    xapi_classname = ''
-    xapi_ref = '${here/xapi_ref}'
+    # XenServerXenAPIDataSource
+    xenapi_classname = ''
+    xenapi_ref = '${here/xenapi_ref}'
 
     _properties = PythonDataSource._properties + (
-        {'id': 'xapi_classname', 'type': 'string'},
-        {'id': 'xapi_ref', 'type': 'string'},
+        {'id': 'xenapi_classname', 'type': 'string'},
+        {'id': 'xenapi_ref', 'type': 'string'},
         )
 
     def getDescription(self):
         '''
         Return short string that represents this datasource.
         '''
-        return self.xapi_classname
+        return self.xenapi_classname
 
     def manage_addRRDDataPoint(self, id, REQUEST=None):
         '''
         Add datapoint to this datasource.
 
-        Overridden to create XenServerXAPIDataPoint datapoints.
+        Overridden to create XenServerXenAPIDataPoint datapoints.
         '''
         if not id:
             return self.callZenScreen(REQUEST)
 
         id = self.prepId(id)
-        self.datapoints._setObject(id, XenServerXAPIDataPoint(id))
+        self.datapoints._setObject(id, XenServerXenAPIDataPoint(id))
         datapoint = self.datapoints._getOb(id)
         if REQUEST:
             if datapoint:
@@ -79,39 +79,39 @@ class XenServerXAPIDataSource(PythonDataSource):
         return datapoint
 
 
-class IXenServerXAPIDataSourceInfo(IRRDDataSourceInfo):
+class IXenServerXenAPIDataSourceInfo(IRRDDataSourceInfo):
     '''
-    API Info interface for XenServerXAPIDataSource.
+    API Info interface for XenServerXenAPIDataSource.
     '''
 
-    xapi_classname = schema.TextLine(
+    xenapi_classname = schema.TextLine(
         group=_t(u'XenServer'),
-        title=_t(u'XAPI Class Name'))
+        title=_t(u'XenAPI Class Name'))
 
-    xapi_ref = schema.TextLine(
+    xenapi_ref = schema.TextLine(
         group=_t(u'XenServer'),
-        title=_t(u'XAPI Reference'))
+        title=_t(u'XenAPI Reference'))
 
 
-class XenServerXAPIDataSourceInfo(RRDDataSourceInfo):
+class XenServerXenAPIDataSourceInfo(RRDDataSourceInfo):
     '''
-    API Info adapter factory for XenServerXAPIDataSource.
+    API Info adapter factory for XenServerXenAPIDataSource.
     '''
 
-    implements(IXenServerXAPIDataSourceInfo)
-    adapts(XenServerXAPIDataSource)
+    implements(IXenServerXenAPIDataSourceInfo)
+    adapts(XenServerXenAPIDataSource)
 
     testable = False
 
-    xapi_classname = ProxyProperty('xapi_classname')
-    xapi_ref = ProxyProperty('xapi_ref')
+    xenapi_classname = ProxyProperty('xenapi_classname')
+    xenapi_ref = ProxyProperty('xenapi_ref')
 
 
-class XenServerXAPIDataPoint(RRDDataPoint):
+class XenServerXenAPIDataPoint(RRDDataPoint):
     '''
     Datapoint used to define values to capture from XenAPI responses.
 
-    This datapoint will only ever be used by XenServerXAPIDataSource.
+    This datapoint will only ever be used by XenServerXenAPIDataSource.
     '''
 
     path = None
@@ -123,22 +123,22 @@ class XenServerXAPIDataPoint(RRDDataPoint):
         )
 
 
-class IXenServerXAPIDataPointInfo(IDataPointInfo):
+class IXenServerXenAPIDataPointInfo(IDataPointInfo):
     '''
-    API Info interface for XenServerXAPIDataPoint.
+    API Info interface for XenServerXenAPIDataPoint.
     '''
 
     path = schema.TextLine(title=_t(u'Path'))
     rpn = schema.TextLine(title=_t(u'RPN'))
 
 
-class XenServerXAPIDataPointInfo(DataPointInfo):
+class XenServerXenAPIDataPointInfo(DataPointInfo):
     '''
-    API Info adapter factory for XenServerXAPIDataPoint.
+    API Info adapter factory for XenServerXenAPIDataPoint.
     '''
 
-    implements(IXenServerXAPIDataPointInfo)
-    adapts(XenServerXAPIDataPoint)
+    implements(IXenServerXenAPIDataPointInfo)
+    adapts(XenServerXenAPIDataPoint)
 
     path = ProxyProperty('path')
     rpn = ProxyProperty('rpn')

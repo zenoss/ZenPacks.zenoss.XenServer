@@ -57,10 +57,12 @@ class TestUtils(BaseTestCase):
 
         for group_f, time_f, v, expected in cases:
             datapoint = Mock()
-            datapoint.params = {
-                'group_aggregation': group_f,
-                'time_aggregation': time_f,
-                }
+            datapoint.group_aggregation = group_f
+            datapoint.time_aggregation = time_f
+            # datapoint.params = {
+            #     'group_aggregation': group_f,
+            #     'time_aggregation': time_f,
+            #     }
 
             r = aggregate_values(datapoint, v)
 

@@ -12,6 +12,7 @@ from zope.component import adapts
 from zope.interface import implements
 
 from Products.ZenRelations.RelSchema import ToMany, ToManyCont, ToOne
+from Products.ZenUtils.Utils import prepId
 from Products.Zuul.catalog.paths import DefaultPathReporter, relPath
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -22,6 +23,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
     updateToOne,
+    id_from_ref, to_boolean,
     )
 
 
@@ -48,6 +50,38 @@ class PBD(PooledComponent):
         ('host', ToOne(ToManyCont, MODULE_NAME['Host'], 'pbds')),
         ('sr', ToOne(ToMany, MODULE_NAME['SR'], 'pbds')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI PBD ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'hosts/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'pbds',
+                'id': id_from_ref(ref),
+                }
+
+        device_config = properties.get('device_config', {})
+
+        title = device_config.get('location') or \
+            device_config.get('device') or \
+            properties['uuid']
+
+        return {
+            'compname': 'hosts/{}'.format(id_from_ref(properties.get('host'))),
+            'relname': 'pbds',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'currently_attached': properties.get('currently_attached'),
+            'dc_device': device_config.get('device'),
+            'dc_legacy_mode': to_boolean(device_config.get('legacy_mode')),
+            'dc_location': device_config.get('location'),
+            'setSR': id_from_ref(properties.get('SR')),
+            }
 
     def getSR(self):
         '''
@@ -78,9 +112,31 @@ class PBD(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for PBDs.
-        host_uuid = self.host().xapi_uuid
-        if host_uuid and self.xapi_uuid:
-            return ('host', host_uuid, '_'.join(('pbd', self.xapi_uuid)))
+        host_uuid = self.host().xenapi_uuid
+        if host_uuid and self.xenapi_uuid:
+            return ('host', host_uuid, '_'.join(('pbd', self.xenapi_uuid)))
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-disk.png'
+
+    def server_disk(self):
+        '''
+        Return the server disk underlying this PBD.
+
+        The host on which this PBD resides may also be monitored as a
+        normal Linux server. Attempt to find that server and its disk
+        that's associated with this PBD.
+        '''
+        if not self.dc_device or not self.dc_device.startswith('/dev'):
+            return
+
+        server_device = self.host().server_device()
+        if server_device:
+            return server_device.hw.harddisks._getOb(
+                prepId(self.dc_device.replace('/dev/', '', 1)), None)
 
 
 class IPBDInfo(IPooledComponentInfo):
@@ -90,6 +146,7 @@ class IPBDInfo(IPooledComponentInfo):
 
     host = schema.Entity(title=_t(u'Host'))
     sr = schema.Entity(title=_t(u'Storage Repository'))
+    server_disk = schema.Entity(title=_t(u'Server Disk'))
 
     currently_attached = schema.Bool(title=_t(u'Currently Attached'))
     dc_device = schema.TextLine(title=_t(u'Device Name'))
@@ -107,6 +164,7 @@ class PBDInfo(PooledComponentInfo):
 
     host = RelationshipInfoProperty('host')
     sr = RelationshipInfoProperty('sr')
+    server_disk = RelationshipInfoProperty('server_disk')
 
     currently_attached = ProxyProperty('currently_attached')
     dc_device = ProxyProperty('dc_device')

@@ -22,6 +22,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty,
     updateToOne,
+    id_from_ref,
     )
 
 
@@ -32,7 +33,7 @@ class VBD(PooledComponent):
 
     meta_type = portal_type = 'XenServerVBD'
 
-    xapi_metrics_ref = None
+    xenapi_metrics_ref = None
     allowed_operations = None
     bootable = None
     currently_attached = None
@@ -45,7 +46,7 @@ class VBD(PooledComponent):
     userdevice = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
         {'id': 'bootable', 'type': 'boolean', 'mode': 'w'},
         {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
@@ -62,6 +63,43 @@ class VBD(PooledComponent):
         ('vm', ToOne(ToManyCont, MODULE_NAME['VM'], 'vbds')),
         ('vdi', ToOne(ToMany, MODULE_NAME['VDI'], 'vbds')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI VBD ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'compname': 'vms/{}'.format(id_from_ref(properties['parent'])),
+                'relname': 'vbds',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('device') or \
+            properties.get('userdevice') or \
+            properties['uuid']
+
+        return {
+            'compname': 'vms/{}'.format(id_from_ref(properties.get('VM'))),
+            'relname': 'vbds',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'xenapi_uuid': properties.get('uuid'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'bootable': properties.get('bootable'),
+            'currently_attached': properties.get('currently_attached'),
+            'vbd_device': properties.get('device'),
+            'empty': properties.get('empty'),
+            'mode': properties.get('mode'),
+            'storage_lock': properties.get('storage_lock'),
+            'vbd_type': properties.get('type'),
+            'unpluggable': properties.get('unpluggable'),
+            'userdevice': properties.get('userdevice'),
+            'setVDI': id_from_ref(properties.get('VDI')),
+            }
 
     def getVDI(self):
         '''
@@ -90,9 +128,26 @@ class VBD(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        vm_uuid = self.vm().xapi_uuid
+        vm_uuid = self.vm().xenapi_uuid
         if vm_uuid and self.vbd_device:
             return ('vm', vm_uuid, '_'.join(('vbd', self.vbd_device)))
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-disk.png'
+
+    def guest_disk(self):
+        '''
+        Return the guest disk associated with this VBD.
+        '''
+        if not self.vbd_device:
+            return
+
+        guest_device = self.vm().guest_device()
+        if guest_device:
+            return guest_device.hw.harddisks._getOb(self.vbd_device, None)
 
 
 class IVBDInfo(IPooledComponentInfo):
@@ -102,6 +157,7 @@ class IVBDInfo(IPooledComponentInfo):
 
     vm = schema.Entity(title=_t(u'VM'))
     vdi = schema.Entity(title=_t(u'VDI'))
+    guest_disk = schema.Entity(title=_t(u'Guest Disk'))
 
     allowed_operations = schema.TextLine(title=_t(u'Allowed Operations'))
     bootable = schema.TextLine(title=_t(u'Bootable'))
@@ -125,8 +181,9 @@ class VBDInfo(PooledComponentInfo):
 
     vm = RelationshipInfoProperty('vm')
     vdi = RelationshipInfoProperty('vdi')
+    guest_disk = RelationshipInfoProperty('guest_disk')
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     allowed_operations = ProxyProperty('allowed_operations')
     bootable = ProxyProperty('bootable')
     currently_attached = ProxyProperty('currently_attached')

@@ -8,6 +8,8 @@
 #
 ######################################################################
 
+import itertools
+
 from zope.component import adapts
 from zope.interface import implements
 
@@ -21,6 +23,9 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipInfoProperty, RelationshipLengthProperty,
     updateToMany, updateToOne,
+    id_from_ref, ids_from_refs, int_or_none, float_or_none,
+    findIpInterfacesByMAC,
+    require_zenpack,
     )
 
 
@@ -31,7 +36,7 @@ class Host(PooledComponent):
 
     meta_type = portal_type = 'XenServerHost'
 
-    xapi_metrics_ref = None
+    xenapi_metrics_ref = None
     api_version_major = None
     api_version_minor = None
     api_version_vendor = None
@@ -49,7 +54,7 @@ class Host(PooledComponent):
     memory_total = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xapi_metrics_ref', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_major', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_minor', 'type': 'string', 'mode': 'w'},
         {'id': 'api_version_vendor', 'type': 'string', 'mode': 'w'},
@@ -82,6 +87,73 @@ class Host(PooledComponent):
     @property
     def is_pool_master(self):
         return self.master_for() is not None
+
+    @property
+    def ipv4_addresses(self):
+        return tuple(itertools.chain.from_iterable(
+            x.ipv4_addresses for x in self.pifs() if x.ipv4_addresses))
+
+    @property
+    def mac_addresses(self):
+        return tuple(x.macaddress for x in self.pifs() if x.macaddress)
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'hosts',
+                'id': id_from_ref,
+                }
+
+        title = properties.get('name_label') or properties.get('hostname')
+
+        cpu_info = properties.get('cpu_info', {})
+
+        cpu_speed = float_or_none(cpu_info.get('speed'))
+        if cpu_speed:
+            cpu_speed = cpu_speed * 1048576  # Convert from MHz to Hz.
+
+        return {
+            'relname': 'hosts',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'xenapi_metrics_ref': properties.get('metrics'),
+            'api_version_major': properties.get('API_version_major'),
+            'api_version_minor': properties.get('API_version_minor'),
+            'api_version_vendor': properties.get('API_version_vendor'),
+            'address': properties.get('address'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'capabilities': properties.get('capabilities'),
+            'cpu_count': int_or_none(cpu_info.get('cpu_count')),
+            'cpu_speed': cpu_speed,
+            'edition': properties.get('edition'),
+            'enabled': properties.get('enabled'),
+            'hostname': properties.get('hostname'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'sched_policy': properties.get('sched_policy'),
+            'setVMs': ids_from_refs(properties.get('resident_VMs', [])),
+            'setSuspendImageSR': id_from_ref(properties.get('suspend_image_sr')),
+            'setCrashDumpSR': id_from_ref(properties.get('crash_dump_sr')),
+            'setLocalCacheSR': id_from_ref(properties.get('local_cache_sr')),
+            }
+
+    @classmethod
+    def objectmap_metrics(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI host ref and host_metrics
+        properties.
+        '''
+        return {
+            'relname': 'hosts',
+            'id': id_from_ref(ref),
+            'memory_total': int_or_none(properties.get('memory_total')),
+            }
 
     def getVMs(self):
         '''
@@ -197,8 +269,49 @@ class Host(PooledComponent):
         Return prefix under which XenServer stores RRD data about this
         component.
         '''
-        if self.xapi_uuid:
-            return ('host', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('host', self.xenapi_uuid, '')
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/host.png'
+
+    def server_device(self):
+        '''
+        Return the associated device on which this host runs.
+
+        Zenoss may also be monitoring the XenServer host as a normal
+        Linux server. This method will attempt to find that device by
+        matching the XenServer host's PIF MAC addresses then IP
+        addresses with those of other monitored devices.
+        '''
+        macaddresses = [x.macaddress for x in self.pifs() if x.macaddress]
+        if macaddresses:
+            for iface in findIpInterfacesByMAC(self.dmd, macaddresses):
+                return iface.device()
+
+        if self.address:
+            ip = self.endpoint.getNetworkRoot().findIp(self.address)
+            if ip:
+                device = ip.device()
+                if device:
+                    return device
+
+    @require_zenpack('ZenPacks.zenoss.CloudStack')
+    def cloudstack_host(self):
+        '''
+        Return the associated CloudStack host.
+        '''
+        from ZenPacks.zenoss.CloudStack.Host import Host
+
+        try:
+            return Host.findByIP(self.dmd, self.ipv4_addresses)
+        except AttributeError:
+            # The CloudStack Host class didn't gain the findByIP method
+            # until version 1.1 of the ZenPack.
+            pass
 
 
 class IHostInfo(IPooledComponentInfo):
@@ -227,6 +340,7 @@ class IHostInfo(IPooledComponentInfo):
     suspend_image_sr = schema.Entity(title=_t(u'Suspend Image Storage Repository'))
     crash_dump_sr = schema.Entity(title=_t(u'Crash Dump Storage Repository'))
     local_cache_sr = schema.Entity(title=_t(u'Local Cache Storage Repository'))
+    server_device = schema.Entity(title=_t(u'Server Device'))
 
     hostcpu_count = schema.Int(title=_t(u'Number of Host CPUs'))
     pbd_count = schema.Int(title=_t(u'Number of Block Devices'))
@@ -242,7 +356,7 @@ class HostInfo(PooledComponentInfo):
     implements(IHostInfo)
     adapts(Host)
 
-    xapi_metrics_ref = ProxyProperty('xapi_metrics_ref')
+    xenapi_metrics_ref = ProxyProperty('xenapi_metrics_ref')
     api_version_major = ProxyProperty('api_version_major')
     api_version_minor = ProxyProperty('api_version_minor')
     api_version_vendor = ProxyProperty('api_version_vendor')
@@ -264,8 +378,43 @@ class HostInfo(PooledComponentInfo):
     suspend_image_sr = RelationshipInfoProperty('suspend_image_sr')
     crash_dump_sr = RelationshipInfoProperty('crash_dump_sr')
     local_cache_sr = RelationshipInfoProperty('local_cache_sr')
+    server_device = RelationshipInfoProperty('server_device')
 
     hostcpu_count = RelationshipLengthProperty('hostcpus')
     pbd_count = RelationshipLengthProperty('pbds')
     pif_count = RelationshipLengthProperty('pifs')
     vm_count = RelationshipLengthProperty('vms')
+
+
+class DeviceLinkProvider(object):
+    '''
+    Provides a link to this host on the overview screen of the Linux
+    server device underlying this host.
+    '''
+    def __init__(self, device):
+        self.device = device
+
+    def getExpandedLinks(self):
+        links = []
+
+        host = self.device.xenserver_host()
+        if host:
+            endpoint = host.endpoint()
+            links.append(
+                'XenServer Host: <a href="{}">{}</a> on <a href="{}">{}</a>'.format(
+                    host.getPrimaryUrlPath(),
+                    host.titleOrId(),
+                    endpoint.getPrimaryUrlPath(),
+                    endpoint.titleOrId()))
+
+        vm = self.device.xenserver_vm()
+        if vm:
+            endpoint = vm.endpoint()
+            links.append(
+                'XenServer VM: <a href="{}">{}</a> on <a href="{}">{}</a>'.format(
+                    vm.getPrimaryUrlPath(),
+                    vm.titleOrId(),
+                    endpoint.getPrimaryUrlPath(),
+                    endpoint.titleOrId()))
+
+        return links

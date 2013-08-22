@@ -1,44 +1,335 @@
-== TODOs ==
+This ZenPack provides support for monitoring [http://xenserver.org/ XenServer]. Monitoring is performed using [http://xenproject.org/developers/teams/xapi.html XenAPI].
 
-Tracking tasks here at least until the first revision is done.
+== Gallery ==
+<gallery widths=250px heights=127px>
+xenserver_add_menu.png
+xenserver_add_dialog.png
+xenserver_pools.png
+xenserver_hosts.png
+xenserver_hostcpus.png
+xenserver_pbds.png
+xenserver_srs.png
+xenserver_pifs.png
+xenserver_vdis.png
+xenserver_events.png
+xenserver_impact.png
+xenserver_networks.png
+xenserver_vapps.png
+xenserver_vms.png
+xenserver_vbds.png
+xenserver_vifs.png
+xenserver_model_yuml.png
+xenserver_impact_yuml.png
+</gallery>
 
-;Musts
-# XenServer RRD datasource type.
-# Events.
-# Create Impact ERD.
-# Internal Impact adapters.
-# External Impact adapters.
-# Documentation.
+== Features ==
 
-;Niceties
-# Add CloudStack Impact integration.
-# Add useful information to device overview screen.
-# zProperty to disable modeling of VMs, VBDs, VIFs and vApps.
-# Vocabulary for XenServerRRDDataPointInfo *_aggregation properties.
-# Order component types on device screen sensibly.
-# Add bond interfaces. (Bond)
-# Add VLANs. (VLAN)
-# Targeted remodeling based on events.
-# Fix sleep(5) workaround in add_xenserver facade method.
-# Screencast.
+The features added by this ZenPack can be summarized as follows. They are each detailed further below.
 
-== Scratch Pad ==
+* Initial discovery and continual synchronization of relevant components.
+* Performance monitoring.
+* Event management.
+* Service impact and root cause analysis. (Requires Zenoss Service Dynamics)
 
-Tidbits that are useful to me while developing the ZenPack.
+=== Discovery ===
 
-;Add the XenServer endpoint.
-<pre>
-d = dmd.Devices.XenServer.createInstance('xenserver1')
-d.setPerformanceMonitor('localhost')
-d.setZenProperty('zXenServerAddresses', ['192.168.66.71'])
-d.setZenProperty('zXenServerUsername', 'root')
-d.setZenProperty('zXenServerPassword', 'zenoss')
-commit()
+The following components will be automatically discovered through the XenServer host, username and password you provide. The properties and relationships will be continually maintained by way consuming events from the host. By default model changes will be polled every 60 seconds. This can be configured with the ''zXenServerModelInterval'' configuration property.
 
-import time; time.sleep(4)
-d.collectDevice()
+[[File:xenserver_model_yuml.png|thumb|320px|Model Diagram]]
 
-sync()
-d.setZenProperty('zCollectorLogChanges', True)
-commit()
-</pre>
+;Pool
+: Properties: HA Allow Overcommit, HA Enabled, HA Host Failures to Tolerate, CPU ID Feature Mask, HVM Memory Ratio, PV Memory Ratio, Description, Label, vSwitch Controller
+: Relationships: Master Host, Default Storage Repository, Suspend Image Storage Repository, Crash Dump Storage Repository
+
+;Host
+: Properties: API Version Major, API Version Minor, API Version Vendor, Address, Allowed Operations, Capabilities, CPU Count, CPU Speed, Edition, Enabled, Hostname, Is Pool Master, Description, Label, Scheduling Policy, Total Memory
+: Relationships: Master for Pool, Suspend Image Storage Repository, Crash Dump Storage Repository, Local Cache Storage Repository, Server Device, Host CPUs, Physical Block Devices, Physical NICs, VMs
+
+;Host CPU (HostCPU)
+: Properties: Family, Features, Flags, Model, Model Name, Number, Speed, Stepping, Vendor
+: Relationships: Host
+
+;Physical Block Device (PBD)
+: Properties: Currently Attached, Device Name, Legacy Mode, Location
+: Relationships: Host, Storage Repository, Server Disk
+
+;Physical NIC (PIF)
+: Properties: DNS Server Address, IPv4 Addresses, IPv6 Addresses, MAC Address, MTU, VLAN, Carrier, Currently Attached, Network Device, Network Device ID, Network Device Name, Disallow Unplug, IPv4 Gateway, IPv4 Configuration Mode, IPv6 Configuration Mode, IPv6 Gateway, Management, IPv4 Netmask, Physical, Primary Address Type, Speed, Vendor Name
+: Relationships: Host, Network, Server Interface
+
+;Storage Repository (SR)
+: Properties: Allowed Operations, Content Type, Local Cache Enabled, Description, Label, Physical Size, Shared, SM Type, Type
+: Relationships: Virtual Disk Images, Physical Block Devices
+
+;Virtual Disk Image (VDI)
+: Properties: Allow Caching, Allowed Operations, Is a Snapshot, Location, Managed, Missing, Description, Label, On Boot, Read Only, Sharable, Storage Lock, Type, Virtual Size
+: Relationships: Storage Repository, Virtual Block Devices
+
+;Network
+: Properties: MTU, Allowed Operations, Bridge, Default Locking Mode, Description, Label, IPv4 Begin, IPv4 End, Guest Installer Network, Host Internal Management Network, IPv4 Netmask
+: Relationships: Physical NICs, Virtual NICs
+
+;vApp (VMAppliance)
+: Properties: Allowed Operations, Description, Label
+: Relationships: VMs
+
+;VM
+: Properties: HVM Shadow Multiplier, vCPUs at Startup, Maximum vCPUs, Actions After Crash, Actions After Reboot, Actions After Shutdown, Allowed Operations, Domain Architecture, Domain ID, HA Always Run, HA Restart Priority, Is a Snapshot, Is a Template, Is a Control Domain, Is a Snapshot from VMPP, Actual Memory, Description, Label, Power State, Shutdown Delay, Start Delay, User Version, Version
+: Relationships: Host, vApp, Guest Device, Virtual Block Devices, Virtual NICs
+
+;Virtual Block Device (VBD)
+: Properties: Allowed Operations, Bootable, Currently Attached, Device Name, Empty, Mode, Storage Lock, Type, Unpluggable, User Device
+: Relationships: VM, Virtual Disk Image, Guest Disk
+
+;Virtual NIC (VIF)
+: Properties: MAC Address, Autogenerate MAC Address, MTU, Allowed Operations, Currently Attached, Device Name, IPv4 Allowed, IPv6 Allowed, Locking Mode
+: Relationships: VM, Network, Guest Interface
+
+<br clear=all>
+
+=== Performance Monitoring ===
+
+The following metrics will be collected every 5 minutes by default. This can be configured with the ''zXenServerPerfInterval'' configuration property. Any metric that is available either via a XenAPI get_record or rrd_updates call can be collected by adding a new ''XenServer XenAPI'' or ''XenServer RRD'' datasource to the appropriate monitoring template. Note that as of XenServer 6.2, all available metrics are collected by default.
+
+[[File:xenserver_pools.png|thumb|320px|Pools]]
+
+;Pool
+* property_haPlanExistsFor: Number of future host failures we have managed to find a plan for. Once this reaches zero any future host failures will cause the failure of protected VMs. (''number'')
+* property_haHostFailuresToTolerate: Number of host failures to tolerate before the Pool is declared to be overcommitted. (''number'')
+
+<br clear=all>
+[[File:xenserver_hosts.png|thumb|320px|Hosts]]
+
+;Host
+* property_memoryOverhead: Virtualization memory overhead. (''bytes'')
+* rrd_memoryTotal: Total memory. (''bytes'')
+* rrd_memoryFree: Free memory. (''bytes'')
+* rrd_xapiMemoryUsage: Memory allocated by xapi that is used. (''bytes'')
+* rrd_xapiFreeMemory: Memory allocated by xapi that is free. (''bytes'')
+* rrd_xapiLiveMemory: Memory allocated by xapi that is live. (''bytes'')
+* rrd_xapiAllocation: Total memory allocated by xapi. (''bytes'')
+* rrd_pifAggrRX: Total inbound throughput for all host PIFs. (''bits/sec'')
+* rrd_pifAggrTX: Total outbound throughput for all host PIFs. (''bits/sec'')
+* rrd_cpuAvg: Average CPU utilization for all host CPUs. (''percent'')
+* rrd_loadAvg: Load average. (''processes'')
+* rrd_srCacheHitsSum: Storage repository cache hit rate. (''hits/sec'')
+* rrd_srCacheMissesSum: Storage repository cache miss rate. (''misses/sec'')
+
+<br clear=all>
+[[File:xenserver_hostcpus.png|thumb|320px|Host CPUs]]
+
+;Host CPU (HostCPU)
+* rrd_cpu: Average CPU utilization. (''percent'')
+
+<br clear=all>
+[[File:xenserver_pbds.png|thumb|320px|Physical Block Devices]]
+
+;Physical Block Device (PBD)
+* No metrics available.
+
+<br clear=all>
+[[File:xenserver_pifs.png|thumb|320px|Physical NICs]]
+
+;Physical NIC (PIF)
+* metric_speed: Speed of interface. (''bits/sec'')
+* rrd_rx: Inbound throughput. (''bits/sec'')
+* rrd_tx: Outbound throughput. (''bits/sec'')
+
+<br clear=all>
+[[File:xenserver_srs.png|thumb|320px|Storage Repositories]]
+
+;Storage Repository (SR)
+* property_physicalSize: Total physical storage size. (''bytes'')
+* property_physicalUtilisation: Used physical storage. (''bytes'')
+* property_virtualAllocation: Allocated physical storage. (''bytes'')
+
+<br clear=all>
+[[File:xenserver_vdis.png|thumb|320px|Virtual Disk Images]]
+
+;Virtual Disk Image (VDI)
+* property_physicalUtilisation: Used physical storage. (''bytes'')
+* property_virtualSize: Total virtual storage size. (''bytes'')
+
+<br clear=all>
+[[File:xenserver_networks.png|thumb|320px|Networks]]
+
+;Network
+* No metrics available.
+
+<br clear=all>
+[[File:xenserver_vapps.png|thumb|320px|vApps]]
+
+;vApp (VMAppliance)
+* No metrics available.
+
+<br clear=all>
+[[File:xenserver_vms.png|thumb|320px|VMs]]
+
+;VM
+* property_memoryOverhead: Virtualization memory overhead. (''bytes'')
+* metric_vcpusNumber: Current number of vCPUs. (''number'')
+* metric_memoryActual: Guest's actual memory. (''bytes'')
+* rrd_cpuAvg: Average utilization for all vCPUs. (''percent'')
+* rrd_memory: Memory currently allocated to VM. (''bytes'')
+* rrd_vifRXSum: Total inbound throughput for all VM VIFs. (''bits/sec'')
+* rrd_vifTXSum: Total outbound throughput for all VM VIFs. (''bits/sec'')
+* rrd_vbdReadSum: Total read rate for all VM VBDs. (''bytes/sec'')
+* rrd_vbdWriteSum: Total write rate for all VM VBDs. (''bytes/sec'')
+* rrd_memoryInternalFree: Memory used as reported by the guest agent. (''bytes'')
+* rrd_memoryTarget: Target of VM balloon driver. (''bytes'')
+
+<br clear=all>
+[[File:xenserver_vbds.png|thumb|320px|Virtual Block Devices]]
+
+;Virtual Block Device (VBD)
+* rrd_read: Read rate. (''bytes/sec'')
+* rrd_write: Write rate. (''bytes/sec'')
+
+<br clear=all>
+[[File:xenserver_vifs.png|thumb|320px|Virtual NICs]]
+
+;Virtual NIC (VIF)
+* rrd_rx: Inbound throughput. (''bits/sec'')
+* rrd_tx: Outbound throughput. (''bits/sec'')
+
+<br clear=all>
+
+=== Event Management ===
+
+Zenoss watches for XenAPI ''messages'' and creates Zenoss events when they occur. XenAPI messages are the system alerts you see in XenCenter. By default, Zenoss will poll for new messages every 60 seconds. This can be configured with the ''zXenServerEventsInterval'' configuration property.
+
+[[File:xenserver_events.png|thumb|320px|Events]]
+
+The created Zenoss events will have the following fields set.
+
+;Standard Zenoss Event Fields
+* device: Set to the XenServer endpoint device in the /XenServer device class.
+* component: Looked up in from Zenoss components using the message's ''obj_uuid'' value.
+* summary: In preference order: message's body field then name field then "no body or name provided".
+* severity: Mapped from message's priority field using the map below.
+* eventKey: Message's uuid value.
+* eventClassKey: Literally "XenServerMessage".
+
+; Additional Event Fields
+* xenserver_name: Message's name value.
+* xenserver_cls: Message's cls value.
+
+;XenAPI Message Priority to Zenoss Event Severity Mapping
+* Priority 1: Critical
+* Priority 2: Error
+* Priority 3: Warning
+* Priority 4: Clear
+* Priority 5: Info
+
+<br clear=all>
+
+=== Service Impact and Root Cause Analysis ===
+
+When combined with the Zenoss Service Dynamics product, this ZenPack adds built-in service impact and root cause analysis capabilities for services running on XenServer. The service impact relationships shown in the diagram and described below are automatically added. These will be included in any services that contain one or more of the explicitly mentioned components.
+
+[[File:xenserver_impact_yuml.png|thumb|320px|Impact Relationship Diagram]]
+
+;Internal Impact Relationships
+* XenAPI (endpoint) access failure impacts all hosts.
+* Host failure impacts the host's pool and any resident VMs.
+* Network failure impacts all related virtual NICs.
+* Physical block device failure impacts its host and storage repository.
+* Physical NIC failure impacts its host and network.
+* Pool failure impacts any contained VMs.
+* Storage repository failure impacts any pools and hosts for which it is a default, suspend image, crash dump or local cache repository.
+* Virtual block device failure impacts its VM.
+* Virtual disk image failure impacts any related virtual block devices.
+* Virtual NIC failure impacts its VM.
+* VM failure impacts its vApp.
+
+<br clear=all>
+[[File:xenserver_impact.png|thumb|320px|XenServer Hosted VM in a Service]]
+
+;External Impact Relationships
+* Underlying server failure impacts the associated XenServer host.
+* Underlying server disk failure impacts the associated XenServer physical block device.
+* Underlying server interface failure impacts the associated XenServer physical NIC.
+* XenServer VM failure impacts the associated guest device.
+* XenServer virtual block device failure impacts the associated guest hard disk.
+* XenServer virtual NIC failure impacts the associated guest interface.
+* XenServer host failure impacts the associated CloudStack host.
+* XenServer VM failure impacts the associated CloudStack router VM, system VM or regular VM.
+
+<br clear=all>
+
+== Usage ==
+
+=== Adding XenServer Endpoint ===
+
+Use the following steps to start monitoring XenServer using the Zenoss web interface.
+
+# Navigate to the Infrastructure page. [[File:xenserver_add_menu.png|thumb|320px|Add Menu Item]]
+# Choose ''Add XenServer Endpoint'' from the add device button.<br clear=all>
+# Fill out the form. [[File:xenserver_add_dialog.png|thumb|320px|Add Dialog]]
+#* ''Name'' can be anything you want.
+#* ''Address'' must be resolvable and accessible from the collector server chosen in the ''Collector'' field.
+#* ''Username'' and ''Password'' are the same as what you'd use in XenCenter.
+# Click ''ADD''.
+
+<br clear=all>
+
+----
+
+Alternatively you can use zenbatchload to add XenServer endpoints from the command line. To do this, you must create a file with contents similar to the following. Replace all values in angle brackets with your values minus the brackets. Multiple endpoints can be added under the same ''/Devices/XenServer'' section.
+
+<syntaxhighlight lang="text">
+/Devices/XenServer
+test-xenserver-pool zXenServerAddresses=[&lt;address&gt;], zXenServerUsername='&lt;username&gt;', zXenServerPassword='&lt;password&gt;'
+</syntaxhighlight>
+
+You can then load the endpoint(s) with the following command.
+
+<syntaxhighlight lang="bash">
+zenbatchload <filename>
+</syntaxhighlight>
+
+== Installed Items ==
+
+Installing this ZenPack will add the following items to your Zenoss system.
+
+;Configuration Properties
+* zXenServerAddresses
+* zXenServerUsername
+* zXenServerPassword
+* zXenServerPerfInterval: Metric collection interval in seconds. Default is 300.
+* zXenServerModelInterval: Model update interval in seconds. Default is 60.
+* zXenServerEventsInterval: Events collection interval in seconds. Default is 60.
+
+;Device Classes
+* /XenServer
+
+;Modeler Plugins
+* zenoss.XenServer
+
+;Datasource Types
+* XenServer XenAPI
+* XenServer RRD
+
+;Monitoring Templates (all in /XenServer)
+* Endpoint
+* Host
+* HostCPU
+* Network
+* PBD
+* PIF
+* Pool
+* SR
+* VBD
+* VDI
+* VIF
+* VM
+* VMAppliance
+* VMGuest
+
+;Event Classes
+* /XenServer
+
+;Event Class Mappings
+* XenServerCollectionError (in /Status)
+* XenServerCollectionSuccess (in /Status)
+* XenServerMessage (in /XenServer)

@@ -8,9 +8,9 @@
 ##############################################################################
 
 '''
-Twisted library for working with Xen XAPI.
+Twisted library for working with the XenServer XenAPI.
 
-    http://xenproject.org/developers/teams/xapi.html
+    http://docs.vmd.citrix.com/XenServer/6.2.0/1.0/en_gb/api/
 '''
 
 import collections
@@ -28,7 +28,7 @@ __all__ = ['Client']
 LOG = logging.getLogger('txxenapi')
 
 
-XAPI_CLASSNAMES = [
+XENAPI_CLASSNAMES = [
     'host',
     'host_cpu',
     'host_metrics',
@@ -52,7 +52,7 @@ XAPI_CLASSNAMES = [
 
 class Client(object):
     '''
-    XenAPI (XAPI) client.
+    XenServer XenAPI client.
     '''
 
     _addresses = None
@@ -259,18 +259,18 @@ if __name__ == '__main__':
     import sys
 
     @inlineCallbacks
-    def main(address, username, password, xapi_classnames):
+    def main(address, username, password, xenapi_classnames):
         client = Client([address], username, password)
 
-        for xapi_classname in xapi_classnames:
+        for xenapi_classname in xenapi_classnames:
             try:
-                r = yield getattr(client.xenapi, xapi_classname).get_all_records()
+                r = yield getattr(client.xenapi, xenapi_classname).get_all_records()
             except Exception, ex:
                 print >> sys.stderr, ex
                 continue
 
-            if len(xapi_classnames) > 1:
-                filename = '{0}.py'.format(xapi_classname)
+            if len(xenapi_classnames) > 1:
+                filename = '{0}.py'.format(xenapi_classname)
                 print "Writing {0}.".format(filename)
                 with open(filename, 'w') as f:
                     pprint.pprint(r, f)
@@ -288,11 +288,11 @@ if __name__ == '__main__':
 
         sys.exit(1)
 
-    xapi_classnames = sys.argv[4:]
+    xenapi_classnames = sys.argv[4:]
 
-    if 'all' in xapi_classnames:
-        main(sys.argv[1], sys.argv[2], sys.argv[3], XAPI_CLASSNAMES)
+    if 'all' in xenapi_classnames:
+        main(sys.argv[1], sys.argv[2], sys.argv[3], XENAPI_CLASSNAMES)
     else:
-        main(sys.argv[1], sys.argv[2], sys.argv[3], xapi_classnames)
+        main(sys.argv[1], sys.argv[2], sys.argv[3], xenapi_classnames)
 
     reactor.run()

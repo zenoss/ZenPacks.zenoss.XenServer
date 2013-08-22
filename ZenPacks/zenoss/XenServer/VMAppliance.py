@@ -21,6 +21,7 @@ from ZenPacks.zenoss.XenServer.utils import (
     PooledComponent, IPooledComponentInfo, PooledComponentInfo,
     RelationshipLengthProperty,
     updateToMany,
+    id_from_ref, ids_from_refs,
     )
 
 
@@ -42,9 +43,35 @@ class VMAppliance(PooledComponent):
         )
 
     _relations = PooledComponent._relations + (
-        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vmappliances',)),
+        ('endpoint', ToOne(ToManyCont, MODULE_NAME['Endpoint'], 'vmappliances')),
         ('vms', ToMany(ToOne, MODULE_NAME['VM'], 'vmappliance')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI vm_appliance ref and
+        properties.
+        '''
+        if not properties:
+            return {
+                'relname': 'vmappliances',
+                'id': id_from_ref(ref),
+                }
+
+        title = properties.get('name_label') or properties['uuid']
+
+        return {
+            'relname': 'vmappliances',
+            'id': id_from_ref(ref),
+            'title': title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'allowed_operations': properties.get('allowed_operations'),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'setVMs': ids_from_refs(properties.get('VMs', [])),
+            }
 
     def getVMs(self):
         '''
@@ -74,8 +101,14 @@ class VMAppliance(PooledComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for VMAppliances.
-        if self.xapi_uuid:
-            return ('vmappliance', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('vmappliance', self.xenapi_uuid, '')
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/virtual-server.png'
 
 
 class IVMApplianceInfo(IPooledComponentInfo):
@@ -85,7 +118,7 @@ class IVMApplianceInfo(IPooledComponentInfo):
 
     allowed_operations = schema.Text(title=_t(u'Allowed Operations'))
     name_description = schema.TextLine(title=_t(u'Description'))
-    name_label = schema.TextLine(title=_t(u'Name'))
+    name_label = schema.TextLine(title=_t(u'Label'))
 
     vm_count = schema.Int(title=_t(u'Number of VMs'))
 

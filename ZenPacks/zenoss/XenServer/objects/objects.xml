@@ -3,10 +3,10 @@
 <!-- ('', 'zport', 'dmd', 'Devices', 'XenServer') -->
 <object id='/zport/dmd/Devices/XenServer' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
 <property id='zendoc' type='string'>
-XenAPI (XAPI) Endpoints
+XenServer Pools and Hosts (XenAPI Endpoints)
 </property>
 <property type="string" id="description" mode="w" >
-XenAPI (XAPI) Endpoints
+XenServer Pools and Hosts (XenAPI Endpoints)
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.XenServer']
@@ -15,7 +15,7 @@ XenAPI (XAPI) Endpoints
 True
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-[]
+['Endpoint']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.XenServer.Endpoint
@@ -24,14 +24,61 @@ ZenPacks.zenoss.XenServer.Endpoint
 True
 </property>
 <tomanycont id='rrdTemplates'>
+<object id='Endpoint' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+ZenPacks.zenoss.XenServer.Endpoint
+</property>
+<tomanycont id='datasources'>
+<object id='events' module='ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource' class='PythonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Python
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="eventClass" mode="w" >
+/Ignore
+</property>
+<property type="int" id="severity" mode="w" >
+0
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zXenServerModelInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin
+</property>
+</object>
+<object id='messages' module='ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource' class='PythonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Python
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="eventClass" mode="w" >
+/Ignore
+</property>
+<property type="int" id="severity" mode="w" >
+0
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zXenServerEventsInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIMessagesPlugin
+</property>
+</object>
+</tomanycont>
+</object>
 <object id='Host' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property type="string" id="targetPythonClass" mode="w" >
 ZenPacks.zenoss.XenServer.Host
 </property>
 <tomanycont id='datasources'>
-<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -46,19 +93,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 host
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='memoryOverhead' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='memoryOverhead' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -88,10 +135,10 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='cpuAvg' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
@@ -1017,10 +1064,10 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='cpu' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
@@ -1121,9 +1168,9 @@ ZenPacks.zenoss.XenServer.PBD
 ZenPacks.zenoss.XenServer.PIF
 </property>
 <tomanycont id='datasources'>
-<object id='metric' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='metric' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1138,19 +1185,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 PIF_metrics
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_metrics_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_metrics_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='speed' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='speed' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1183,10 +1230,10 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='rx' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
@@ -1294,41 +1341,9 @@ metric_speed
 AVERAGE
 </property>
 </object>
-<object id='Receive_m' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Receive' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
-</property>
-<property type="string" id="color" mode="w" >
-00cc00
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-metric_ioRead
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='Receive_r' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-3
 </property>
 <property type="string" id="color" mode="w" >
 00cc00
@@ -1358,41 +1373,9 @@ rrd_rx
 AVERAGE
 </property>
 </object>
-<object id='Send_m' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Send' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 2
-</property>
-<property type="string" id="color" mode="w" >
-0000ff
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-metric_ioWrite
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='Send_r' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-4
 </property>
 <property type="string" id="color" mode="w" >
 0000ff
@@ -1431,9 +1414,9 @@ AVERAGE
 ZenPacks.zenoss.XenServer.Pool
 </property>
 <tomanycont id='datasources'>
-<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1448,19 +1431,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 pool
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='haHostFailuresToTolerate' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='haHostFailuresToTolerate' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1471,7 +1454,7 @@ True
 ha_host_failures_to_tolerate
 </property>
 </object>
-<object id='haPlanExistsFor' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='haPlanExistsFor' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1588,9 +1571,9 @@ AVERAGE
 ZenPacks.zenoss.XenServer.SR
 </property>
 <tomanycont id='datasources'>
-<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1605,19 +1588,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 SR
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='physicalSize' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='physicalSize' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1628,7 +1611,7 @@ True
 physical_size
 </property>
 </object>
-<object id='physicalUtilisation' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='physicalUtilisation' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1639,7 +1622,7 @@ True
 physical_utilisation
 </property>
 </object>
-<object id='virtualAllocation' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='virtualAllocation' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1805,10 +1788,10 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='read' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
@@ -1945,9 +1928,9 @@ AVERAGE
 ZenPacks.zenoss.XenServer.VDI
 </property>
 <tomanycont id='datasources'>
-<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1962,19 +1945,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 VDI
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='physicalUtilisation' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='physicalUtilisation' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -1985,7 +1968,7 @@ True
 physical_utilisation
 </property>
 </object>
-<object id='virtualSize' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='virtualSize' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -2037,7 +2020,7 @@ True
 00cc00
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
@@ -2119,10 +2102,10 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='rx' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
@@ -2265,9 +2248,9 @@ AVERAGE
 ZenPacks.zenoss.XenServer.VM
 </property>
 <tomanycont id='datasources'>
-<object id='metric' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='metric' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2282,19 +2265,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 VM_metrics
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_metrics_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_metrics_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='memoryActual' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='memoryActual' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -2305,7 +2288,7 @@ True
 memory_actual
 </property>
 </object>
-<object id='vcpusNumber' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='vcpusNumber' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -2318,9 +2301,9 @@ VCPUs_number
 </object>
 </tomanycont>
 </object>
-<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataSource'>
+<object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-XenServer XAPI
+XenServer XenAPI
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2335,19 +2318,19 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerXAPIDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIPlugin
 </property>
-<property type="string" id="xapi_classname" >
+<property type="string" id="xenapi_classname" >
 VM
 </property>
-<property type="string" id="xapi_ref" >
-${here/xapi_ref}
+<property type="string" id="xenapi_ref" >
+${here/xenapi_ref}
 </property>
 <tomanycont id='datapoints'>
-<object id='memoryOverhead' module='ZenPacks.zenoss.XenServer.datasources.XenServerXAPIDataSource' class='XenServerXAPIDataPoint'>
+<object id='memoryOverhead' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
@@ -2377,10 +2360,10 @@ ${here/id}
 0
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zXenServerCollectionInterval}
+${here/zXenServerPerfInterval}
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.XenServer.datasource_plugins.XenServerRRDDataSourcePlugin
+ZenPacks.zenoss.XenServer.datasource_plugins.XenRRDPlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='cpuAvg' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
@@ -2997,6 +2980,11 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='VMAppliance' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+ZenPacks.zenoss.XenServer.VMAppliance
+</property>
+</object>
 <object id='VMGuest' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property type="string" id="targetPythonClass" mode="w" >
 ZenPacks.zenoss.XenServer.VM
@@ -3025,7 +3013,27 @@ XenServerCollectionSuccess
 10
 </property>
 <property type="string" id="example" mode="w" >
-XAPI: successful collection
+XenAPI: successful collection
 </property>
+</object>
+<!-- ('', 'zport', 'dmd', 'Events', 'XenServer') -->
+<object id='/zport/dmd/Events/XenServer' module='Products.ZenEvents.EventClass' class='EventClass'>
+<tomanycont id='instances'>
+<object id='XenServerMessage' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="text" id="transform" mode="w" >
+from ZenPacks.zenoss.XenServer import transforms
+evt.component = transforms.get_component_id(dmd, evt.component)
+</property>
+<property type="string" id="eventClassKey" mode="w" >
+XenServerMessage
+</property>
+<property type="int" id="sequence" mode="w" >
+10
+</property>
+<property type="string" id="example" mode="w" >
+VM 'ubuntu-test-1' started on host: xenserver1 (uuid: 10fda11b-67e5-439b-80d3-54d63fa5d8dd)
+</property>
+</object>
+</tomanycont>
 </object>
 </objects>

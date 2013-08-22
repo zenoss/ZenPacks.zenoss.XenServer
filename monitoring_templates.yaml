@@ -1,11 +1,30 @@
+/XenServer/Endpoint:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.Endpoint"
+
+  datasources:
+    events:
+      type: Python
+      plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIEventsPlugin"
+      eventClass: "/Ignore"
+      severity: "0"
+      cycletime: "${here/zXenServerModelInterval}"
+
+    messages:
+      type: Python
+      plugin_classname: "ZenPacks.zenoss.XenServer.datasource_plugins.XenAPIMessagesPlugin"
+      eventClass: "/Ignore"
+      severity: "0"
+      cycletime: "${here/zXenServerEventsInterval}"
+
+
 /XenServer/Host:
   targetPythonClass: "ZenPacks.zenoss.XenServer.Host"
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: host
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: host
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         memoryOverhead:
@@ -211,9 +230,9 @@
 
   datasources:
     metric:
-      type: XenServer XAPI
-      xapi_classname: PIF_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: PIF_metrics
+      xenapi_ref: "${here/xenapi_metrics_ref}"
 
       datapoints:
         speed:
@@ -243,22 +262,12 @@
           format: "%7.2lf%s"
           color: "000000"
 
-        Receive_m:
-          dpName: "metric_ioRead"
-          format: "%7.2lf%s"
-          colorindex: 0
-
-        Send_m:
-          dpName: "metric_ioWrite"
-          format: "%7.2lf%s"
-          colorindex: 1
-
-        Receive_r:
+        Receive:
           dpName: "rrd_rx"
           format: "%7.2lf%s"
           colorindex: 0
 
-        Send_r:
+        Send:
           dpName: "rrd_tx"
           format: "%7.2lf%s"
           colorindex: 1
@@ -269,9 +278,9 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: pool
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: pool
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         haPlanExistsFor:
@@ -302,9 +311,9 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: SR
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: SR
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         physicalSize:
@@ -377,9 +386,9 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: VDI
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: VDI
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         physicalUtilisation:
@@ -404,6 +413,7 @@
 
         Physical:
           dpName: "property_physicalUtilisation"
+          lineType: AREA
           colorindex: 0
           format: "%7.2lf%s"
 
@@ -445,18 +455,18 @@
 
   datasources:
     property:
-      type: XenServer XAPI
-      xapi_classname: VM
-      xapi_ref: "${here/xapi_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: VM
+      xenapi_ref: "${here/xenapi_ref}"
 
       datapoints:
         memoryOverhead:
           path: memory_overhead
 
     metric:
-      type: XenServer XAPI
-      xapi_classname: VM_metrics
-      xapi_ref: "${here/xapi_metrics_ref}"
+      type: XenServer XenAPI
+      xenapi_classname: VM_metrics
+      xenapi_ref: "${here/xenapi_metrics_ref}"
 
       datapoints:
         vcpusNumber:
@@ -580,6 +590,10 @@
         Send:
           dpName: "rrd_vifTXSum"
           format: "%7.2lf%s"
+
+
+/XenServer/VMAppliance:
+  targetPythonClass: "ZenPacks.zenoss.XenServer.VMAppliance"
 
 
 /XenServer/VMGuest:

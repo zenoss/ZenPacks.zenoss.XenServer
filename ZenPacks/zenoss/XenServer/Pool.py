@@ -19,8 +19,9 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.XenServer import CLASS_NAME, MODULE_NAME
 from ZenPacks.zenoss.XenServer.utils import (
     BaseComponent, IBaseComponentInfo, BaseComponentInfo,
-    RelationshipInfoProperty,
+    RelationshipInfoProperty, RelationshipLengthProperty,
     updateToOne,
+    id_from_ref, int_or_none,
     )
 
 
@@ -60,6 +61,42 @@ class Pool(BaseComponent):
         ('suspend_image_sr', ToOne(ToMany, MODULE_NAME['SR'], 'suspend_image_for_pools')),
         ('crash_dump_sr', ToOne(ToMany, MODULE_NAME['SR'], 'crash_dump_for_pools')),
         )
+
+    @classmethod
+    def objectmap(cls, ref, properties):
+        '''
+        Return an ObjectMap given XenAPI pool ref and properties.
+        '''
+        if 'uuid' not in properties:
+            return {
+                'relname': 'pools',
+                'id': id_from_ref(ref),
+                }
+
+        pool_title = properties.get('name_label') or 'default'
+
+        other_config = properties.get('other_config', {})
+
+        return {
+            'relname': 'pools',
+            'id': id_from_ref(ref),
+            'title': pool_title,
+            'xenapi_ref': ref,
+            'xenapi_uuid': properties.get('uuid'),
+            'ha_allow_overcommit': properties.get('ha_allow_overcommit'),
+            'ha_enabled': properties.get('ha_enabled'),
+            'ha_host_failures_to_tolerate': int_or_none(properties.get('ha_host_failures_to_tolerate')),
+            'name_description': properties.get('name_description'),
+            'name_label': properties.get('name_label'),
+            'oc_cpuid_feature_mask': other_config.get('cpuid_feature_mask'),
+            'oc_memory_ratio_hvm': other_config.get('memory-ratio-hvm'),
+            'oc_memory_ratio_pv': other_config.get('memory-ratio-pv'),
+            'vswitch_controller': properties.get('vswitch_controller'),
+            'setMaster': id_from_ref(properties.get('master')),
+            'setDefaultSR': id_from_ref(properties.get('default_SR')),
+            'setSuspendImageSR': id_from_ref(properties.get('suspend_image_SR')),
+            'setCrashDumpSR': id_from_ref(properties.get('crash_dump_SR')),
+            }
 
     def getMaster(self):
         '''
@@ -149,6 +186,24 @@ class Pool(BaseComponent):
             type_=CLASS_NAME['SR'],
             id_=sr_id)
 
+    def hosts(self):
+        '''
+        Return the hosts belonging to this pool.
+
+        This assumes that we only manage one pool per endpoint and
+        therefore returns all known hosts.
+        '''
+        return self.endpoint().hosts()
+
+    def vms(self):
+        '''
+        Return the VMs belonging to this pool.
+
+        This assumes that we only manage one pool per endpoint and
+        therefore returns all known VMs.
+        '''
+        return self.endpoint().vms()
+
     def xenrrd_prefix(self):
         '''
         Return prefix under which XenServer stores RRD data about this
@@ -156,8 +211,14 @@ class Pool(BaseComponent):
         '''
         # This is a guess at future support. XenServer 6.2 doesn't have
         # any RRD data for pools.
-        if self.xapi_uuid:
-            return ('pool', self.xapi_uuid, '')
+        if self.xenapi_uuid:
+            return ('pool', self.xenapi_uuid, '')
+
+    def getIconPath(self):
+        '''
+        Return URL to icon representing objects of this class.
+        '''
+        return '/++resource++xenserver/img/cluster.png'
 
 
 class IPoolInfo(IBaseComponentInfo):
@@ -179,6 +240,9 @@ class IPoolInfo(IBaseComponentInfo):
     name_description = schema.TextLine(title=_t(u'Description'))
     name_label = schema.TextLine(title=_t(u'Label'))
     vswitch_controller = schema.TextLine(title=_t(u'vSwitch Controller'))
+
+    host_count = schema.Int(title=_t(u'Number of Hosts'))
+    vm_count = schema.Int(title=_t(u'Number of VMs'))
 
 
 class PoolInfo(BaseComponentInfo):
@@ -203,3 +267,6 @@ class PoolInfo(BaseComponentInfo):
     oc_memory_ratio_hvm = ProxyProperty('oc_memory_ratio_hvm')
     oc_memory_ratio_pv = ProxyProperty('oc_memory_ratio_pv')
     vswitch_controller = ProxyProperty('vswitch_controller')
+
+    host_count = RelationshipLengthProperty('hosts')
+    vm_count = RelationshipLengthProperty('vms')
