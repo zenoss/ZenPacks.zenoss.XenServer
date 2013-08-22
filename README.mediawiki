@@ -2,9 +2,23 @@ This ZenPack provides support for monitoring [http://xenserver.org/ XenServer]. 
 
 == Gallery ==
 <gallery widths=250px heights=127px>
-TODO.png
 xenserver_add_menu.png
 xenserver_add_dialog.png
+xenserver_pools.png
+xenserver_hosts.png
+xenserver_hostcpus.png
+xenserver_pbds.png
+xenserver_srs.png
+xenserver_pifs.png
+xenserver_vdis.png
+xenserver_events.png
+xenserver_impact.png
+xenserver_networks.png
+xenserver_vapps.png
+xenserver_vms.png
+xenserver_vbds.png
+xenserver_vifs.png
+xenserver_model_yuml.png
 xenserver_impact_yuml.png
 </gallery>
 
@@ -21,7 +35,7 @@ The features added by this ZenPack can be summarized as follows. They are each d
 
 The following components will be automatically discovered through the XenServer host, username and password you provide. The properties and relationships will be continually maintained by way consuming events from the host. By default model changes will be polled every 60 seconds. This can be configured with the ''zXenServerModelInterval'' configuration property.
 
-[[File:TODO.png|thumb|320px|TODO]]
+[[File:xenserver_model_yuml.png|thumb|320px|Model Diagram]]
 
 ;Pool
 : Properties: HA Allow Overcommit, HA Enabled, HA Host Failures to Tolerate, CPU ID Feature Mask, HVM Memory Ratio, PV Memory Ratio, Description, Label, vSwitch Controller
@@ -75,13 +89,16 @@ The following components will be automatically discovered through the XenServer 
 
 === Performance Monitoring ===
 
-The following metrics will be collected every 5 minutes by default. This can be configured with the ''zXenServerPerfInterval'' configuration property.
+The following metrics will be collected every 5 minutes by default. This can be configured with the ''zXenServerPerfInterval'' configuration property. Any metric that is available either via a XenAPI get_record or rrd_updates call can be collected by adding a new ''XenServer XenAPI'' or ''XenServer RRD'' datasource to the appropriate monitoring template. Note that as of XenServer 6.2, all available metrics are collected by default.
 
-Any metric that is available either via a XenAPI get_record or rrd_updates call can be collected by adding a new ''XenServer XenAPI'' or ''XenServer RRD'' datasource to the appropriate monitoring template. Note that as of XenServer 6.2, all available metrics are collected by default.
+[[File:xenserver_pools.png|thumb|320px|Pools]]
 
 ;Pool
 * property_haPlanExistsFor: Number of future host failures we have managed to find a plan for. Once this reaches zero any future host failures will cause the failure of protected VMs. (''number'')
 * property_haHostFailuresToTolerate: Number of host failures to tolerate before the Pool is declared to be overcommitted. (''number'')
+
+<br clear=all>
+[[File:xenserver_hosts.png|thumb|320px|Hosts]]
 
 ;Host
 * property_memoryOverhead: Virtualization memory overhead. (''bytes'')
@@ -98,31 +115,55 @@ Any metric that is available either via a XenAPI get_record or rrd_updates call 
 * rrd_srCacheHitsSum: Storage repository cache hit rate. (''hits/sec'')
 * rrd_srCacheMissesSum: Storage repository cache miss rate. (''misses/sec'')
 
+<br clear=all>
+[[File:xenserver_hostcpus.png|thumb|320px|Host CPUs]]
+
 ;Host CPU (HostCPU)
 * rrd_cpu: Average CPU utilization. (''percent'')
 
+<br clear=all>
+[[File:xenserver_pbds.png|thumb|320px|Physical Block Devices]]
+
 ;Physical Block Device (PBD)
 * No metrics available.
+
+<br clear=all>
+[[File:xenserver_pifs.png|thumb|320px|Physical NICs]]
 
 ;Physical NIC (PIF)
 * metric_speed: Speed of interface. (''bits/sec'')
 * rrd_rx: Inbound throughput. (''bits/sec'')
 * rrd_tx: Outbound throughput. (''bits/sec'')
 
+<br clear=all>
+[[File:xenserver_srs.png|thumb|320px|Storage Repositories]]
+
 ;Storage Repository (SR)
 * property_physicalSize: Total physical storage size. (''bytes'')
 * property_physicalUtilisation: Used physical storage. (''bytes'')
 * property_virtualAllocation: Allocated physical storage. (''bytes'')
 
+<br clear=all>
+[[File:xenserver_vdis.png|thumb|320px|Virtual Disk Images]]
+
 ;Virtual Disk Image (VDI)
 * property_physicalUtilisation: Used physical storage. (''bytes'')
 * property_virtualSize: Total virtual storage size. (''bytes'')
 
+<br clear=all>
+[[File:xenserver_networks.png|thumb|320px|Networks]]
+
 ;Network
 * No metrics available.
 
+<br clear=all>
+[[File:xenserver_vapps.png|thumb|320px|vApps]]
+
 ;vApp (VMAppliance)
 * No metrics available.
+
+<br clear=all>
+[[File:xenserver_vms.png|thumb|320px|VMs]]
 
 ;VM
 * property_memoryOverhead: Virtualization memory overhead. (''bytes'')
@@ -137,9 +178,15 @@ Any metric that is available either via a XenAPI get_record or rrd_updates call 
 * rrd_memoryInternalFree: Memory used as reported by the guest agent. (''bytes'')
 * rrd_memoryTarget: Target of VM balloon driver. (''bytes'')
 
+<br clear=all>
+[[File:xenserver_vbds.png|thumb|320px|Virtual Block Devices]]
+
 ;Virtual Block Device (VBD)
 * rrd_read: Read rate. (''bytes/sec'')
 * rrd_write: Write rate. (''bytes/sec'')
+
+<br clear=all>
+[[File:xenserver_vifs.png|thumb|320px|Virtual NICs]]
 
 ;Virtual NIC (VIF)
 * rrd_rx: Inbound throughput. (''bits/sec'')
@@ -150,6 +197,8 @@ Any metric that is available either via a XenAPI get_record or rrd_updates call 
 === Event Management ===
 
 Zenoss watches for XenAPI ''messages'' and creates Zenoss events when they occur. XenAPI messages are the system alerts you see in XenCenter. By default, Zenoss will poll for new messages every 60 seconds. This can be configured with the ''zXenServerEventsInterval'' configuration property.
+
+[[File:xenserver_events.png|thumb|320px|Events]]
 
 The created Zenoss events will have the following fields set.
 
@@ -193,6 +242,9 @@ When combined with the Zenoss Service Dynamics product, this ZenPack adds built-
 * Virtual NIC failure impacts its VM.
 * VM failure impacts its vApp.
 
+<br clear=all>
+[[File:xenserver_impact.png|thumb|320px|XenServer Hosted VM in a Service]]
+
 ;External Impact Relationships
 * Underlying server failure impacts the associated XenServer host.
 * Underlying server disk failure impacts the associated XenServer physical block device.
@@ -227,7 +279,7 @@ Alternatively you can use zenbatchload to add XenServer endpoints from the comma
 
 <syntaxhighlight lang="text">
 /Devices/XenServer
-test-xenserver-pool zXenServerAddresses=[<address>], zXenServerUsername='<username>', zXenServerPassword='<password>'
+test-xenserver-pool zXenServerAddresses=[&lt;address&gt;], zXenServerUsername='&lt;username&gt;', zXenServerPassword='&lt;password&gt;'
 </syntaxhighlight>
 
 You can then load the endpoint(s) with the following command.
