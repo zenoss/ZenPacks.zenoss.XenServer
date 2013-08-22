@@ -118,7 +118,7 @@ class IVMApplianceInfo(IPooledComponentInfo):
 
     allowed_operations = schema.Text(title=_t(u'Allowed Operations'))
     name_description = schema.TextLine(title=_t(u'Description'))
-    name_label = schema.TextLine(title=_t(u'Name'))
+    name_label = schema.TextLine(title=_t(u'Label'))
 
     vm_count = schema.Int(title=_t(u'Number of VMs'))
 
