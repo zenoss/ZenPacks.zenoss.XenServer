@@ -12,6 +12,7 @@ from zope.component import adapts
 from zope.interface import implements
 
 from Products.ZenModel.Device import Device
+from Products.ZenModel.ZenossSecurity import ZEN_VIEW
 from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.Zuul.form import schema
 from Products.Zuul.infos.device import DeviceInfo
@@ -37,6 +38,15 @@ class Endpoint(Device):
         ('vmappliances', ToManyCont(ToOne, MODULE_NAME['VMAppliance'], 'endpoint')),
         ('vms', ToManyCont(ToOne, MODULE_NAME['VM'], 'endpoint')),
         )
+
+    factory_type_information = ({
+        'actions': ({
+            'id': 'events',
+            'name': 'Events',
+            'action': 'viewEvents',
+            'permissions': (ZEN_VIEW,),
+            },),
+        },)
 
     @property
     def xenserver_addresses(self):
