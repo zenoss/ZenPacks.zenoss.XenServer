@@ -140,21 +140,10 @@ class HostRelationsProvider(BaseRelationsProvider):
         'suspend_image_sr',
         'crash_dump_sr',
         'local_cache_sr',
+        'server_device',
         )
 
-    impact_relationships = ('pool', 'vms')
-
-    def getEdges(self):
-        for base_edge in BaseRelationsProvider.getEdges(self):
-            yield base_edge
-
-        server_device = self.adapted.server_device()
-        if server_device:
-            yield edge(guid(server_device), self.guid())
-
-        cs_host = self.adapted.cloudstack_host()
-        if cs_host:
-            yield edge(self.guid(), guid(cs_host))
+    impact_relationships = ('pool', 'vms', 'cloudstack_host')
 
 
 class NetworkRelationsProvider(BaseRelationsProvider):
@@ -163,27 +152,13 @@ class NetworkRelationsProvider(BaseRelationsProvider):
 
 
 class PBDRelationsProvider(BaseRelationsProvider):
+    impacted_by_relationships = ('server_disk',)
     impact_relationships = ('sr', 'host')
-
-    def getEdges(self):
-        for base_edge in BaseRelationsProvider.getEdges(self):
-            yield base_edge
-
-        server_disk = self.adapted.server_disk()
-        if server_disk:
-            yield edge(guid(server_disk), self.guid())
 
 
 class PIFRelationsProvider(BaseRelationsProvider):
+    impacted_by_relationships = ('server_interface',)
     impact_relationships = ('network', 'host')
-
-    def getEdges(self):
-        for base_edge in BaseRelationsProvider.getEdges(self):
-            yield base_edge
-
-        server_interface = self.adapted.server_interface()
-        if server_interface:
-            yield edge(guid(server_interface), self.guid())
 
 
 class PoolRelationsProvider(BaseRelationsProvider):
@@ -212,15 +187,7 @@ class SRRelationsProvider(BaseRelationsProvider):
 
 class VBDRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('vdi',)
-    impact_relationships = ('vms',)
-
-    def getEdges(self):
-        for base_edge in BaseRelationsProvider.getEdges(self):
-            yield base_edge
-
-        guest_disk = self.adapted.guest_disk()
-        if guest_disk:
-            yield edge(self.guid(), guid(guest_disk))
+    impact_relationships = ('vms', 'guest_disk')
 
 
 class VDIRelationsProvider(BaseRelationsProvider):
@@ -230,40 +197,18 @@ class VDIRelationsProvider(BaseRelationsProvider):
 
 class VIFRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('network',)
-    impact_relationships = ('vm',)
-
-    def getEdges(self):
-        for base_edge in BaseRelationsProvider.getEdges(self):
-            yield base_edge
-
-        guest_interface = self.adapted.guest_interface()
-        if guest_interface:
-            yield edge(self.guid(), guid(guest_interface))
+    impact_relationships = ('vm', 'guest_interface')
 
 
 class VMRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('host', 'pool', 'vbds', 'vifs')
-    impact_relationships = ('vmappliances',)
-
-    def getEdges(self):
-        for base_edge in BaseRelationsProvider.getEdges(self):
-            yield base_edge
-
-        guest_device = self.adapted.guest_device()
-        if guest_device:
-            yield edge(self.guid(), guid(guest_device))
-
-        cs_routervm = self.adapted.cloudstack_routervm()
-        if cs_routervm:
-            yield edge(self.guid(), guid(cs_routervm))
-
-        cs_systemvm = self.adapted.cloudstack_systemvm()
-        if cs_systemvm:
-            yield edge(self.guid(), guid(cs_systemvm))
-
-        cs_vm = self.adapted.cloudstack_vm()
-        if cs_vm:
-            yield edge(self.guid(), guid(cs_vm))
+    impact_relationships = (
+        'vmappliances',
+        'guest_device',
+        'cloudstack_routervm',
+        'cloudstack_systemvm',
+        'cloudstack_vm',
+        )
 
 
 class VMApplianceRelationsProvider(BaseRelationsProvider):
@@ -273,33 +218,15 @@ class VMApplianceRelationsProvider(BaseRelationsProvider):
 ### Platform Impact Providers ################################################
 
 class DeviceRelationsProvider(BaseRelationsProvider):
-    def getEdges(self):
-        xenserver_host = self.adapted.xenserver_host()
-        if xenserver_host:
-            yield edge(self.guid(), guid(xenserver_host))
-
-        xenserver_vm = self.adapted.xenserver_vm()
-        if xenserver_vm:
-            yield edge(guid(xenserver_vm), self.guid())
+    impacted_by_relationships = ('xenserver_vm',)
+    impact_relationships = ('xenserver_host',)
 
 
 class HardDiskRelationsProvider(BaseRelationsProvider):
-    def getEdges(self):
-        xenserver_pbd = self.adapted.xenserver_pbd()
-        if xenserver_pbd:
-            yield edge(self.guid(), guid(xenserver_pbd))
-
-        xenserver_vbd = self.adapted.xenserver_vbd()
-        if xenserver_vbd:
-            yield edge(guid(xenserver_vbd), self.guid())
+    impacted_by_relationships = ('xenserver_vbd',)
+    impact_relationships = ('xenserver_pbd',)
 
 
 class IpInterfaceRelationsProvider(BaseRelationsProvider):
-    def getEdges(self):
-        xenserver_pif = self.adapted.xenserver_pif()
-        if xenserver_pif:
-            yield edge(self.guid(), guid(xenserver_pif))
-
-        xenserver_vif = self.adapted.xenserver_vif()
-        if xenserver_vif:
-            yield edge(guid(xenserver_vif), self.guid())
+    impacted_by_relationships = ('xenserver_vif',)
+    impact_relationships = ('xenserver_pif',)
