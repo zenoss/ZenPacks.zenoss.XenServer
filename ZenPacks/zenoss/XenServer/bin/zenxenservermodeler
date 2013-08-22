@@ -1,0 +1,43 @@
+#! /usr/bin/env bash
+##############################################################################
+#
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+#
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is installed.
+#
+##############################################################################
+
+. $ZENHOME/bin/zenfunctions
+
+logmsg() {
+    date=`date '+%Y-%m-%d %H:%M:%S,%N' | cut -c-23`
+    echo "$date INFO zen.XenServer: $@"
+}
+
+# zenxenservermodeler is just a wrapper around zenmodeler, so that it can be
+# invoked by DeviceCreationJob.   However, since that script expects to be
+# calling zendisc, it includes a mandatory commandline argument, --job, which
+# zenmodeler will not accept.
+
+args=($@)
+
+for((i=0; i<${#args[@]}; i++)); do
+
+     # Strip --job commandline argument and its value
+     if [ "${args[$i]}" = "--job" ]; then
+          unset args[$i]
+          unset args[$i+1]
+     fi
+done
+
+# Allow time for zenhub to realize that the device exists (which could take up
+# to 30 seconds) (TODO: find a real fix for this problem- the same issue comes
+# up in zendisc.discoverDevice(), where it calls getJobProperties too soon to
+# get any data)
+
+logmsg "Waiting For ZenHub.."
+sleep 40
+
+logmsg "Executing: $ZENHOME/bin/zenmodeler run ${args[@]}"
+$ZENHOME/bin/zenmodeler run "${args[@]}"

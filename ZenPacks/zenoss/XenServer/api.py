@@ -11,21 +11,15 @@
 API interfaces and default implementations.
 '''
 
-import time
-
-from zope.event import notify
 from zope.interface import implements
-
-from ZODB.transact import transact
 
 from Products.ZenUtils.Ext import DirectRouter, DirectResponse
 
 from Products import Zuul
-from Products.ZenUtils.Utils import prepId
-from Products.Zuul.catalog.events import IndexingEvent
+from Products.ZenModel.ZDeviceLoader import DeviceCreationJob
+from Products.ZenUtils.Utils import binPath
 from Products.Zuul.facades import ZuulFacade
 from Products.Zuul.interfaces import IFacade
-from Products.Zuul.utils import ZuulMessageFactory as _t
 
 
 class IXenServerFacade(IFacade):
@@ -47,39 +41,52 @@ class XenServerFacade(ZuulFacade):
     implements(IXenServerFacade)
 
     def add_xenserver(self, name, address, username, password, collector='localhost'):
-        device_id = prepId(name)
-        devices = self._dmd.getDmdRoot('Devices')
-        device = devices.findDeviceByIdExact(device_id)
-        if device:
-            return False, _t("A resource named %s already exists." % name)
+        zProps = {
+            'zXenServerAddresses': [address],
+            'zXenServerUsername': username,
+            'zXenServerPassword': password,
+            }
 
-        @transact
-        def create_device():
-            device_class = self._dmd.Devices.getOrganizer('/XenServer')
+        zendiscCmd = [
+            binPath('zenxenservermodeler'),
+            'run', '--now',
+            '-d', name,
+            '--monitor', collector,
+            ]
 
-            endpoint = device_class.createInstance(device_id)
-            endpoint.title = name
-            endpoint.setPerformanceMonitor(collector)
-            endpoint.setZenProperty('zXenServerAddresses', [address])
-            endpoint.setZenProperty('zXenServerUsername', username)
-            endpoint.setZenProperty('zXenServerPassword', password)
-            endpoint.index_object()
-            notify(IndexingEvent(endpoint))
+        kwargs = {
+            'deviceName': name,
+            'devicePath': '/XenServer',
+            'title': name,
+            'discoverProto': 'XenAPI',
+            'manageIp': '',
+            'performanceMonitor': collector,
+            'rackSlot': 0,
+            'productionState': 1000,
+            'comments': '',
+            'hwManufacturer': '',
+            'hwProductName': '',
+            'osManufacturer': '',
+            'osProductName': '',
+            'priority': 3,
+            'tag': '',
+            'serialNumber': '',
+            'locationPath': '',
+            'systemPaths': [],
+            'groupPaths': [],
+            'zProperties': zProps,
+            'zendiscCmd': zendiscCmd,
+            }
 
-        # This must be committed before the following model can be
-        # scheduled.
-        create_device()
+        try:
+            job_status = self._dmd.JobManager.addJob(
+                DeviceCreationJob, kwargs=kwargs)
+        except TypeError:
+            # 4.1.1 compatibility.
+            job_status = self._dmd.JobManager.addJob(
+                DeviceCreationJob, **kwargs)
 
-        # TODO: Fix this.
-        # Sleep to make sure zenhub is ready to service the modeling job
-        # when we run collectDevice below.
-        time.sleep(10)
-
-        # Schedule a modeling job for the new device.
-        endpoint = devices.findDeviceByIdExact(device_id)
-        endpoint.collectDevice(setlog=False, background=True)
-
-        return True
+        return job_status
 
 
 class XenServerRouter(DirectRouter):

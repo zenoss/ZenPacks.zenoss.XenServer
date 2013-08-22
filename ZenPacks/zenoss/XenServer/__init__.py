@@ -66,6 +66,17 @@ class ZenPack(ZenPackBase):
         ('zXenServerEventsInterval', 60, 'int'),
         ]
 
+    def install(self, app):
+        ZenPackBase.install(self, app)
+
+        self.installBinFile('zenxenservermodeler')
+
+    def remove(self, app, leaveObjects=False):
+        if not leaveObjects:
+            self.removeBinFile('zenxenservermodeler')
+
+        ZenPackBase.remove(self, app, leaveObjects=leaveObjects)
+
 
 # Patch last to avoid import recursion problems.
 from ZenPacks.zenoss.XenServer import patches
