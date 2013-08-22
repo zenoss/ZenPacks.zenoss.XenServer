@@ -2980,6 +2980,11 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='VMAppliance' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+ZenPacks.zenoss.XenServer.VMAppliance
+</property>
+</object>
 <object id='VMGuest' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property type="string" id="targetPythonClass" mode="w" >
 ZenPacks.zenoss.XenServer.VM
