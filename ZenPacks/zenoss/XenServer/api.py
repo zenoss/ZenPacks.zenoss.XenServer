@@ -16,10 +16,10 @@ from zope.interface import implements
 from Products.ZenUtils.Ext import DirectRouter, DirectResponse
 
 from Products import Zuul
-from Products.ZenModel.ZDeviceLoader import DeviceCreationJob
-from Products.ZenUtils.Utils import binPath
 from Products.Zuul.facades import ZuulFacade
 from Products.Zuul.interfaces import IFacade
+
+from ZenPacks.zenoss.XenServer.jobs import XenServerCreationJob
 
 
 class IXenServerFacade(IFacade):
@@ -47,46 +47,22 @@ class XenServerFacade(ZuulFacade):
             'zXenServerPassword': password,
             }
 
-        zendiscCmd = [
-            binPath('zenxenservermodeler'),
-            'run', '--now',
-            '-d', name,
-            '--monitor', collector,
-            ]
-
         kwargs = {
             'deviceName': name,
             'devicePath': '/XenServer',
             'title': name,
-            'discoverProto': 'XenAPI',
-            'manageIp': '',
+            'discoverProto': 'none',
             'performanceMonitor': collector,
-            'rackSlot': 0,
-            'productionState': 1000,
-            'comments': '',
-            'hwManufacturer': '',
-            'hwProductName': '',
-            'osManufacturer': '',
-            'osProductName': '',
-            'priority': 3,
-            'tag': '',
-            'serialNumber': '',
-            'locationPath': '',
-            'systemPaths': [],
-            'groupPaths': [],
             'zProperties': zProps,
-            'zendiscCmd': zendiscCmd,
             }
 
-        try:
-            job_status = self._dmd.JobManager.addJob(
-                DeviceCreationJob, kwargs=kwargs)
-        except TypeError:
-            # 4.1.1 compatibility.
-            job_status = self._dmd.JobManager.addJob(
-                DeviceCreationJob, **kwargs)
+        jobManager = self._dmd.JobManager
 
-        return job_status
+        try:
+            return jobManager.addJob(XenServerCreationJob, kwargs=kwargs)
+        except TypeError:
+            # Zenoss 4.1.1 compatibility.
+            return jobManager.addJob(XenServerCreationJob, **kwargs)
 
 
 class XenServerRouter(DirectRouter):
