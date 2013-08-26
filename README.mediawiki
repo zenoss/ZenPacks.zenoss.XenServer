@@ -279,7 +279,7 @@ Alternatively you can use zenbatchload to add XenServer endpoints from the comma
 
 <syntaxhighlight lang="text">
 /Devices/XenServer
-test-xenserver-pool zXenServerAddresses=[&lt;address&gt;], zXenServerUsername='&lt;username&gt;', zXenServerPassword='&lt;password&gt;'
+test-xenserver-pool zXenServerAddresses=[<address>], zXenServerUsername='<username>', zXenServerPassword='<password>'
 </syntaxhighlight>
 
 You can then load the endpoint(s) with the following command.
