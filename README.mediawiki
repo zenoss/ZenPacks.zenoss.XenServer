@@ -278,8 +278,8 @@ Use the following steps to start monitoring XenServer using the Zenoss web inter
 Alternatively you can use zenbatchload to add XenServer endpoints from the command line. To do this, you must create a file with contents similar to the following. Replace all values in angle brackets with your values minus the brackets. Multiple endpoints can be added under the same ''/Devices/XenServer'' section.
 
 <syntaxhighlight lang="text">
-/Devices/XenServer
-test-xenserver-pool zXenServerAddresses=[&lt;address&gt;], zXenServerUsername='&lt;username&gt;', zXenServerPassword='&lt;password&gt;'
+/Devices/XenServer loader='XenServer', loader_arg_keys=['name', 'address', 'username', 'password', 'collector']
+my-xenserver-pool name='my-xenserver-pool', address='<address>', username='<username>', password='<password>', collector='localhost'
 </syntaxhighlight>
 
 You can then load the endpoint(s) with the following command.

@@ -16,6 +16,13 @@
         permission="zenoss.View"
         />
 
+    <!-- Device Loaders -->
+    <utility
+        name="XenServer"
+        provides="Products.ZenModel.interfaces.IDeviceLoader"
+        component=".deviceloaders.XenServerEndpointLoader"
+        />
+
     <!-- API: Facades -->
     <adapter
         name="xenserver"

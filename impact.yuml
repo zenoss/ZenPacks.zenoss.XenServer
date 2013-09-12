@@ -33,10 +33,10 @@
 [VBD]1-0..1>[HardDisk;(virtual){bg:deepskyblue}]
 //
 // CloudStack Impacts
-[note: CloudStack{bg:cadetblue}]-[CloudStack Host{bg:cadetblue}]
-[note: CloudStack{bg:cadetblue}]-[CloudStack VM{bg:cadetblue}]
-[note: CloudStack{bg:cadetblue}]-[SystemVM{bg:cadetblue}]
-[note: CloudStack{bg:cadetblue}]-[RouterVM{bg:cadetblue}]
+[note: CloudStack;ZenPack{bg:cadetblue}]-[CloudStack Host{bg:cadetblue}]
+[note: CloudStack;ZenPack{bg:cadetblue}]-[CloudStack VM{bg:cadetblue}]
+[note: CloudStack;ZenPack{bg:cadetblue}]-[SystemVM{bg:cadetblue}]
+[note: CloudStack;ZenPack{bg:cadetblue}]-[RouterVM{bg:cadetblue}]
 [Host{bg:aquamarine}]1-0..1>[CloudStack Host{bg:cadetblue}]
 [VM{bg:aquamarine}]1-0..1>[CloudStack VM{bg:cadetblue}]
 [VM{bg:aquamarine}]1-0..1>[SystemVM{bg:cadetblue}]

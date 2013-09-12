@@ -10,7 +10,7 @@
 import logging
 LOG = logging.getLogger('zen.XenServer')
 
-from collections import OrderedDict
+from collections import defaultdict, OrderedDict
 
 from twisted.internet.defer import inlineCallbacks, returnValue
 
@@ -114,7 +114,10 @@ class DataMapProducer(object):
         '''
         Return the appropriate ObjectMap for event.
         '''
-        model_class = XENAPI_CLASSMAP[event['class']]
+        model_class = XENAPI_CLASSMAP.get(event['class'])
+        if not model_class:
+            # This is not an object type we care about.
+            return
 
         # Building the ObjectMap differs for _metrics classes
         # because they unfortunately don't contain their own back-
@@ -149,15 +152,15 @@ class DataMapProducer(object):
         Return a list of datamaps representing a full model.
         '''
         sr_oms = []
-        vdi_oms = {}
+        vdi_oms = defaultdict(list)
         host_oms = []
-        host_cpu_oms = {}
-        pbd_oms = {}
-        pif_oms = {}
+        host_cpu_oms = defaultdict(list)
+        pbd_oms = defaultdict(list)
+        pif_oms = defaultdict(list)
         network_oms = []
         vm_oms = []
-        vbd_oms = {}
-        vif_oms = {}
+        vbd_oms = defaultdict(list)
+        vif_oms = defaultdict(list)
         vm_appliance_oms = []
         pool_oms = []
 
