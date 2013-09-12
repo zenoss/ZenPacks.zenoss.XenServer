@@ -114,7 +114,10 @@ class DataMapProducer(object):
         '''
         Return the appropriate ObjectMap for event.
         '''
-        model_class = XENAPI_CLASSMAP[event['class']]
+        model_class = XENAPI_CLASSMAP.get(event['class'])
+        if not model_class:
+            # This is not an object type we care about.
+            return
 
         # Building the ObjectMap differs for _metrics classes
         # because they unfortunately don't contain their own back-
