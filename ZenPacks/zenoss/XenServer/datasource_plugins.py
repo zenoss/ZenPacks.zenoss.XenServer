@@ -244,6 +244,11 @@ class XenAPIMessagesPlugin(BasePlugin):
     def collect_xen(self, config, ds0, client):
         message_api = client.xenapi.message
 
+        # According to the following thread, this severity map is only
+        # applicable to XenServer >= 6.2. Prior to that the message
+        # priorities were a crapshoot.
+        #
+        # https://lists.xenserver.org/sympa/arc/xs-devel/2013-11/msg00004.html
         severity_map = {
             '1': 5,
             '2': 4,
