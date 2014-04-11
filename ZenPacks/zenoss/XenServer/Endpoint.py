@@ -14,6 +14,7 @@ from zope.interface import implements
 from Products.ZenModel.Device import Device
 from Products.ZenModel.ZenossSecurity import ZEN_VIEW
 from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+from Products.Zuul import getFacade
 from Products.Zuul.form import schema
 from Products.Zuul.infos.device import DeviceInfo
 from Products.Zuul.interfaces import IDeviceInfo
@@ -62,6 +63,45 @@ class Endpoint(Device):
             addresses = self.zXenServerAddresses
 
         return addresses
+
+    @property
+    def open_message_clear_tuples(self):
+        '''
+        Return set of tuples for open XenServerMessage events.
+
+        Used by the collector to send clear events when messages have
+        been dismissed on the XenServer or in XenCenter.
+        '''
+        zep = getFacade('zep')
+        event_filter = zep.createEventFilter(
+            status=(0, 1, 2),
+            severity=(1, 2, 3, 4, 5),
+            event_class_key='XenServerMessage',
+            agent='zenpython',)
+
+        clear_tuples = set()
+
+        summaries = zep.getEventSummariesGenerator(filter=event_filter)
+        for summary in summaries:
+            for occurrence in summary.get('occurrence', []):
+                actor = occurrence.get('actor')
+                if not actor:
+                    continue
+
+                device = actor.get('element_identifier', '')
+
+                component = None
+                for detail in occurrence.get('details', []):
+                    if detail.get('name') == 'xenserver_obj_uuid':
+                        component = detail.get('value', [''])[0]
+
+                eventKey = occurrence.get('event_key', '')
+
+                clear_tuple = (device, component, eventKey)
+                if all(clear_tuple):
+                    clear_tuples.add(clear_tuple)
+
+        return clear_tuples
 
     def getIconPath(self):
         '''
