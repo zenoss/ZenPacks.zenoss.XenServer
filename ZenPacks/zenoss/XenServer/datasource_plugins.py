@@ -10,6 +10,7 @@
 import logging
 LOG = logging.getLogger('zen.XenServer')
 
+import calendar
 import collections
 import math
 import re
@@ -17,7 +18,6 @@ import time
 
 from cStringIO import StringIO
 from lxml import etree
-from xmlrpclib import DateTime
 
 from twisted.internet.defer import inlineCallbacks, returnValue
 
@@ -240,29 +240,37 @@ class XenAPIMessagesPlugin(BasePlugin):
     Collect events from the XenAPI messages API.
     '''
 
+    proxy_attributes = BasePlugin.proxy_attributes + [
+        'open_message_clear_tuples',
+        ]
+
     @inlineCallbacks
     def collect_xen(self, config, ds0, client):
         message_api = client.xenapi.message
 
+        # According to the following thread, this severity map is only
+        # applicable to XenServer >= 6.2. Prior to that the message
+        # priorities were a crapshoot.
+        #
+        # https://lists.xenserver.org/sympa/arc/xs-devel/2013-11/msg00004.html
         severity_map = {
-            '1': 5,
-            '2': 4,
-            '3': 3,
-            '4': 0,
-            '5': 2,
+            '1': 5,  # Data-loss imminent. Take action now or your data may be permanently lost (e.g. corrupted)
+            '2': 4,  # Service-loss imminent. Take action now or some service(s) may fail (e.g. host / VM crash)
+            '3': 3,  # Service degraded. Take action now or some service may suffer (e.g. NIC bond degraded without HA)
+            '4': 2,  # Service recovered. Notice that something just improved (e.g. NIC bond repaired)
+            '5': 2,  # Informational. More day-to-day stuff (e.g. VM started, suspended, shutdown, rebooted etc).
             }
 
-        if not hasattr(self, 'last_datetime'):
-            self.last_datetime = DateTime('0')
-            messages = yield message_api.get_all_records()
-        else:
-            messages = yield message_api.get_since(self.last_datetime)
+        eventClassKey = 'XenServerMessage'
 
         data = self.new_data()
+        open_message_clear_tuples = set()
+        messages = yield message_api.get_all_records()
 
         for ref, message in messages.iteritems():
-            if message['timestamp'] > self.last_datetime:
-                self.last_datetime = message['timestamp']
+            device = config.id
+            component = message.get('obj_uuid', '')
+            eventKey = message.get('uuid', '')
 
             summary = message.get('body') or \
                 message.get('name') or \
@@ -271,20 +279,45 @@ class XenAPIMessagesPlugin(BasePlugin):
             severity = severity_map.get(message.get('priority', '5'), 2)
 
             timestamp = message['timestamp'].value.split('Z')[0]
-            rcvtime = time.mktime(
+            rcvtime = calendar.timegm(
                 time.strptime(timestamp, '%Y%m%dT%H:%M:%S'))
 
+            clear_tuple = (device, component, eventKey)
+            open_message_clear_tuples.add(clear_tuple)
+
+            # Send the event if it hasn't already been sent.
+            if clear_tuple not in ds0.open_message_clear_tuples:
+                data['events'].append({
+                    'device': device,
+                    'component': component,
+                    'summary': summary,
+                    'severity': severity,
+                    'eventKey': eventKey,
+                    'eventClassKey': eventClassKey,
+                    'rcvtime': rcvtime,
+                    'xenserver_name': message.get('name'),
+                    'xenserver_cls': message.get('cls'),
+                    'xenserver_obj_uuid': component,
+                    })
+
+        # Send clear events for events that still exist in Zenoss, but
+        # have been dismissed in XenCenter.
+        dismissed_clear_tuples = (
+            ds0.open_message_clear_tuples - open_message_clear_tuples)
+
+        for device, component, eventKey in dismissed_clear_tuples:
             data['events'].append({
-                'device': config.id,
-                'component': message.get('obj_uuid'),
-                'summary': summary,
-                'severity': severity,
-                'eventKey': message.get('uuid'),
-                'eventClassKey': 'XenServerMessage',
-                'rcvtime': rcvtime,
-                'xenserver_name': message.get('name'),
-                'xenserver_cls': message.get('cls'),
+                'device': device,
+                'component': component,
+                'eventKey': eventKey,
+                'summary': 'message dismissed',
+                'severity': 0,
+                'eventClassKey': eventClassKey,
                 })
+
+        # Update this task's record of open clear tuples for the next
+        # collection cycle.
+        ds0.open_message_clear_tuples = open_message_clear_tuples
 
         returnValue(data)
 

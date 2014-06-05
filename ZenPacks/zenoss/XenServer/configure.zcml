@@ -204,6 +204,17 @@
 
     </configure>
 
+    <!-- ZenHub Invalidation Processing -->
+    <configure zcml:condition="installed Products.ZenHub.invalidationfilter">
+
+        <utility
+            name="XenServerInvalidationFilter"
+            provides="Products.ZenHub.interfaces.IInvalidationFilter"
+            factory=".invalidations.InvalidationFilter"
+            />
+
+    </configure>
+
     <!-- Impact -->
     <configure zcml:condition="installed ZenPacks.zenoss.Impact">
         <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
