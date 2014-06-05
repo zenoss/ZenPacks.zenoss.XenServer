@@ -333,3 +333,15 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * XenServerCollectionError (in /Status)
 * XenServerCollectionSuccess (in /Status)
 * XenServerMessage (in /XenServer)
+
+== Changes ==
+
+;1.0.1
+* Clear Zenoss events when messages are dismissed in XenCenter. (ZEN-11101)
+* Prevent sending of duplicate events. (ZEN-11100)
+* Tweak message priority to event severity mapping.
+* Fix timezone handling on message timestamps.
+* Add invalidation filtering to improve performance.
+
+;1.0.0
+* Initial release.
