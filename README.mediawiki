@@ -336,6 +336,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;1.0.2
+* Fix "'XenServer' object has no attribute 'device'" modeling error. (ZEN-12978)
+
 ;1.0.1
 * Clear Zenoss events when messages are dismissed in XenCenter. (ZEN-11101)
 * Prevent sending of duplicate events. (ZEN-11100)
