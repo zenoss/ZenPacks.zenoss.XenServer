@@ -66,14 +66,14 @@ class XenServer(PythonPlugin):
         except Exception, ex:
             LOG.error(
                 "%s %s XenAPI error: %s",
-                self.device, self.name(), ex)
+                device.id, self.name(), ex)
 
         try:
             yield client.close()
         except Exception, ex:
             LOG.warn(
                 "%s %s failed to logout: %s",
-                self.device, self.name(), ex)
+                device.id, self.name(), ex)
 
         returnValue(results)
 
