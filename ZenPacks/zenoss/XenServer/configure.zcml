@@ -215,6 +215,11 @@
 
     </configure>
 
+    <!-- Analytics -->
+    <include file="reportable.zcml"
+        xmlns:zcml="http://namespaces.zope.org/zcml"
+        zcml:condition="installed ZenPacks.zenoss.ZenETL" />
+
     <!-- Impact -->
     <configure zcml:condition="installed ZenPacks.zenoss.Impact">
         <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
