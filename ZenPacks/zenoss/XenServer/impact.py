@@ -187,7 +187,7 @@ class SRRelationsProvider(BaseRelationsProvider):
 
 class VBDRelationsProvider(BaseRelationsProvider):
     impacted_by_relationships = ('vdi',)
-    impact_relationships = ('vms', 'guest_disk')
+    impact_relationships = ('vm', 'guest_disk')
 
 
 class VDIRelationsProvider(BaseRelationsProvider):

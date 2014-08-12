@@ -336,6 +336,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;1.0.3
+* Fix issue where VBDs impact all VMs. (ZEN-13467)
+
 ;1.0.2
 * Fix "'XenServer' object has no attribute 'device'" modeling error. (ZEN-12978)
 
