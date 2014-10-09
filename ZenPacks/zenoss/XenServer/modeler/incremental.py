@@ -143,7 +143,12 @@ class DataMapProducer(object):
                 if parent:
                     event['snapshot'] = {'parent': parent}
 
-        data = model_method(ref, event.get('snapshot'))
+        snapshot = event.get('snapshot')
+        if not snapshot:
+            # We can't make an ObjectMap without a snapshot.
+            return
+
+        data = model_method(ref, snapshot)
         if data:
             return ObjectMap(data=data, modname=model_class.__module__)
 

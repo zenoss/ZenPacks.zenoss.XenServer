@@ -73,7 +73,7 @@ class SR(PooledComponent):
         '''
         if 'uuid' not in properties:
             return {
-                'relname': 'sr',
+                'relname': 'srs',
                 'id': id_from_ref(ref),
                 }
 
