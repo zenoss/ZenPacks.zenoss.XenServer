@@ -30,6 +30,9 @@ class Network(PooledComponent):
     Model class for Network.
     '''
 
+    class_label = 'Network'
+    class_plural_label = 'Networks'
+
     meta_type = portal_type = 'XenServerNetwork'
 
     mtu = None
@@ -45,17 +48,17 @@ class Network(PooledComponent):
     ipv4_netmask = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'mtu', 'type': 'string', 'mode': 'w'},
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'bridge', 'type': 'string', 'mode': 'w'},
-        {'id': 'default_locking_mode', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'ipv4_begin', 'type': 'string', 'mode': 'w'},
-        {'id': 'ipv4_end', 'type': 'string', 'mode': 'w'},
-        {'id': 'is_guest_installer_network', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'is_host_internal_management_network', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'ipv4_netmask', 'type': 'string', 'mode': 'w'},
+        {'id': 'mtu', 'label': 'MTU', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'bridge', 'label': 'Bridge', 'type': 'string', 'mode': 'w'},
+        {'id': 'default_locking_mode', 'label': 'Default Locking Mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_begin', 'label': 'IPv4 Begin', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_end', 'label': 'IPv4 End', 'type': 'string', 'mode': 'w'},
+        {'id': 'is_guest_installer_network', 'label': 'Guest Installer Network', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_host_internal_management_network', 'label': 'Host Internal Management Network', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ipv4_netmask', 'label': 'IPv4 Netmask', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

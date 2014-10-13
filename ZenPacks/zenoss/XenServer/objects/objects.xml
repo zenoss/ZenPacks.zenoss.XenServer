@@ -1902,6 +1902,10 @@ AVERAGE
 <property type="string" id="group_aggregation" mode="w" >
 AVERAGE
 </property>
+<tomanycont id='aliases'>
+<object id='read' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 <object id='write' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -1919,6 +1923,10 @@ AVERAGE
 <property type="string" id="group_aggregation" mode="w" >
 AVERAGE
 </property>
+<tomanycont id='aliases'>
+<object id='write' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -2227,6 +2235,10 @@ AVERAGE
 <property type="string" id="group_aggregation" mode="w" >
 AVERAGE
 </property>
+<tomanycont id='aliases'>
+<object id='rx' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 <object id='tx' module='ZenPacks.zenoss.XenServer.datasources.XenServerRRDDataSource' class='XenServerRRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -2247,6 +2259,10 @@ AVERAGE
 <property type="string" id="group_aggregation" mode="w" >
 AVERAGE
 </property>
+<tomanycont id='aliases'>
+<object id='tx' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>

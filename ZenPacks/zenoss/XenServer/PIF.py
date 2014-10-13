@@ -34,6 +34,10 @@ class PIF(PooledComponent):
     '''
     Model class for PIF (physical interface.)
     '''
+
+    class_label = 'Physical NIC'
+    class_plural_label = 'Physical NICs'
+
     meta_type = portal_type = 'XenServerPIF'
 
     xenapi_metrics_ref = None
@@ -61,29 +65,29 @@ class PIF(PooledComponent):
     vendor_name = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'dns', 'type': 'string', 'mode': 'w'},
-        {'id': 'ipv4_addresses', 'type': 'lines', 'mode': 'w'},
-        {'id': 'ipv6_addresses', 'type': 'lines', 'mode': 'w'},
-        {'id': 'macaddress', 'type': 'string', 'mode': 'w'},
-        {'id': 'mtu', 'type': 'string', 'mode': 'w'},
-        {'id': 'vlan', 'type': 'string', 'mode': 'w'},
-        {'id': 'carrier', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'pif_device', 'type': 'string', 'mode': 'w'},
-        {'id': 'pif_device_id', 'type': 'string', 'mode': 'w'},
-        {'id': 'pif_device_name', 'type': 'string', 'mode': 'w'},
-        {'id': 'disallow_unplug', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'ipv4_gateway', 'type': 'string', 'mode': 'w'},
-        {'id': 'ipv4_configuration_mode', 'type': 'string', 'mode': 'w'},
-        {'id': 'ipv6_configuration_mode', 'type': 'string', 'mode': 'w'},
-        {'id': 'ipv6_gateway', 'type': 'string', 'mode': 'w'},
-        {'id': 'management', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'ipv4_netmask', 'type': 'string', 'mode': 'w'},
-        {'id': 'physical', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'primary_address_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'speed', 'type': 'int', 'mode': 'w'},
-        {'id': 'vendor_name', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'label': 'XENAPI Metrics Reference', 'type': 'string', 'mode': 'w'},
+        {'id': 'dns', 'label': 'DNS Server Address', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_addresses', 'label': 'IPv4 Addresses', 'type': 'lines', 'mode': 'w'},
+        {'id': 'ipv6_addresses', 'label': 'IPv6 Addresses', 'type': 'lines', 'mode': 'w'},
+        {'id': 'macaddress', 'label': 'MAC Address', 'type': 'string', 'mode': 'w'},
+        {'id': 'mtu', 'label': 'MTU', 'type': 'string', 'mode': 'w'},
+        {'id': 'vlan', 'label': 'VLAN', 'type': 'string', 'mode': 'w'},
+        {'id': 'carrier', 'label': 'Carrier', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'currently_attached', 'label': 'Currently Attached', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'pif_device', 'label': 'Network Device', 'type': 'string', 'mode': 'w'},
+        {'id': 'pif_device_id', 'label': 'Network Device ID', 'type': 'string', 'mode': 'w'},
+        {'id': 'pif_device_name', 'label': 'Network Device Name', 'type': 'string', 'mode': 'w'},
+        {'id': 'disallow_unplug', 'label': 'Disallow Unplug', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ipv4_gateway', 'label': 'IPv4 Gateway', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv4_configuration_mode', 'label': 'IPv4 Configuration Mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv6_configuration_mode', 'label': 'IPv6 Configuration Mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'ipv6_gateway', 'label': 'IPv6 Gateway', 'type': 'string', 'mode': 'w'},
+        {'id': 'management', 'label': 'Management', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ipv4_netmask', 'label': 'IPv4 Netmask', 'type': 'string', 'mode': 'w'},
+        {'id': 'physical', 'label': 'Physical', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'primary_address_type', 'label': 'Primary Address Type', 'type': 'string', 'mode': 'w'},
+        {'id': 'speed', 'label': 'Speed', 'type': 'int', 'mode': 'w'},
+        {'id': 'vendor_name', 'label': 'Vendor Name', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

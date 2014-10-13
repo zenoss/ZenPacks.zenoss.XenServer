@@ -30,6 +30,9 @@ class Pool(BaseComponent):
     Model class for Pool.
     '''
 
+    class_label = 'Pool'
+    class_plural_label = 'Pools'
+
     meta_type = portal_type = 'XenServerPool'
 
     ha_allow_overcommit = None
@@ -43,15 +46,15 @@ class Pool(BaseComponent):
     vswitch_controller = None
 
     _properties = BaseComponent._properties + (
-        {'id': 'ha_allow_overcommit', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'ha_enabled', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'ha_host_failures_to_tolerate', 'type': 'int', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'oc_cpuid_feature_mask', 'type': 'string', 'mode': 'w'},
-        {'id': 'oc_memory_ratio_hvm', 'type': 'string', 'mode': 'w'},
-        {'id': 'oc_memory_ratio_pv', 'type': 'string', 'mode': 'w'},
-        {'id': 'vswitch_controller', 'type': 'string', 'mode': 'w'},
+        {'id': 'ha_allow_overcommit', 'label': 'HA Allow Overcommit', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ha_enabled', 'label': 'HA Enabled', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ha_host_failures_to_tolerate', 'label': 'HA Host Failures to Tolerate', 'type': 'int', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
+        {'id': 'oc_cpuid_feature_mask', 'label': 'CPU ID Feature Mask', 'type': 'string', 'mode': 'w'},
+        {'id': 'oc_memory_ratio_hvm', 'label': 'HVM Memory Ratio', 'type': 'string', 'mode': 'w'},
+        {'id': 'oc_memory_ratio_pv', 'label': 'PV Memory Ratio', 'type': 'string', 'mode': 'w'},
+        {'id': 'vswitch_controller', 'label': 'vSwitch Controller', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = BaseComponent._relations + (

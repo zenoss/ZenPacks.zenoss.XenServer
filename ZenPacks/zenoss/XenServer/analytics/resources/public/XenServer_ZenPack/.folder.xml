@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<folder exportedWithPermissions="false">
+  <parent>/public</parent>
+  <name>XenServer_ZenPack</name>
+  <label>XenServer ZenPack</label>
+  <resource>XenServer_Domain</resource>
+</folder>

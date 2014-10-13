@@ -31,6 +31,9 @@ class VBD(PooledComponent):
     Model class for VBD (virtual block device.)
     '''
 
+    class_label = 'Virtual Block Device'
+    class_plural_label = 'Virtual Block Devices'
+
     meta_type = portal_type = 'XenServerVBD'
 
     xenapi_metrics_ref = None
@@ -46,17 +49,17 @@ class VBD(PooledComponent):
     userdevice = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'bootable', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'vbd_device', 'type': 'string', 'mode': 'w'},
-        {'id': 'empty', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'mode', 'type': 'string', 'mode': 'w'},
-        {'id': 'storage_lock', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'vbd_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'unpluggable', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'userdevice', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'label': 'XENAPI Metrics Reference', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'bootable', 'label': 'Bootable', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'currently_attached', 'label': 'Currently Attached', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'vbd_device', 'label': 'Device Name', 'type': 'string', 'mode': 'w'},
+        {'id': 'empty', 'label': 'Empty', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'mode', 'label': 'Mode', 'type': 'string', 'mode': 'w'},
+        {'id': 'storage_lock', 'label': 'Storage Lock', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'vbd_type', 'label': 'Type', 'type': 'string', 'mode': 'w'},
+        {'id': 'unpluggable', 'label': 'Unpluggable', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'userdevice', 'label': 'User Device', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
