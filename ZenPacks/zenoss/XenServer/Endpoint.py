@@ -29,6 +29,9 @@ class Endpoint(Device):
     Model class for Endpoint.
     '''
 
+    class_label = 'Endpoint'
+    class_plural_label = 'Endpoints'
+
     meta_type = portal_type = 'XenServerEndpoint'
 
     _relations = Device._relations + (

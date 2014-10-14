@@ -35,6 +35,9 @@ class VM(PooledComponent):
     Model class for VM.
     '''
 
+    class_label = 'VM'
+    class_plural_label = 'VMs'
+
     meta_type = portal_type = 'XenServerVM'
 
     xenapi_metrics_ref = None
@@ -64,31 +67,31 @@ class VM(PooledComponent):
     version = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'xenapi_guest_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'hvm_shadow_multiplier', 'type': 'float', 'mode': 'w'},
-        {'id': 'vcpus_at_startup', 'type': 'int', 'mode': 'w'},
-        {'id': 'vcpus_max', 'type': 'int', 'mode': 'w'},
-        {'id': 'actions_after_crash', 'type': 'string', 'mode': 'w'},
-        {'id': 'actions_after_reboot', 'type': 'string', 'mode': 'w'},
-        {'id': 'actions_after_shutdown', 'type': 'string', 'mode': 'w'},
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'domarch', 'type': 'string', 'mode': 'w'},
-        {'id': 'domid', 'type': 'int', 'mode': 'w'},
-        {'id': 'ha_always_run', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'ha_restart_priority', 'type': 'string', 'mode': 'w'},
-        {'id': 'is_a_snapshot', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'is_a_template', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'is_control_domain', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'is_snapshot_from_vmpp', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'memory_actual', 'type': 'int', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'power_state', 'type': 'string', 'mode': 'w'},
-        {'id': 'shutdown_delay', 'type': 'int', 'mode': 'w'},
-        {'id': 'start_delay', 'type': 'int', 'mode': 'w'},
-        {'id': 'user_version', 'type': 'int', 'mode': 'w'},
-        {'id': 'version', 'type': 'int', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'label': 'XENAPI Metrics Reference', 'type': 'string', 'mode': 'w'},
+        {'id': 'xenapi_guest_metrics_ref', 'label': 'XENAPI Guest Metrics Reference', 'type': 'string', 'mode': 'w'},
+        {'id': 'hvm_shadow_multiplier', 'label': 'HVM Shadow Multiplier', 'type': 'float', 'mode': 'w'},
+        {'id': 'vcpus_at_startup', 'label': 'vCPUs at Startup', 'type': 'int', 'mode': 'w'},
+        {'id': 'vcpus_max', 'label': 'Maximum vCPUs', 'type': 'int', 'mode': 'w'},
+        {'id': 'actions_after_crash', 'label': 'Actions After Crash', 'type': 'string', 'mode': 'w'},
+        {'id': 'actions_after_reboot', 'label': 'Actions After Reboot', 'type': 'string', 'mode': 'w'},
+        {'id': 'actions_after_shutdown', 'label': 'Actions After Shutdown', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'domarch', 'label': 'Domain Architecture', 'type': 'string', 'mode': 'w'},
+        {'id': 'domid', 'label': 'Domain ID', 'type': 'int', 'mode': 'w'},
+        {'id': 'ha_always_run', 'label': 'HA Always Run', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'ha_restart_priority', 'label': 'HA Restart Priority', 'type': 'string', 'mode': 'w'},
+        {'id': 'is_a_snapshot', 'label': 'Is a Snapshot', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_a_template', 'label': 'Is a Template', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_control_domain', 'label': 'Is a Domain', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'is_snapshot_from_vmpp', 'label': 'Is a Snapshot from VMPP', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'memory_actual', 'label': 'Actual Memory', 'type': 'int', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
+        {'id': 'power_state', 'label': 'Power State', 'type': 'string', 'mode': 'w'},
+        {'id': 'shutdown_delay', 'label': 'Shutdown Delay', 'type': 'int', 'mode': 'w'},
+        {'id': 'start_delay', 'label': 'Start Delay', 'type': 'int', 'mode': 'w'},
+        {'id': 'user_version', 'label': 'User Version', 'type': 'int', 'mode': 'w'},
+        {'id': 'version', 'label': 'Version', 'type': 'int', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

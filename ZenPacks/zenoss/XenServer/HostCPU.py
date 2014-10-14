@@ -29,6 +29,9 @@ class HostCPU(PooledComponent):
     Model class for HostCPU.
     '''
 
+    class_label = 'Host CPU'
+    class_plural_label = 'Host CPUs'
+
     meta_type = portal_type = 'XenServerHostCPU'
 
     family = None
@@ -42,15 +45,15 @@ class HostCPU(PooledComponent):
     vendor = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'family', 'type': 'int', 'mode': 'w'},
-        {'id': 'features', 'type': 'string', 'mode': 'w'},
-        {'id': 'flags', 'type': 'string', 'mode': 'w'},
-        {'id': 'model', 'type': 'string', 'mode': 'w'},
-        {'id': 'modelname', 'type': 'string', 'mode': 'w'},
-        {'id': 'number', 'type': 'int', 'mode': 'w'},
-        {'id': 'speed', 'type': 'int', 'mode': 'w'},
-        {'id': 'stepping', 'type': 'int', 'mode': 'w'},
-        {'id': 'vendor', 'type': 'string', 'mode': 'w'},
+        {'id': 'family', 'label': 'Family', 'type': 'int', 'mode': 'w'},
+        {'id': 'features', 'label': 'Features', 'type': 'string', 'mode': 'w'},
+        {'id': 'flags', 'label': 'Flags', 'type': 'string', 'mode': 'w'},
+        {'id': 'model', 'label': 'Model', 'type': 'string', 'mode': 'w'},
+        {'id': 'modelname', 'label': 'Model Name', 'type': 'string', 'mode': 'w'},
+        {'id': 'number', 'label': 'Number', 'type': 'int', 'mode': 'w'},
+        {'id': 'speed', 'label': 'Speed', 'type': 'int', 'mode': 'w'},
+        {'id': 'stepping', 'label': 'Stepping', 'type': 'int', 'mode': 'w'},
+        {'id': 'vendor', 'label': 'Vendor', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
