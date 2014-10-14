@@ -339,7 +339,6 @@ def update_schema(schema, obj):
             id='dim_{}'.format(entity_class_name),
             tableName='dim_{}'.format(entity_class_name)))
 
-    # import pdb;pdb.set_trace()
     # Dimension Join
     join = schema.get_join('JoinTree_1')
     if not join:
@@ -554,7 +553,7 @@ def update_schema(schema, obj):
                         measure_table = schema.add_table(
                             Table(
                                 id='{}_{}'.format(aggregation, alias.id),
-                                tableName='{}_{}'.format(aggregation, alias.id)))
+                                tableName='{}_{}'.format(aggregation, alias.id.lower())))
 
                         for reference_field in ('device_key', 'component_key'):
                             ref_field = measure_table.add_field(

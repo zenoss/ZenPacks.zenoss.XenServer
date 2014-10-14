@@ -1,14 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <schema version="1.0" xmlns="http://www.jaspersoft.com/2007/SL/XMLSchema">
   <itemGroups>
-    <itemGroup resourceId="JoinTree_1" label="Endpoints" id="set_xen_server_endpoint" description="">
+    <itemGroup resourceId="JoinTree_1" label="Endpoints" id="set_device" description="">
       <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_xen_server_endpoint_measures" description="">
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_device_measures" description="">
           <itemGroups/>
           <items/>
         </itemGroup>
       </itemGroups>
-      <items/>
+      <items>
+        <item resourceId="JoinTree_1.dim_device.device_name" dimensionOrMeasure="Dimension" id="dim_device_device_name" label="Device Name"/>
+        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="Management IP Address"/>
+        <item resourceId="JoinTree_1.dim_device.device_hw_manufacturer" dimensionOrMeasure="Dimension" id="dim_device_device_hw_manufacturer" label="Hardware Manufacturer"/>
+        <item resourceId="JoinTree_1.dim_device.device_hw_product" dimensionOrMeasure="Dimension" id="dim_device_device_hw_product" label="Hardware Model"/>
+        <item resourceId="JoinTree_1.dim_device.device_hw_serial_number" dimensionOrMeasure="Dimension" id="dim_device_device_hw_serial_number" label="Hardware Serial Number"/>
+      </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Storage Repositories" id="set_xen_server_sr" description="">
       <itemGroups>
@@ -50,6 +56,15 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_sr.xen_server_sr_name" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_xen_server_sr_name" label="Storage Repository Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.content_type" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_content_type" label="Content Type"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.local_cache_enabled" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_local_cache_enabled" label="Local Cache Enabled"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.name_description" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_name_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.name_label" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_name_label" label="Label"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.physical_size" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_physical_size" label="Physical Size"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.shared" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_shared" label="Shared"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.sm_type" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_sm_type" label="SM Type"/>
+        <item resourceId="JoinTree_1.dim_xen_server_sr.sr_type" dimensionOrMeasure="Dimension" id="dim_xen_server_sr_sr_type" label="Type"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Virtual Disk Images" id="set_xen_server_vdi" description="">
@@ -82,6 +97,20 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_vdi.xen_server_vdi_name" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_xen_server_vdi_name" label="Virtual Disk Image Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.allow_caching" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_allow_caching" label="Allow Caching"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.is_a_snapshot" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_is_a_snapshot" label="Is a Snapshot"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.location" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_location" label="Location"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.managed" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_managed" label="Managed"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.missing" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_missing" label="Missing"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.name_description" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_name_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.name_label" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_name_label" label="Label"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.on_boot" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_on_boot" label="On Boot"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.read_only" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_read_only" label="Read Only"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.sharable" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_sharable" label="Sharable"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.storage_lock" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_storage_lock" label="Storage Lock"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.vdi_type" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_vdi_type" label="Type"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vdi.virtual_size" dimensionOrMeasure="Dimension" id="dim_xen_server_vdi_virtual_size" label="Virtual Size"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Hosts" id="set_xen_server_host" description="">
@@ -234,6 +263,22 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_host.xen_server_host_name" dimensionOrMeasure="Dimension" id="dim_xen_server_host_xen_server_host_name" label="Host Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.xenapi_metrics_ref" dimensionOrMeasure="Dimension" id="dim_xen_server_host_xenapi_metrics_ref" label="XENAPI Metrics Reference"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.api_version_major" dimensionOrMeasure="Dimension" id="dim_xen_server_host_api_version_major" label="API Version Major"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.api_version_minor" dimensionOrMeasure="Dimension" id="dim_xen_server_host_api_version_minor" label="API Version Minor"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.api_version_vendor" dimensionOrMeasure="Dimension" id="dim_xen_server_host_api_version_vendor" label="API Version Vendor"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.address" dimensionOrMeasure="Dimension" id="dim_xen_server_host_address" label="Address"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_host_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.capabilities" dimensionOrMeasure="Dimension" id="dim_xen_server_host_capabilities" label="Capabilities"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.cpu_count" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_count" label="CPU Count"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.cpu_speed" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_speed" label="CPU Speed"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.edition" dimensionOrMeasure="Dimension" id="dim_xen_server_host_edition" label="Edition"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.enabled" dimensionOrMeasure="Dimension" id="dim_xen_server_host_enabled" label="Enabled"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.hostname" dimensionOrMeasure="Dimension" id="dim_xen_server_host_hostname" label="Hostname"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.name_description" dimensionOrMeasure="Dimension" id="dim_xen_server_host_name_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.name_label" dimensionOrMeasure="Dimension" id="dim_xen_server_host_name_label" label="Label"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.sched_policy" dimensionOrMeasure="Dimension" id="dim_xen_server_host_sched_policy" label="Scheduling Policy"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host.memory_total" dimensionOrMeasure="Dimension" id="dim_xen_server_host_memory_total" label="Total Memory"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Physical Block Devices" id="set_xen_server_pbd" description="">
@@ -245,6 +290,10 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_pbd.xen_server_pbd_name" dimensionOrMeasure="Dimension" id="dim_xen_server_pbd_xen_server_pbd_name" label="Physical Block Device Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pbd.currently_attached" dimensionOrMeasure="Dimension" id="dim_xen_server_pbd_currently_attached" label="Currently Attached"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pbd.dc_device" dimensionOrMeasure="Dimension" id="dim_xen_server_pbd_dc_device" label="Device Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pbd.dc_legacy_mode" dimensionOrMeasure="Dimension" id="dim_xen_server_pbd_dc_legacy_mode" label="Legacy Mode"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pbd.dc_location" dimensionOrMeasure="Dimension" id="dim_xen_server_pbd_dc_location" label="Location"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Physical NICs" id="set_xen_server_pif" description="">
@@ -287,6 +336,29 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_pif.xen_server_pif_name" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_xen_server_pif_name" label="Physical NIC Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.xenapi_metrics_ref" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_xenapi_metrics_ref" label="XENAPI Metrics Reference"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.dns" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_dns" label="DNS Server Address"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv4_addresses" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv4_addresses" label="IPv4 Addresses"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv6_addresses" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv6_addresses" label="IPv6 Addresses"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.macaddress" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_macaddress" label="MAC Address"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.mtu" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_mtu" label="MTU"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.vlan" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_vlan" label="VLAN"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.carrier" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_carrier" label="Carrier"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.currently_attached" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_currently_attached" label="Currently Attached"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.pif_device" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_pif_device" label="Network Device"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.pif_device_id" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_pif_device_id" label="Network Device ID"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.pif_device_name" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_pif_device_name" label="Network Device Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.disallow_unplug" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_disallow_unplug" label="Disallow Unplug"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv4_gateway" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv4_gateway" label="IPv4 Gateway"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv4_configuration_mode" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv4_configuration_mode" label="IPv4 Configuration Mode"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv6_configuration_mode" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv6_configuration_mode" label="IPv6 Configuration Mode"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv6_gateway" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv6_gateway" label="IPv6 Gateway"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.management" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_management" label="Management"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.ipv4_netmask" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_ipv4_netmask" label="IPv4 Netmask"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.physical" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_physical" label="Physical"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.primary_address_type" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_primary_address_type" label="Primary Address Type"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.speed" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_speed" label="Speed"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pif.vendor_name" dimensionOrMeasure="Dimension" id="dim_xen_server_pif_vendor_name" label="Vendor Name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Networks" id="set_xen_server_network" description="">
@@ -298,6 +370,17 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_network.xen_server_network_name" dimensionOrMeasure="Dimension" id="dim_xen_server_network_xen_server_network_name" label="Network Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.mtu" dimensionOrMeasure="Dimension" id="dim_xen_server_network_mtu" label="MTU"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_network_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.bridge" dimensionOrMeasure="Dimension" id="dim_xen_server_network_bridge" label="Bridge"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.default_locking_mode" dimensionOrMeasure="Dimension" id="dim_xen_server_network_default_locking_mode" label="Default Locking Mode"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.name_description" dimensionOrMeasure="Dimension" id="dim_xen_server_network_name_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.name_label" dimensionOrMeasure="Dimension" id="dim_xen_server_network_name_label" label="Label"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.ipv4_begin" dimensionOrMeasure="Dimension" id="dim_xen_server_network_ipv4_begin" label="IPv4 Begin"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.ipv4_end" dimensionOrMeasure="Dimension" id="dim_xen_server_network_ipv4_end" label="IPv4 End"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.is_guest_installer_network" dimensionOrMeasure="Dimension" id="dim_xen_server_network_is_guest_installer_network" label="Guest Installer Network"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.is_host_internal_management_network" dimensionOrMeasure="Dimension" id="dim_xen_server_network_is_host_internal_management_network" label="Host Internal Management Network"/>
+        <item resourceId="JoinTree_1.dim_xen_server_network.ipv4_netmask" dimensionOrMeasure="Dimension" id="dim_xen_server_network_ipv4_netmask" label="IPv4 Netmask"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="VMs" id="set_xen_server_vm" description="">
@@ -420,6 +503,31 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_vm.xen_server_vm_name" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_xen_server_vm_name" label="VM Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.xenapi_metrics_ref" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_xenapi_metrics_ref" label="XENAPI Metrics Reference"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.xenapi_guest_metrics_ref" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_xenapi_guest_metrics_ref" label="XENAPI Guest Metrics Reference"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.hvm_shadow_multiplier" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_hvm_shadow_multiplier" label="HVM Shadow Multiplier"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.vcpus_at_startup" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_vcpus_at_startup" label="vCPUs at Startup"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.vcpus_max" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_vcpus_max" label="Maximum vCPUs"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.actions_after_crash" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_actions_after_crash" label="Actions After Crash"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.actions_after_reboot" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_actions_after_reboot" label="Actions After Reboot"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.actions_after_shutdown" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_actions_after_shutdown" label="Actions After Shutdown"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.domarch" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_domarch" label="Domain Architecture"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.domid" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_domid" label="Domain ID"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.ha_always_run" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_ha_always_run" label="HA Always Run"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.ha_restart_priority" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_ha_restart_priority" label="HA Restart Priority"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.is_a_snapshot" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_is_a_snapshot" label="Is a Snapshot"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.is_a_template" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_is_a_template" label="Is a Template"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.is_control_domain" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_is_control_domain" label="Is a Domain"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.is_snapshot_from_vmpp" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_is_snapshot_from_vmpp" label="Is a Snapshot from VMPP"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.memory_actual" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_memory_actual" label="Actual Memory"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.name_description" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_name_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.name_label" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_name_label" label="Label"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.power_state" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_power_state" label="Power State"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.shutdown_delay" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_shutdown_delay" label="Shutdown Delay"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.start_delay" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_start_delay" label="Start Delay"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.user_version" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_user_version" label="User Version"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vm.version" dimensionOrMeasure="Dimension" id="dim_xen_server_vm_version" label="Version"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Virtual Block Devices" id="set_xen_server_vbd" description="">
@@ -452,6 +560,17 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_vbd.xen_server_vbd_name" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_xen_server_vbd_name" label="Virtual Block Device Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.xenapi_metrics_ref" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_xenapi_metrics_ref" label="XENAPI Metrics Reference"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.bootable" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_bootable" label="Bootable"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.currently_attached" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_currently_attached" label="Currently Attached"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.vbd_device" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_vbd_device" label="Device Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.empty" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_empty" label="Empty"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.mode" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_mode" label="Mode"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.storage_lock" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_storage_lock" label="Storage Lock"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.vbd_type" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_vbd_type" label="Type"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.unpluggable" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_unpluggable" label="Unpluggable"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vbd.userdevice" dimensionOrMeasure="Dimension" id="dim_xen_server_vbd_userdevice" label="User Device"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Virtual NICs" id="set_xen_server_vif" description="">
@@ -484,6 +603,16 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_vif.xen_server_vif_name" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_xen_server_vif_name" label="Virtual NIC Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.xenapi_metrics_ref" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_xenapi_metrics_ref" label="XENAPI Metrics Reference"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.macaddress" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_macaddress" label="MAC Address"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.mac_autogenerated" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_mac_autogenerated" label="Autogenerate MAC Address"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.mtu" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_mtu" label="MTU"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.allowed_operations" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_allowed_operations" label="Allowed Operations"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.currently_attached" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_currently_attached" label="Currently Attached"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.vif_device" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_vif_device" label="Device Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.ipv4_allowed" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_ipv4_allowed" label="IPv4 Allowed"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.ipv6_allowed" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_ipv6_allowed" label="IPv6 Allowed"/>
+        <item resourceId="JoinTree_1.dim_xen_server_vif.locking_mode" dimensionOrMeasure="Dimension" id="dim_xen_server_vif_locking_mode" label="Locking Mode"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Pools" id="set_xen_server_pool" description="">
@@ -516,6 +645,15 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_pool.xen_server_pool_name" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_xen_server_pool_name" label="Pool Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.ha_allow_overcommit" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_ha_allow_overcommit" label="HA Allow Overcommit"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.ha_enabled" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_ha_enabled" label="HA Enabled"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.ha_host_failures_to_tolerate" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_ha_host_failures_to_tolerate" label="HA Host Failures to Tolerate"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.name_description" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_name_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.name_label" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_name_label" label="Label"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.oc_cpuid_feature_mask" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_oc_cpuid_feature_mask" label="CPU ID Feature Mask"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.oc_memory_ratio_hvm" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_oc_memory_ratio_hvm" label="HVM Memory Ratio"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.oc_memory_ratio_pv" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_oc_memory_ratio_pv" label="PV Memory Ratio"/>
+        <item resourceId="JoinTree_1.dim_xen_server_pool.vswitch_controller" dimensionOrMeasure="Dimension" id="dim_xen_server_pool_vswitch_controller" label="vSwitch Controller"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Host CPUs" id="set_xen_server_host_cpu" description="">
@@ -538,6 +676,15 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_xen_server_host_cpu.xen_server_host_cpu_name" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_xen_server_host_cpu_name" label="Host CPU Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.family" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_family" label="Family"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.features" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_features" label="Features"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.flags" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_flags" label="Flags"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.model" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_model" label="Model"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.modelname" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_modelname" label="Model Name"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.number" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_number" label="Number"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.speed" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_speed" label="Speed"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.stepping" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_stepping" label="Stepping"/>
+        <item resourceId="JoinTree_1.dim_xen_server_host_cpu.vendor" dimensionOrMeasure="Dimension" id="dim_xen_server_host_cpu_vendor" label="Vendor"/>
       </items>
     </itemGroup>
   </itemGroups>
@@ -545,52 +692,38 @@
     <item resourceId="JoinTree_1.dim_date.date_date" dimensionOrMeasure="Dimension" id="dim_date_date_date" label="Date"/>
   </items>
   <resources>
-    <jdbcTable tableName="dim_xen_server_endpoint" datasourceId="zenoss_reporting" id="dim_xen_server_endpoint">
+    <jdbcTable tableName="dim_device" datasourceId="zenoss_reporting" id="dim_device">
       <fieldList>
-        <field type="java.lang.Integer" id="xen_server_endpoint_key"/>
-        <field type="java.sql.Timestamp" id="xen_server_endpoint_deleted_at" dataSetExpression="if(xen_server_endpoint_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="xen_server_endpoint_id"/>
-        <field type="java.lang.String" id="xen_server_endpoint_name"/>
-        <field type="java.lang.String" id="xen_server_endpoint_type"/>
-        <field type="java.lang.String" id="xen_server_endpoint_uid"/>
         <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_endpoint_monitor"/>
-        <field type="java.lang.String" id="xen_server_endpoint_production_state"/>
-        <field type="java.lang.String" id="xen_server_endpoint_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_endpoint_title"/>
-        <field type="java.lang.String" id="xen_server_endpoint_manage_ip"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmp_agent"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmp_descr"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmp_oid"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmp_contact"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmp_sys_name"/>
-        <field type="java.lang.String" id="xen_server_endpoint_snmp_location"/>
-        <field type="java.util.Date" id="xen_server_endpoint_snmp_last_collection"/>
-        <field type="java.lang.String" id="xen_server_endpoint_rack_slot"/>
-        <field type="java.lang.String" id="xen_server_endpoint_comments"/>
-        <field type="java.lang.String" id="xen_server_endpoint_sysedge_license_mode"/>
-        <field type="java.lang.Double" id="xen_server_endpoint_priority"/>
-        <field type="java.lang.String" id="xen_server_endpoint_z_xen_server_addresses"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="device_class_key"/>
-        <field type="java.lang.Integer" id="performance_conf_key"/>
-        <field type="java.lang.Integer" id="location_key"/>
-        <field type="java.lang.Double" id="system_count"/>
-        <field type="java.lang.Double" id="device_group_count"/>
-        <field type="java.lang.Double" id="administrative_role_count"/>
-        <field type="java.lang.Double" id="user_command_count"/>
-        <field type="java.lang.Double" id="status_monitor_conf_count"/>
-        <field type="java.lang.Double" id="my_sql_server_count"/>
-        <field type="java.lang.Double" id="ldom_count"/>
-        <field type="java.lang.Double" id="xen_server_host_count"/>
-        <field type="java.lang.Double" id="xen_server_network_count"/>
-        <field type="java.lang.Double" id="xen_server_pool_count"/>
-        <field type="java.lang.Double" id="xen_server_sr_count"/>
-        <field type="java.lang.Double" id="xen_server_vm_appliance_count"/>
-        <field type="java.lang.Double" id="xen_server_vm_count"/>
+        <field type="java.sql.Timestamp" id="device_deleted_at" dataSetExpression="if(device_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="device_name"/>
+        <field type="java.lang.String" id="device_manage_ip"/>
+        <field type="java.lang.String" id="device_comments"/>
+        <field type="java.lang.String" id="device_uid"/>
+        <field type="java.lang.Double" id="device_production_state"/>
+        <field type="java.lang.String" id="device_production_state_name"/>
+        <field type="java.lang.String" id="device_class"/>
+        <field type="java.lang.String" id="device_collector"/>
+        <field type="java.lang.String" id="device_hw_manufacturer"/>
+        <field type="java.lang.String" id="device_hw_product"/>
+        <field type="java.lang.String" id="device_hw_serial_number"/>
+        <field type="java.lang.String" id="device_hw_asset_tag"/>
+        <field type="java.lang.Double" id="device_total_swap"/>
+        <field type="java.lang.Double" id="device_total_memory"/>
+        <field type="java.lang.String" id="device_os_manufacturer"/>
+        <field type="java.lang.String" id="device_os_product"/>
+        <field type="java.lang.String" id="device_os_uname"/>
+        <field type="java.lang.Double" id="device_os_uptime"/>
+        <field type="java.lang.String" id="device_availability"/>
+        <field type="java.util.Date" id="device_first_seen"/>
+        <field type="java.util.Date" id="device_last_change"/>
+        <field type="java.util.Date" id="device_last_model"/>
+        <field type="java.lang.String" id="device_rack_slot"/>
+        <field type="java.lang.String" id="device_sys_object_id"/>
+        <field type="java.lang.String" id="device_sys_descr"/>
+        <field type="java.lang.String" id="device_sys_name"/>
+        <field type="java.lang.String" id="device_sys_location"/>
+        <field type="java.lang.Boolean" id="device_is_monitored"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_date" datasourceId="zenoss_reporting" id="dim_date">
@@ -604,39 +737,25 @@
         <field type="java.lang.Integer" id="xen_server_sr_key"/>
         <field type="java.sql.Timestamp" id="xen_server_sr_deleted_at" dataSetExpression="if(xen_server_sr_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_sr_name"/>
-        <field type="java.lang.String" id="xen_server_sr_id"/>
-        <field type="java.lang.String" id="xen_server_sr_type"/>
-        <field type="java.lang.String" id="xen_server_sr_uid"/>
-        <field type="java.lang.String" id="xen_server_sr_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_sr_monitor"/>
-        <field type="java.lang.String" id="xen_server_sr_production_state"/>
-        <field type="java.lang.String" id="xen_server_sr_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_sr_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_sr_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_sr_allowed_operations"/>
-        <field type="java.lang.String" id="xen_server_sr_content_type"/>
-        <field type="java.lang.Boolean" id="xen_server_sr_local_cache_enabled"/>
-        <field type="java.lang.String" id="xen_server_sr_name_description"/>
-        <field type="java.lang.String" id="xen_server_sr_name_label"/>
-        <field type="java.lang.Double" id="xen_server_sr_physical_size"/>
-        <field type="java.lang.Boolean" id="xen_server_sr_shared"/>
-        <field type="java.lang.String" id="xen_server_sr_sm_type"/>
-        <field type="java.lang.String" id="xen_server_sr_sr_type"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="xen_server_vdi_count"/>
-        <field type="java.lang.Double" id="xen_server_pbd_count"/>
-        <field type="java.lang.Double" id="xen_server_pool_count"/>
-        <field type="java.lang.Double" id="suspend_image_for_pools_xen_server_pool_count"/>
-        <field type="java.lang.Double" id="crash_dump_for_pools_xen_server_pool_count"/>
-        <field type="java.lang.Double" id="xen_server_host_count"/>
-        <field type="java.lang.Double" id="crash_dump_for_hosts_xen_server_host_count"/>
-        <field type="java.lang.Double" id="local_cache_for_hosts_xen_server_host_count"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.String" id="content_type"/>
+        <field type="java.lang.Boolean" id="local_cache_enabled"/>
+        <field type="java.lang.String" id="name_description"/>
+        <field type="java.lang.String" id="name_label"/>
+        <field type="java.lang.Double" id="physical_size"/>
+        <field type="java.lang.Boolean" id="shared"/>
+        <field type="java.lang.String" id="sm_type"/>
+        <field type="java.lang.String" id="sr_type"/>
+        <field type="java.lang.Integer" id="endpoint_key"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_physicalSize" datasourceId="zenoss_reporting" id="daily_physicalSize">
+    <jdbcTable tableName="daily_physicalsize" datasourceId="zenoss_reporting" id="daily_physicalSize">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -648,7 +767,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_physicalSize" datasourceId="zenoss_reporting" id="hourly_physicalSize">
+    <jdbcTable tableName="hourly_physicalsize" datasourceId="zenoss_reporting" id="hourly_physicalSize">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -660,7 +779,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_physicalUtilisation" datasourceId="zenoss_reporting" id="daily_physicalUtilisation">
+    <jdbcTable tableName="daily_physicalutilisation" datasourceId="zenoss_reporting" id="daily_physicalUtilisation">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -672,7 +791,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_physicalUtilisation" datasourceId="zenoss_reporting" id="hourly_physicalUtilisation">
+    <jdbcTable tableName="hourly_physicalutilisation" datasourceId="zenoss_reporting" id="hourly_physicalUtilisation">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -684,7 +803,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_virtualAllocation" datasourceId="zenoss_reporting" id="daily_virtualAllocation">
+    <jdbcTable tableName="daily_virtualallocation" datasourceId="zenoss_reporting" id="daily_virtualAllocation">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -696,7 +815,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_virtualAllocation" datasourceId="zenoss_reporting" id="hourly_virtualAllocation">
+    <jdbcTable tableName="hourly_virtualallocation" datasourceId="zenoss_reporting" id="hourly_virtualAllocation">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -713,37 +832,30 @@
         <field type="java.lang.Integer" id="xen_server_vdi_key"/>
         <field type="java.sql.Timestamp" id="xen_server_vdi_deleted_at" dataSetExpression="if(xen_server_vdi_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_vdi_name"/>
-        <field type="java.lang.String" id="xen_server_vdi_id"/>
-        <field type="java.lang.String" id="xen_server_vdi_type"/>
-        <field type="java.lang.String" id="xen_server_vdi_uid"/>
-        <field type="java.lang.String" id="xen_server_vdi_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_monitor"/>
-        <field type="java.lang.String" id="xen_server_vdi_production_state"/>
-        <field type="java.lang.String" id="xen_server_vdi_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_vdi_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_vdi_xenapi_uuid"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_allow_caching"/>
-        <field type="java.lang.String" id="xen_server_vdi_allowed_operations"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_is_a_snapshot"/>
-        <field type="java.lang.String" id="xen_server_vdi_location"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_managed"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_missing"/>
-        <field type="java.lang.String" id="xen_server_vdi_name_description"/>
-        <field type="java.lang.String" id="xen_server_vdi_name_label"/>
-        <field type="java.lang.String" id="xen_server_vdi_on_boot"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_read_only"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_sharable"/>
-        <field type="java.lang.Boolean" id="xen_server_vdi_storage_lock"/>
-        <field type="java.lang.String" id="xen_server_vdi_vdi_type"/>
-        <field type="java.lang.Double" id="xen_server_vdi_virtual_size"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_sr_key"/>
-        <field type="java.lang.Double" id="xen_server_vbd_count"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.Boolean" id="allow_caching"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.Boolean" id="is_a_snapshot"/>
+        <field type="java.lang.String" id="location"/>
+        <field type="java.lang.Boolean" id="managed"/>
+        <field type="java.lang.Boolean" id="missing"/>
+        <field type="java.lang.String" id="name_description"/>
+        <field type="java.lang.String" id="name_label"/>
+        <field type="java.lang.String" id="on_boot"/>
+        <field type="java.lang.Boolean" id="read_only"/>
+        <field type="java.lang.Boolean" id="sharable"/>
+        <field type="java.lang.Boolean" id="storage_lock"/>
+        <field type="java.lang.String" id="vdi_type"/>
+        <field type="java.lang.Double" id="virtual_size"/>
+        <field type="java.lang.Integer" id="sr_key"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_virtualSize" datasourceId="zenoss_reporting" id="daily_virtualSize">
+    <jdbcTable tableName="daily_virtualsize" datasourceId="zenoss_reporting" id="daily_virtualSize">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -755,7 +867,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_virtualSize" datasourceId="zenoss_reporting" id="hourly_virtualSize">
+    <jdbcTable tableName="hourly_virtualsize" datasourceId="zenoss_reporting" id="hourly_virtualSize">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -772,45 +884,36 @@
         <field type="java.lang.Integer" id="xen_server_host_key"/>
         <field type="java.sql.Timestamp" id="xen_server_host_deleted_at" dataSetExpression="if(xen_server_host_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_host_name"/>
-        <field type="java.lang.String" id="xen_server_host_id"/>
-        <field type="java.lang.String" id="xen_server_host_type"/>
-        <field type="java.lang.String" id="xen_server_host_uid"/>
-        <field type="java.lang.String" id="xen_server_host_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_host_monitor"/>
-        <field type="java.lang.String" id="xen_server_host_production_state"/>
-        <field type="java.lang.String" id="xen_server_host_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_host_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_host_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_host_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="xen_server_host_api_version_major"/>
-        <field type="java.lang.String" id="xen_server_host_api_version_minor"/>
-        <field type="java.lang.String" id="xen_server_host_api_version_vendor"/>
-        <field type="java.lang.String" id="xen_server_host_address"/>
-        <field type="java.lang.String" id="xen_server_host_allowed_operations"/>
-        <field type="java.lang.String" id="xen_server_host_capabilities"/>
-        <field type="java.lang.Double" id="xen_server_host_cpu_count"/>
-        <field type="java.lang.Float" id="xen_server_host_cpu_speed"/>
-        <field type="java.lang.String" id="xen_server_host_edition"/>
-        <field type="java.lang.Boolean" id="xen_server_host_enabled"/>
-        <field type="java.lang.String" id="xen_server_host_hostname"/>
-        <field type="java.lang.String" id="xen_server_host_name_description"/>
-        <field type="java.lang.String" id="xen_server_host_name_label"/>
-        <field type="java.lang.String" id="xen_server_host_sched_policy"/>
-        <field type="java.lang.Double" id="xen_server_host_memory_total"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="xen_server_pbd_count"/>
-        <field type="java.lang.Double" id="xen_server_pif_count"/>
-        <field type="java.lang.Double" id="xen_server_vm_count"/>
-        <field type="java.lang.Integer" id="xen_server_pool_key"/>
-        <field type="java.lang.Integer" id="xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="crash_dump_sr_xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="local_cache_sr_xen_server_sr_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="api_version_major"/>
+        <field type="java.lang.String" id="api_version_minor"/>
+        <field type="java.lang.String" id="api_version_vendor"/>
+        <field type="java.lang.String" id="address"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.String" id="capabilities"/>
+        <field type="java.lang.Double" id="cpu_count"/>
+        <field type="java.lang.Float" id="cpu_speed"/>
+        <field type="java.lang.String" id="edition"/>
+        <field type="java.lang.Boolean" id="enabled"/>
+        <field type="java.lang.String" id="hostname"/>
+        <field type="java.lang.String" id="name_description"/>
+        <field type="java.lang.String" id="name_label"/>
+        <field type="java.lang.String" id="sched_policy"/>
+        <field type="java.lang.Double" id="memory_total"/>
+        <field type="java.lang.Integer" id="endpoint_key"/>
+        <field type="java.lang.Integer" id="master_for_key"/>
+        <field type="java.lang.Integer" id="suspend_image_sr_key"/>
+        <field type="java.lang.Integer" id="crash_dump_sr_key"/>
+        <field type="java.lang.Integer" id="local_cache_sr_key"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_memoryOverhead" datasourceId="zenoss_reporting" id="daily_memoryOverhead">
+    <jdbcTable tableName="daily_memoryoverhead" datasourceId="zenoss_reporting" id="daily_memoryOverhead">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -822,7 +925,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_memoryOverhead" datasourceId="zenoss_reporting" id="hourly_memoryOverhead">
+    <jdbcTable tableName="hourly_memoryoverhead" datasourceId="zenoss_reporting" id="hourly_memoryOverhead">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -834,7 +937,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_cpuAvg" datasourceId="zenoss_reporting" id="daily_cpuAvg">
+    <jdbcTable tableName="daily_cpuavg" datasourceId="zenoss_reporting" id="daily_cpuAvg">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -846,7 +949,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_cpuAvg" datasourceId="zenoss_reporting" id="hourly_cpuAvg">
+    <jdbcTable tableName="hourly_cpuavg" datasourceId="zenoss_reporting" id="hourly_cpuAvg">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -858,7 +961,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_loadAvg" datasourceId="zenoss_reporting" id="daily_loadAvg">
+    <jdbcTable tableName="daily_loadavg" datasourceId="zenoss_reporting" id="daily_loadAvg">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -870,7 +973,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_loadAvg" datasourceId="zenoss_reporting" id="hourly_loadAvg">
+    <jdbcTable tableName="hourly_loadavg" datasourceId="zenoss_reporting" id="hourly_loadAvg">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -882,7 +985,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_memoryFree" datasourceId="zenoss_reporting" id="daily_memoryFree">
+    <jdbcTable tableName="daily_memoryfree" datasourceId="zenoss_reporting" id="daily_memoryFree">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -894,7 +997,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_memoryFree" datasourceId="zenoss_reporting" id="hourly_memoryFree">
+    <jdbcTable tableName="hourly_memoryfree" datasourceId="zenoss_reporting" id="hourly_memoryFree">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -906,7 +1009,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_memoryTotal" datasourceId="zenoss_reporting" id="daily_memoryTotal">
+    <jdbcTable tableName="daily_memorytotal" datasourceId="zenoss_reporting" id="daily_memoryTotal">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -918,7 +1021,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_memoryTotal" datasourceId="zenoss_reporting" id="hourly_memoryTotal">
+    <jdbcTable tableName="hourly_memorytotal" datasourceId="zenoss_reporting" id="hourly_memoryTotal">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -930,7 +1033,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_pifAggrRX" datasourceId="zenoss_reporting" id="daily_pifAggrRX">
+    <jdbcTable tableName="daily_pifaggrrx" datasourceId="zenoss_reporting" id="daily_pifAggrRX">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -942,7 +1045,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_pifAggrRX" datasourceId="zenoss_reporting" id="hourly_pifAggrRX">
+    <jdbcTable tableName="hourly_pifaggrrx" datasourceId="zenoss_reporting" id="hourly_pifAggrRX">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -954,7 +1057,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_pifAggrTX" datasourceId="zenoss_reporting" id="daily_pifAggrTX">
+    <jdbcTable tableName="daily_pifaggrtx" datasourceId="zenoss_reporting" id="daily_pifAggrTX">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -966,7 +1069,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_pifAggrTX" datasourceId="zenoss_reporting" id="hourly_pifAggrTX">
+    <jdbcTable tableName="hourly_pifaggrtx" datasourceId="zenoss_reporting" id="hourly_pifAggrTX">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -978,7 +1081,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_srCacheHitsSum" datasourceId="zenoss_reporting" id="daily_srCacheHitsSum">
+    <jdbcTable tableName="daily_srcachehitssum" datasourceId="zenoss_reporting" id="daily_srCacheHitsSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -990,7 +1093,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_srCacheHitsSum" datasourceId="zenoss_reporting" id="hourly_srCacheHitsSum">
+    <jdbcTable tableName="hourly_srcachehitssum" datasourceId="zenoss_reporting" id="hourly_srCacheHitsSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1002,7 +1105,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_srCacheMissesSum" datasourceId="zenoss_reporting" id="daily_srCacheMissesSum">
+    <jdbcTable tableName="daily_srcachemissessum" datasourceId="zenoss_reporting" id="daily_srCacheMissesSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1014,7 +1117,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_srCacheMissesSum" datasourceId="zenoss_reporting" id="hourly_srCacheMissesSum">
+    <jdbcTable tableName="hourly_srcachemissessum" datasourceId="zenoss_reporting" id="hourly_srCacheMissesSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1026,7 +1129,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_srCacheSizeSum" datasourceId="zenoss_reporting" id="daily_srCacheSizeSum">
+    <jdbcTable tableName="daily_srcachesizesum" datasourceId="zenoss_reporting" id="daily_srCacheSizeSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1038,7 +1141,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_srCacheSizeSum" datasourceId="zenoss_reporting" id="hourly_srCacheSizeSum">
+    <jdbcTable tableName="hourly_srcachesizesum" datasourceId="zenoss_reporting" id="hourly_srCacheSizeSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1050,7 +1153,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_xapiAllocation" datasourceId="zenoss_reporting" id="daily_xapiAllocation">
+    <jdbcTable tableName="daily_xapiallocation" datasourceId="zenoss_reporting" id="daily_xapiAllocation">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1062,7 +1165,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_xapiAllocation" datasourceId="zenoss_reporting" id="hourly_xapiAllocation">
+    <jdbcTable tableName="hourly_xapiallocation" datasourceId="zenoss_reporting" id="hourly_xapiAllocation">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1074,7 +1177,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_xapiFreeMemory" datasourceId="zenoss_reporting" id="daily_xapiFreeMemory">
+    <jdbcTable tableName="daily_xapifreememory" datasourceId="zenoss_reporting" id="daily_xapiFreeMemory">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1086,7 +1189,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_xapiFreeMemory" datasourceId="zenoss_reporting" id="hourly_xapiFreeMemory">
+    <jdbcTable tableName="hourly_xapifreememory" datasourceId="zenoss_reporting" id="hourly_xapiFreeMemory">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1098,7 +1201,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_xapiLiveMemory" datasourceId="zenoss_reporting" id="daily_xapiLiveMemory">
+    <jdbcTable tableName="daily_xapilivememory" datasourceId="zenoss_reporting" id="daily_xapiLiveMemory">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1110,7 +1213,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_xapiLiveMemory" datasourceId="zenoss_reporting" id="hourly_xapiLiveMemory">
+    <jdbcTable tableName="hourly_xapilivememory" datasourceId="zenoss_reporting" id="hourly_xapiLiveMemory">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1122,7 +1225,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_xapiMemoryUsage" datasourceId="zenoss_reporting" id="daily_xapiMemoryUsage">
+    <jdbcTable tableName="daily_xapimemoryusage" datasourceId="zenoss_reporting" id="daily_xapiMemoryUsage">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1134,7 +1237,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_xapiMemoryUsage" datasourceId="zenoss_reporting" id="hourly_xapiMemoryUsage">
+    <jdbcTable tableName="hourly_xapimemoryusage" datasourceId="zenoss_reporting" id="hourly_xapiMemoryUsage">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1151,24 +1254,18 @@
         <field type="java.lang.Integer" id="xen_server_pbd_key"/>
         <field type="java.sql.Timestamp" id="xen_server_pbd_deleted_at" dataSetExpression="if(xen_server_pbd_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_pbd_name"/>
-        <field type="java.lang.String" id="xen_server_pbd_id"/>
-        <field type="java.lang.String" id="xen_server_pbd_type"/>
-        <field type="java.lang.String" id="xen_server_pbd_uid"/>
-        <field type="java.lang.String" id="xen_server_pbd_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_pbd_monitor"/>
-        <field type="java.lang.String" id="xen_server_pbd_production_state"/>
-        <field type="java.lang.String" id="xen_server_pbd_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_pbd_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_pbd_xenapi_uuid"/>
-        <field type="java.lang.Boolean" id="xen_server_pbd_currently_attached"/>
-        <field type="java.lang.String" id="xen_server_pbd_dc_device"/>
-        <field type="java.lang.Boolean" id="xen_server_pbd_dc_legacy_mode"/>
-        <field type="java.lang.String" id="xen_server_pbd_dc_location"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_host_key"/>
-        <field type="java.lang.Integer" id="xen_server_sr_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.Boolean" id="currently_attached"/>
+        <field type="java.lang.String" id="dc_device"/>
+        <field type="java.lang.Boolean" id="dc_legacy_mode"/>
+        <field type="java.lang.String" id="dc_location"/>
+        <field type="java.lang.Integer" id="host_key"/>
+        <field type="java.lang.Integer" id="sr_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_xen_server_pif" datasourceId="zenoss_reporting" id="dim_xen_server_pif">
@@ -1176,43 +1273,37 @@
         <field type="java.lang.Integer" id="xen_server_pif_key"/>
         <field type="java.sql.Timestamp" id="xen_server_pif_deleted_at" dataSetExpression="if(xen_server_pif_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_pif_name"/>
-        <field type="java.lang.String" id="xen_server_pif_id"/>
-        <field type="java.lang.String" id="xen_server_pif_type"/>
-        <field type="java.lang.String" id="xen_server_pif_uid"/>
-        <field type="java.lang.String" id="xen_server_pif_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_pif_monitor"/>
-        <field type="java.lang.String" id="xen_server_pif_production_state"/>
-        <field type="java.lang.String" id="xen_server_pif_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_pif_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_pif_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_pif_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="xen_server_pif_dns"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv4_addresses"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv6_addresses"/>
-        <field type="java.lang.String" id="xen_server_pif_macaddress"/>
-        <field type="java.lang.String" id="xen_server_pif_mtu"/>
-        <field type="java.lang.String" id="xen_server_pif_vlan"/>
-        <field type="java.lang.Boolean" id="xen_server_pif_carrier"/>
-        <field type="java.lang.Boolean" id="xen_server_pif_currently_attached"/>
-        <field type="java.lang.String" id="xen_server_pif_pif_device"/>
-        <field type="java.lang.String" id="xen_server_pif_pif_device_id"/>
-        <field type="java.lang.String" id="xen_server_pif_pif_device_name"/>
-        <field type="java.lang.Boolean" id="xen_server_pif_disallow_unplug"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv4_gateway"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv4_configuration_mode"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv6_configuration_mode"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv6_gateway"/>
-        <field type="java.lang.Boolean" id="xen_server_pif_management"/>
-        <field type="java.lang.String" id="xen_server_pif_ipv4_netmask"/>
-        <field type="java.lang.Boolean" id="xen_server_pif_physical"/>
-        <field type="java.lang.String" id="xen_server_pif_primary_address_type"/>
-        <field type="java.lang.Double" id="xen_server_pif_speed"/>
-        <field type="java.lang.String" id="xen_server_pif_vendor_name"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_host_key"/>
-        <field type="java.lang.Integer" id="xen_server_network_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="dns"/>
+        <field type="java.lang.String" id="ipv4_addresses"/>
+        <field type="java.lang.String" id="ipv6_addresses"/>
+        <field type="java.lang.String" id="macaddress"/>
+        <field type="java.lang.String" id="mtu"/>
+        <field type="java.lang.String" id="vlan"/>
+        <field type="java.lang.Boolean" id="carrier"/>
+        <field type="java.lang.Boolean" id="currently_attached"/>
+        <field type="java.lang.String" id="pif_device"/>
+        <field type="java.lang.String" id="pif_device_id"/>
+        <field type="java.lang.String" id="pif_device_name"/>
+        <field type="java.lang.Boolean" id="disallow_unplug"/>
+        <field type="java.lang.String" id="ipv4_gateway"/>
+        <field type="java.lang.String" id="ipv4_configuration_mode"/>
+        <field type="java.lang.String" id="ipv6_configuration_mode"/>
+        <field type="java.lang.String" id="ipv6_gateway"/>
+        <field type="java.lang.Boolean" id="management"/>
+        <field type="java.lang.String" id="ipv4_netmask"/>
+        <field type="java.lang.Boolean" id="physical"/>
+        <field type="java.lang.String" id="primary_address_type"/>
+        <field type="java.lang.Double" id="speed"/>
+        <field type="java.lang.String" id="vendor_name"/>
+        <field type="java.lang.Integer" id="host_key"/>
+        <field type="java.lang.Integer" id="network_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="daily_speed" datasourceId="zenoss_reporting" id="daily_speed">
@@ -1292,32 +1383,24 @@
         <field type="java.lang.Integer" id="xen_server_network_key"/>
         <field type="java.sql.Timestamp" id="xen_server_network_deleted_at" dataSetExpression="if(xen_server_network_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_network_name"/>
-        <field type="java.lang.String" id="xen_server_network_id"/>
-        <field type="java.lang.String" id="xen_server_network_type"/>
-        <field type="java.lang.String" id="xen_server_network_uid"/>
-        <field type="java.lang.String" id="xen_server_network_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_network_monitor"/>
-        <field type="java.lang.String" id="xen_server_network_production_state"/>
-        <field type="java.lang.String" id="xen_server_network_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_network_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_network_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_network_mtu"/>
-        <field type="java.lang.String" id="xen_server_network_allowed_operations"/>
-        <field type="java.lang.String" id="xen_server_network_bridge"/>
-        <field type="java.lang.String" id="xen_server_network_default_locking_mode"/>
-        <field type="java.lang.String" id="xen_server_network_name_description"/>
-        <field type="java.lang.String" id="xen_server_network_name_label"/>
-        <field type="java.lang.String" id="xen_server_network_ipv4_begin"/>
-        <field type="java.lang.String" id="xen_server_network_ipv4_end"/>
-        <field type="java.lang.Boolean" id="xen_server_network_is_guest_installer_network"/>
-        <field type="java.lang.Boolean" id="xen_server_network_is_host_internal_management_network"/>
-        <field type="java.lang.String" id="xen_server_network_ipv4_netmask"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="xen_server_pif_count"/>
-        <field type="java.lang.Double" id="xen_server_vif_count"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="mtu"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.String" id="bridge"/>
+        <field type="java.lang.String" id="default_locking_mode"/>
+        <field type="java.lang.String" id="name_description"/>
+        <field type="java.lang.String" id="name_label"/>
+        <field type="java.lang.String" id="ipv4_begin"/>
+        <field type="java.lang.String" id="ipv4_end"/>
+        <field type="java.lang.Boolean" id="is_guest_installer_network"/>
+        <field type="java.lang.Boolean" id="is_host_internal_management_network"/>
+        <field type="java.lang.String" id="ipv4_netmask"/>
+        <field type="java.lang.Integer" id="endpoint_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_xen_server_vm" datasourceId="zenoss_reporting" id="dim_xen_server_vm">
@@ -1325,51 +1408,43 @@
         <field type="java.lang.Integer" id="xen_server_vm_key"/>
         <field type="java.sql.Timestamp" id="xen_server_vm_deleted_at" dataSetExpression="if(xen_server_vm_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_vm_name"/>
-        <field type="java.lang.String" id="xen_server_vm_id"/>
-        <field type="java.lang.String" id="xen_server_vm_type"/>
-        <field type="java.lang.String" id="xen_server_vm_uid"/>
-        <field type="java.lang.String" id="xen_server_vm_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_vm_monitor"/>
-        <field type="java.lang.String" id="xen_server_vm_production_state"/>
-        <field type="java.lang.String" id="xen_server_vm_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_vm_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_vm_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_vm_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="xen_server_vm_xenapi_guest_metrics_ref"/>
-        <field type="java.lang.Float" id="xen_server_vm_hvm_shadow_multiplier"/>
-        <field type="java.lang.Double" id="xen_server_vm_vcpus_at_startup"/>
-        <field type="java.lang.Double" id="xen_server_vm_vcpus_max"/>
-        <field type="java.lang.String" id="xen_server_vm_actions_after_crash"/>
-        <field type="java.lang.String" id="xen_server_vm_actions_after_reboot"/>
-        <field type="java.lang.String" id="xen_server_vm_actions_after_shutdown"/>
-        <field type="java.lang.String" id="xen_server_vm_allowed_operations"/>
-        <field type="java.lang.String" id="xen_server_vm_domarch"/>
-        <field type="java.lang.Double" id="xen_server_vm_domid"/>
-        <field type="java.lang.Boolean" id="xen_server_vm_ha_always_run"/>
-        <field type="java.lang.String" id="xen_server_vm_ha_restart_priority"/>
-        <field type="java.lang.Boolean" id="xen_server_vm_is_a_snapshot"/>
-        <field type="java.lang.Boolean" id="xen_server_vm_is_a_template"/>
-        <field type="java.lang.Boolean" id="xen_server_vm_is_control_domain"/>
-        <field type="java.lang.Boolean" id="xen_server_vm_is_snapshot_from_vmpp"/>
-        <field type="java.lang.Double" id="xen_server_vm_memory_actual"/>
-        <field type="java.lang.String" id="xen_server_vm_name_description"/>
-        <field type="java.lang.String" id="xen_server_vm_name_label"/>
-        <field type="java.lang.String" id="xen_server_vm_power_state"/>
-        <field type="java.lang.Double" id="xen_server_vm_shutdown_delay"/>
-        <field type="java.lang.Double" id="xen_server_vm_start_delay"/>
-        <field type="java.lang.Double" id="xen_server_vm_user_version"/>
-        <field type="java.lang.Double" id="xen_server_vm_version"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="xen_server_vbd_count"/>
-        <field type="java.lang.Double" id="xen_server_vif_count"/>
-        <field type="java.lang.Integer" id="xen_server_host_key"/>
-        <field type="java.lang.Integer" id="xen_server_vm_appliance_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="xenapi_guest_metrics_ref"/>
+        <field type="java.lang.Float" id="hvm_shadow_multiplier"/>
+        <field type="java.lang.Double" id="vcpus_at_startup"/>
+        <field type="java.lang.Double" id="vcpus_max"/>
+        <field type="java.lang.String" id="actions_after_crash"/>
+        <field type="java.lang.String" id="actions_after_reboot"/>
+        <field type="java.lang.String" id="actions_after_shutdown"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.String" id="domarch"/>
+        <field type="java.lang.Double" id="domid"/>
+        <field type="java.lang.Boolean" id="ha_always_run"/>
+        <field type="java.lang.String" id="ha_restart_priority"/>
+        <field type="java.lang.Boolean" id="is_a_snapshot"/>
+        <field type="java.lang.Boolean" id="is_a_template"/>
+        <field type="java.lang.Boolean" id="is_control_domain"/>
+        <field type="java.lang.Boolean" id="is_snapshot_from_vmpp"/>
+        <field type="java.lang.Double" id="memory_actual"/>
+        <field type="java.lang.String" id="name_description"/>
+        <field type="java.lang.String" id="name_label"/>
+        <field type="java.lang.String" id="power_state"/>
+        <field type="java.lang.Double" id="shutdown_delay"/>
+        <field type="java.lang.Double" id="start_delay"/>
+        <field type="java.lang.Double" id="user_version"/>
+        <field type="java.lang.Double" id="version"/>
+        <field type="java.lang.Integer" id="endpoint_key"/>
+        <field type="java.lang.Integer" id="host_key"/>
+        <field type="java.lang.Integer" id="vmappliance_key"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_memoryActual" datasourceId="zenoss_reporting" id="daily_memoryActual">
+    <jdbcTable tableName="daily_memoryactual" datasourceId="zenoss_reporting" id="daily_memoryActual">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1381,7 +1456,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_memoryActual" datasourceId="zenoss_reporting" id="hourly_memoryActual">
+    <jdbcTable tableName="hourly_memoryactual" datasourceId="zenoss_reporting" id="hourly_memoryActual">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1393,7 +1468,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_vcpusNumber" datasourceId="zenoss_reporting" id="daily_vcpusNumber">
+    <jdbcTable tableName="daily_vcpusnumber" datasourceId="zenoss_reporting" id="daily_vcpusNumber">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1405,7 +1480,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_vcpusNumber" datasourceId="zenoss_reporting" id="hourly_vcpusNumber">
+    <jdbcTable tableName="hourly_vcpusnumber" datasourceId="zenoss_reporting" id="hourly_vcpusNumber">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1441,7 +1516,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_memoryInternalFree" datasourceId="zenoss_reporting" id="daily_memoryInternalFree">
+    <jdbcTable tableName="daily_memoryinternalfree" datasourceId="zenoss_reporting" id="daily_memoryInternalFree">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1453,7 +1528,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_memoryInternalFree" datasourceId="zenoss_reporting" id="hourly_memoryInternalFree">
+    <jdbcTable tableName="hourly_memoryinternalfree" datasourceId="zenoss_reporting" id="hourly_memoryInternalFree">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1465,7 +1540,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_memoryTarget" datasourceId="zenoss_reporting" id="daily_memoryTarget">
+    <jdbcTable tableName="daily_memorytarget" datasourceId="zenoss_reporting" id="daily_memoryTarget">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1477,7 +1552,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_memoryTarget" datasourceId="zenoss_reporting" id="hourly_memoryTarget">
+    <jdbcTable tableName="hourly_memorytarget" datasourceId="zenoss_reporting" id="hourly_memoryTarget">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1489,7 +1564,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_vbdReadSum" datasourceId="zenoss_reporting" id="daily_vbdReadSum">
+    <jdbcTable tableName="daily_vbdreadsum" datasourceId="zenoss_reporting" id="daily_vbdReadSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1501,7 +1576,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_vbdReadSum" datasourceId="zenoss_reporting" id="hourly_vbdReadSum">
+    <jdbcTable tableName="hourly_vbdreadsum" datasourceId="zenoss_reporting" id="hourly_vbdReadSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1513,7 +1588,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_vbdWriteSum" datasourceId="zenoss_reporting" id="daily_vbdWriteSum">
+    <jdbcTable tableName="daily_vbdwritesum" datasourceId="zenoss_reporting" id="daily_vbdWriteSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1525,7 +1600,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_vbdWriteSum" datasourceId="zenoss_reporting" id="hourly_vbdWriteSum">
+    <jdbcTable tableName="hourly_vbdwritesum" datasourceId="zenoss_reporting" id="hourly_vbdWriteSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1537,7 +1612,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_vifRXSum" datasourceId="zenoss_reporting" id="daily_vifRXSum">
+    <jdbcTable tableName="daily_vifrxsum" datasourceId="zenoss_reporting" id="daily_vifRXSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1549,7 +1624,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_vifRXSum" datasourceId="zenoss_reporting" id="hourly_vifRXSum">
+    <jdbcTable tableName="hourly_vifrxsum" datasourceId="zenoss_reporting" id="hourly_vifRXSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1561,7 +1636,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_vifTXSum" datasourceId="zenoss_reporting" id="daily_vifTXSum">
+    <jdbcTable tableName="daily_viftxsum" datasourceId="zenoss_reporting" id="daily_vifTXSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1573,7 +1648,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_vifTXSum" datasourceId="zenoss_reporting" id="hourly_vifTXSum">
+    <jdbcTable tableName="hourly_viftxsum" datasourceId="zenoss_reporting" id="hourly_vifTXSum">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1590,31 +1665,25 @@
         <field type="java.lang.Integer" id="xen_server_vbd_key"/>
         <field type="java.sql.Timestamp" id="xen_server_vbd_deleted_at" dataSetExpression="if(xen_server_vbd_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_vbd_name"/>
-        <field type="java.lang.String" id="xen_server_vbd_id"/>
-        <field type="java.lang.String" id="xen_server_vbd_type"/>
-        <field type="java.lang.String" id="xen_server_vbd_uid"/>
-        <field type="java.lang.String" id="xen_server_vbd_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_vbd_monitor"/>
-        <field type="java.lang.String" id="xen_server_vbd_production_state"/>
-        <field type="java.lang.String" id="xen_server_vbd_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_vbd_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_vbd_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_vbd_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="xen_server_vbd_allowed_operations"/>
-        <field type="java.lang.Boolean" id="xen_server_vbd_bootable"/>
-        <field type="java.lang.Boolean" id="xen_server_vbd_currently_attached"/>
-        <field type="java.lang.String" id="xen_server_vbd_vbd_device"/>
-        <field type="java.lang.Boolean" id="xen_server_vbd_empty"/>
-        <field type="java.lang.String" id="xen_server_vbd_mode"/>
-        <field type="java.lang.Boolean" id="xen_server_vbd_storage_lock"/>
-        <field type="java.lang.String" id="xen_server_vbd_vbd_type"/>
-        <field type="java.lang.Boolean" id="xen_server_vbd_unpluggable"/>
-        <field type="java.lang.String" id="xen_server_vbd_userdevice"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_vm_key"/>
-        <field type="java.lang.Integer" id="xen_server_vdi_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.Boolean" id="bootable"/>
+        <field type="java.lang.Boolean" id="currently_attached"/>
+        <field type="java.lang.String" id="vbd_device"/>
+        <field type="java.lang.Boolean" id="empty"/>
+        <field type="java.lang.String" id="mode"/>
+        <field type="java.lang.Boolean" id="storage_lock"/>
+        <field type="java.lang.String" id="vbd_type"/>
+        <field type="java.lang.Boolean" id="unpluggable"/>
+        <field type="java.lang.String" id="userdevice"/>
+        <field type="java.lang.Integer" id="vm_key"/>
+        <field type="java.lang.Integer" id="vdi_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="daily_read" datasourceId="zenoss_reporting" id="daily_read">
@@ -1670,30 +1739,24 @@
         <field type="java.lang.Integer" id="xen_server_vif_key"/>
         <field type="java.sql.Timestamp" id="xen_server_vif_deleted_at" dataSetExpression="if(xen_server_vif_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_vif_name"/>
-        <field type="java.lang.String" id="xen_server_vif_id"/>
-        <field type="java.lang.String" id="xen_server_vif_type"/>
-        <field type="java.lang.String" id="xen_server_vif_uid"/>
-        <field type="java.lang.String" id="xen_server_vif_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_vif_monitor"/>
-        <field type="java.lang.String" id="xen_server_vif_production_state"/>
-        <field type="java.lang.String" id="xen_server_vif_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_vif_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_vif_xenapi_uuid"/>
-        <field type="java.lang.String" id="xen_server_vif_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="xen_server_vif_macaddress"/>
-        <field type="java.lang.Boolean" id="xen_server_vif_mac_autogenerated"/>
-        <field type="java.lang.String" id="xen_server_vif_mtu"/>
-        <field type="java.lang.String" id="xen_server_vif_allowed_operations"/>
-        <field type="java.lang.Boolean" id="xen_server_vif_currently_attached"/>
-        <field type="java.lang.String" id="xen_server_vif_vif_device"/>
-        <field type="java.lang.String" id="xen_server_vif_ipv4_allowed"/>
-        <field type="java.lang.String" id="xen_server_vif_ipv6_allowed"/>
-        <field type="java.lang.String" id="xen_server_vif_locking_mode"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_vm_key"/>
-        <field type="java.lang.Integer" id="xen_server_network_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.String" id="xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="macaddress"/>
+        <field type="java.lang.Boolean" id="mac_autogenerated"/>
+        <field type="java.lang.String" id="mtu"/>
+        <field type="java.lang.String" id="allowed_operations"/>
+        <field type="java.lang.Boolean" id="currently_attached"/>
+        <field type="java.lang.String" id="vif_device"/>
+        <field type="java.lang.String" id="ipv4_allowed"/>
+        <field type="java.lang.String" id="ipv6_allowed"/>
+        <field type="java.lang.String" id="locking_mode"/>
+        <field type="java.lang.Integer" id="vm_key"/>
+        <field type="java.lang.Integer" id="network_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_xen_server_pool" datasourceId="zenoss_reporting" id="dim_xen_server_pool">
@@ -1701,35 +1764,29 @@
         <field type="java.lang.Integer" id="xen_server_pool_key"/>
         <field type="java.sql.Timestamp" id="xen_server_pool_deleted_at" dataSetExpression="if(xen_server_pool_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_pool_name"/>
-        <field type="java.lang.String" id="xen_server_pool_id"/>
-        <field type="java.lang.String" id="xen_server_pool_type"/>
-        <field type="java.lang.String" id="xen_server_pool_uid"/>
-        <field type="java.lang.String" id="xen_server_pool_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_pool_monitor"/>
-        <field type="java.lang.String" id="xen_server_pool_production_state"/>
-        <field type="java.lang.String" id="xen_server_pool_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_pool_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_pool_xenapi_uuid"/>
-        <field type="java.lang.Boolean" id="xen_server_pool_ha_allow_overcommit"/>
-        <field type="java.lang.Boolean" id="xen_server_pool_ha_enabled"/>
-        <field type="java.lang.Double" id="xen_server_pool_ha_host_failures_to_tolerate"/>
-        <field type="java.lang.String" id="xen_server_pool_name_description"/>
-        <field type="java.lang.String" id="xen_server_pool_name_label"/>
-        <field type="java.lang.String" id="xen_server_pool_oc_cpuid_feature_mask"/>
-        <field type="java.lang.String" id="xen_server_pool_oc_memory_ratio_hvm"/>
-        <field type="java.lang.String" id="xen_server_pool_oc_memory_ratio_pv"/>
-        <field type="java.lang.String" id="xen_server_pool_vswitch_controller"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_endpoint_key"/>
-        <field type="java.lang.Integer" id="xen_server_host_key"/>
-        <field type="java.lang.Integer" id="xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="suspend_image_sr_xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="crash_dump_sr_xen_server_sr_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.Boolean" id="ha_allow_overcommit"/>
+        <field type="java.lang.Boolean" id="ha_enabled"/>
+        <field type="java.lang.Double" id="ha_host_failures_to_tolerate"/>
+        <field type="java.lang.String" id="name_description"/>
+        <field type="java.lang.String" id="name_label"/>
+        <field type="java.lang.String" id="oc_cpuid_feature_mask"/>
+        <field type="java.lang.String" id="oc_memory_ratio_hvm"/>
+        <field type="java.lang.String" id="oc_memory_ratio_pv"/>
+        <field type="java.lang.String" id="vswitch_controller"/>
+        <field type="java.lang.Integer" id="endpoint_key"/>
+        <field type="java.lang.Integer" id="master_key"/>
+        <field type="java.lang.Integer" id="default_sr_key"/>
+        <field type="java.lang.Integer" id="suspend_image_sr_key"/>
+        <field type="java.lang.Integer" id="crash_dump_sr_key"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_haHostFailuresToTolerate" datasourceId="zenoss_reporting" id="daily_haHostFailuresToTolerate">
+    <jdbcTable tableName="daily_hahostfailurestotolerate" datasourceId="zenoss_reporting" id="daily_haHostFailuresToTolerate">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1741,7 +1798,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_haHostFailuresToTolerate" datasourceId="zenoss_reporting" id="hourly_haHostFailuresToTolerate">
+    <jdbcTable tableName="hourly_hahostfailurestotolerate" datasourceId="zenoss_reporting" id="hourly_haHostFailuresToTolerate">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1753,7 +1810,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="daily_haPlanExistsFor" datasourceId="zenoss_reporting" id="daily_haPlanExistsFor">
+    <jdbcTable tableName="daily_haplanexistsfor" datasourceId="zenoss_reporting" id="daily_haPlanExistsFor">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1765,7 +1822,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="hourly_haPlanExistsFor" datasourceId="zenoss_reporting" id="hourly_haPlanExistsFor">
+    <jdbcTable tableName="hourly_haplanexistsfor" datasourceId="zenoss_reporting" id="hourly_haPlanExistsFor">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -1782,28 +1839,22 @@
         <field type="java.lang.Integer" id="xen_server_host_cpu_key"/>
         <field type="java.sql.Timestamp" id="xen_server_host_cpu_deleted_at" dataSetExpression="if(xen_server_host_cpu_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="xen_server_host_cpu_name"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_id"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_type"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_uid"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_snmpindex"/>
-        <field type="java.lang.Boolean" id="xen_server_host_cpu_monitor"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_production_state"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_pre_mw_production_state"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_xenapi_ref"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_xenapi_uuid"/>
-        <field type="java.lang.Double" id="xen_server_host_cpu_family"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_features"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_flags"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_model"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_modelname"/>
-        <field type="java.lang.Double" id="xen_server_host_cpu_number"/>
-        <field type="java.lang.Double" id="xen_server_host_cpu_speed"/>
-        <field type="java.lang.Double" id="xen_server_host_cpu_stepping"/>
-        <field type="java.lang.String" id="xen_server_host_cpu_vendor"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Integer" id="xen_server_host_key"/>
+        <field type="java.lang.String" id="snmpindex"/>
+        <field type="java.lang.Boolean" id="monitor"/>
+        <field type="java.lang.String" id="productionState"/>
+        <field type="java.lang.String" id="preMWProductionState"/>
+        <field type="java.lang.String" id="xenapi_ref"/>
+        <field type="java.lang.String" id="xenapi_uuid"/>
+        <field type="java.lang.Double" id="family"/>
+        <field type="java.lang.String" id="features"/>
+        <field type="java.lang.String" id="flags"/>
+        <field type="java.lang.String" id="model"/>
+        <field type="java.lang.String" id="modelname"/>
+        <field type="java.lang.Double" id="number"/>
+        <field type="java.lang.Double" id="speed"/>
+        <field type="java.lang.Double" id="stepping"/>
+        <field type="java.lang.String" id="vendor"/>
+        <field type="java.lang.Integer" id="host_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="daily_cpu_info" datasourceId="zenoss_reporting" id="daily_cpu_info">
@@ -1830,87 +1881,59 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="dim_xen_server_endpoint" datasourceId="zenoss_reporting" id="JoinTree_1">
+    <jdbcTable tableName="dim_device" datasourceId="zenoss_reporting" id="JoinTree_1">
       <fieldList>
         <field type="java.lang.Integer" id="dim_date.date_key"/>
         <field type="java.util.Date" id="dim_date.date_date"/>
-        <field type="java.lang.Integer" id="dim_xen_server_endpoint.xen_server_endpoint_key"/>
-        <field type="xen_server_endpoint_deleted_at" id="dim_xen_server_endpoint.xen_server_endpoint_deleted_at" dataSetExpression="if(dim_xen_server_endpoint.xen_server_endpoint_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_id"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_name"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_type"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_uid"/>
-        <field type="java.lang.Integer" id="dim_xen_server_endpoint.device_key"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_endpoint.xen_server_endpoint_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_title"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_manage_ip"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_agent"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_descr"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_oid"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_contact"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_sys_name"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_location"/>
-        <field type="java.util.Date" id="dim_xen_server_endpoint.xen_server_endpoint_snmp_last_collection"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_rack_slot"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_comments"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_sysedge_license_mode"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_endpoint_priority"/>
-        <field type="java.lang.String" id="dim_xen_server_endpoint.xen_server_endpoint_z_xen_server_addresses"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_endpoint.device_class_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_endpoint.performance_conf_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_endpoint.location_key"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.system_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.device_group_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.administrative_role_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.user_command_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.status_monitor_conf_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.my_sql_server_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.ldom_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_host_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_network_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_pool_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_sr_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_vm_appliance_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_endpoint.xen_server_vm_count"/>
+        <field type="java.lang.Integer" id="dim_device.device_key"/>
+        <field type="device_deleted_at" id="dim_device.device_deleted_at" dataSetExpression="if(dim_device.device_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_device.device_name"/>
+        <field type="java.lang.String" id="dim_device.device_manage_ip"/>
+        <field type="java.lang.String" id="dim_device.device_comments"/>
+        <field type="java.lang.String" id="dim_device.device_uid"/>
+        <field type="java.lang.Double" id="dim_device.device_production_state"/>
+        <field type="java.lang.String" id="dim_device.device_production_state_name"/>
+        <field type="java.lang.String" id="dim_device.device_class"/>
+        <field type="java.lang.String" id="dim_device.device_collector"/>
+        <field type="java.lang.String" id="dim_device.device_hw_manufacturer"/>
+        <field type="java.lang.String" id="dim_device.device_hw_product"/>
+        <field type="java.lang.String" id="dim_device.device_hw_serial_number"/>
+        <field type="java.lang.String" id="dim_device.device_hw_asset_tag"/>
+        <field type="java.lang.Double" id="dim_device.device_total_swap"/>
+        <field type="java.lang.Double" id="dim_device.device_total_memory"/>
+        <field type="java.lang.String" id="dim_device.device_os_manufacturer"/>
+        <field type="java.lang.String" id="dim_device.device_os_product"/>
+        <field type="java.lang.String" id="dim_device.device_os_uname"/>
+        <field type="java.lang.Double" id="dim_device.device_os_uptime"/>
+        <field type="java.lang.String" id="dim_device.device_availability"/>
+        <field type="java.util.Date" id="dim_device.device_first_seen"/>
+        <field type="java.util.Date" id="dim_device.device_last_change"/>
+        <field type="java.util.Date" id="dim_device.device_last_model"/>
+        <field type="java.lang.String" id="dim_device.device_rack_slot"/>
+        <field type="java.lang.String" id="dim_device.device_sys_object_id"/>
+        <field type="java.lang.String" id="dim_device.device_sys_descr"/>
+        <field type="java.lang.String" id="dim_device.device_sys_name"/>
+        <field type="java.lang.String" id="dim_device.device_sys_location"/>
+        <field type="java.lang.Boolean" id="dim_device.device_is_monitored"/>
         <field type="java.lang.Integer" id="dim_xen_server_sr.xen_server_sr_key"/>
         <field type="xen_server_sr_deleted_at" id="dim_xen_server_sr.xen_server_sr_deleted_at" dataSetExpression="if(dim_xen_server_sr.xen_server_sr_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_name"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_id"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_type"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_sr.xen_server_sr_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_allowed_operations"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_content_type"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_sr.xen_server_sr_local_cache_enabled"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_name_description"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_name_label"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.xen_server_sr_physical_size"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_sr.xen_server_sr_shared"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_sm_type"/>
-        <field type="java.lang.String" id="dim_xen_server_sr.xen_server_sr_sr_type"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_sr.xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.xen_server_vdi_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.xen_server_pbd_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.xen_server_pool_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.suspend_image_for_pools_xen_server_pool_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.crash_dump_for_pools_xen_server_pool_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.xen_server_host_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.crash_dump_for_hosts_xen_server_host_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_sr.local_cache_for_hosts_xen_server_host_count"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_sr.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.allowed_operations"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.content_type"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_sr.local_cache_enabled"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.name_description"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.name_label"/>
+        <field type="java.lang.Double" id="dim_xen_server_sr.physical_size"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_sr.shared"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.sm_type"/>
+        <field type="java.lang.String" id="dim_xen_server_sr.sr_type"/>
+        <field type="java.lang.Integer" id="dim_xen_server_sr.endpoint_key"/>
         <field type="java.lang.Integer" id="daily_physicalSize.device_key"/>
         <field type="java.lang.Integer" id="daily_physicalSize.component_key"/>
         <field type="java.util.Date" id="daily_physicalSize.date_key"/>
@@ -1962,34 +1985,27 @@
         <field type="java.lang.Integer" id="dim_xen_server_vdi.xen_server_vdi_key"/>
         <field type="xen_server_vdi_deleted_at" id="dim_xen_server_vdi.xen_server_vdi_deleted_at" dataSetExpression="if(dim_xen_server_vdi.xen_server_vdi_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_name"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_id"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_type"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_xenapi_uuid"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_allow_caching"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_allowed_operations"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_is_a_snapshot"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_location"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_managed"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_missing"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_name_description"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_name_label"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_on_boot"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_read_only"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_sharable"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vdi.xen_server_vdi_storage_lock"/>
-        <field type="java.lang.String" id="dim_xen_server_vdi.xen_server_vdi_vdi_type"/>
-        <field type="java.lang.Double" id="dim_xen_server_vdi.xen_server_vdi_virtual_size"/>
-        <field type="java.lang.Double" id="dim_xen_server_vdi.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vdi.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vdi.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vdi.xen_server_sr_key"/>
-        <field type="java.lang.Double" id="dim_xen_server_vdi.xen_server_vbd_count"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.xenapi_uuid"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.allow_caching"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.allowed_operations"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.is_a_snapshot"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.location"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.managed"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.missing"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.name_description"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.name_label"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.on_boot"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.read_only"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.sharable"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vdi.storage_lock"/>
+        <field type="java.lang.String" id="dim_xen_server_vdi.vdi_type"/>
+        <field type="java.lang.Double" id="dim_xen_server_vdi.virtual_size"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vdi.sr_key"/>
         <field type="java.lang.Integer" id="daily_virtualSize.device_key"/>
         <field type="java.lang.Integer" id="daily_virtualSize.component_key"/>
         <field type="java.util.Date" id="daily_virtualSize.date_key"/>
@@ -2009,42 +2025,33 @@
         <field type="java.lang.Integer" id="dim_xen_server_host.xen_server_host_key"/>
         <field type="xen_server_host_deleted_at" id="dim_xen_server_host.xen_server_host_deleted_at" dataSetExpression="if(dim_xen_server_host.xen_server_host_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_name"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_id"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_type"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_host.xen_server_host_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_api_version_major"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_api_version_minor"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_api_version_vendor"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_address"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_allowed_operations"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_capabilities"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.xen_server_host_cpu_count"/>
-        <field type="java.lang.Float" id="dim_xen_server_host.xen_server_host_cpu_speed"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_edition"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_host.xen_server_host_enabled"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_hostname"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_name_description"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_name_label"/>
-        <field type="java.lang.String" id="dim_xen_server_host.xen_server_host_sched_policy"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.xen_server_host_memory_total"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_host.xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.xen_server_pbd_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.xen_server_pif_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_host.xen_server_vm_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_host.xen_server_pool_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_host.xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_host.crash_dump_sr_xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_host.local_cache_sr_xen_server_sr_key"/>
+        <field type="java.lang.String" id="dim_xen_server_host.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_host.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_host.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_host.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_host.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_host.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_host.xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_host.api_version_major"/>
+        <field type="java.lang.String" id="dim_xen_server_host.api_version_minor"/>
+        <field type="java.lang.String" id="dim_xen_server_host.api_version_vendor"/>
+        <field type="java.lang.String" id="dim_xen_server_host.address"/>
+        <field type="java.lang.String" id="dim_xen_server_host.allowed_operations"/>
+        <field type="java.lang.String" id="dim_xen_server_host.capabilities"/>
+        <field type="java.lang.Double" id="dim_xen_server_host.cpu_count"/>
+        <field type="java.lang.Float" id="dim_xen_server_host.cpu_speed"/>
+        <field type="java.lang.String" id="dim_xen_server_host.edition"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_host.enabled"/>
+        <field type="java.lang.String" id="dim_xen_server_host.hostname"/>
+        <field type="java.lang.String" id="dim_xen_server_host.name_description"/>
+        <field type="java.lang.String" id="dim_xen_server_host.name_label"/>
+        <field type="java.lang.String" id="dim_xen_server_host.sched_policy"/>
+        <field type="java.lang.Double" id="dim_xen_server_host.memory_total"/>
+        <field type="java.lang.Integer" id="dim_xen_server_host.endpoint_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_host.master_for_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_host.suspend_image_sr_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_host.crash_dump_sr_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_host.local_cache_sr_key"/>
         <field type="java.lang.Integer" id="daily_memoryOverhead.device_key"/>
         <field type="java.lang.Integer" id="daily_memoryOverhead.component_key"/>
         <field type="java.util.Date" id="daily_memoryOverhead.date_key"/>
@@ -2272,64 +2279,52 @@
         <field type="java.lang.Integer" id="dim_xen_server_pbd.xen_server_pbd_key"/>
         <field type="xen_server_pbd_deleted_at" id="dim_xen_server_pbd.xen_server_pbd_deleted_at" dataSetExpression="if(dim_xen_server_pbd.xen_server_pbd_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_name"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_id"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_type"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pbd.xen_server_pbd_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_xenapi_uuid"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pbd.xen_server_pbd_currently_attached"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_dc_device"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pbd.xen_server_pbd_dc_legacy_mode"/>
-        <field type="java.lang.String" id="dim_xen_server_pbd.xen_server_pbd_dc_location"/>
-        <field type="java.lang.Double" id="dim_xen_server_pbd.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_pbd.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_pbd.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pbd.xen_server_host_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pbd.xen_server_sr_key"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pbd.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.xenapi_uuid"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pbd.currently_attached"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.dc_device"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pbd.dc_legacy_mode"/>
+        <field type="java.lang.String" id="dim_xen_server_pbd.dc_location"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pbd.host_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pbd.sr_key"/>
         <field type="java.lang.Integer" id="dim_xen_server_pif.xen_server_pif_key"/>
         <field type="xen_server_pif_deleted_at" id="dim_xen_server_pif.xen_server_pif_deleted_at" dataSetExpression="if(dim_xen_server_pif.xen_server_pif_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_name"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_id"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_type"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pif.xen_server_pif_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_dns"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv4_addresses"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv6_addresses"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_macaddress"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_mtu"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_vlan"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pif.xen_server_pif_carrier"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pif.xen_server_pif_currently_attached"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_pif_device"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_pif_device_id"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_pif_device_name"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pif.xen_server_pif_disallow_unplug"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv4_gateway"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv4_configuration_mode"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv6_configuration_mode"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv6_gateway"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pif.xen_server_pif_management"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_ipv4_netmask"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pif.xen_server_pif_physical"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_primary_address_type"/>
-        <field type="java.lang.Double" id="dim_xen_server_pif.xen_server_pif_speed"/>
-        <field type="java.lang.String" id="dim_xen_server_pif.xen_server_pif_vendor_name"/>
-        <field type="java.lang.Double" id="dim_xen_server_pif.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_pif.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_pif.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pif.xen_server_host_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pif.xen_server_network_key"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pif.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.dns"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv4_addresses"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv6_addresses"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.macaddress"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.mtu"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.vlan"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pif.carrier"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pif.currently_attached"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.pif_device"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.pif_device_id"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.pif_device_name"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pif.disallow_unplug"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv4_gateway"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv4_configuration_mode"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv6_configuration_mode"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv6_gateway"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pif.management"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.ipv4_netmask"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pif.physical"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.primary_address_type"/>
+        <field type="java.lang.Double" id="dim_xen_server_pif.speed"/>
+        <field type="java.lang.String" id="dim_xen_server_pif.vendor_name"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pif.host_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pif.network_key"/>
         <field type="java.lang.Integer" id="daily_speed.device_key"/>
         <field type="java.lang.Integer" id="daily_speed.component_key"/>
         <field type="java.util.Date" id="daily_speed.date_key"/>
@@ -2381,77 +2376,61 @@
         <field type="java.lang.Integer" id="dim_xen_server_network.xen_server_network_key"/>
         <field type="xen_server_network_deleted_at" id="dim_xen_server_network.xen_server_network_deleted_at" dataSetExpression="if(dim_xen_server_network.xen_server_network_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_name"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_id"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_type"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_network.xen_server_network_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_mtu"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_allowed_operations"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_bridge"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_default_locking_mode"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_name_description"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_name_label"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_ipv4_begin"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_ipv4_end"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_network.xen_server_network_is_guest_installer_network"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_network.xen_server_network_is_host_internal_management_network"/>
-        <field type="java.lang.String" id="dim_xen_server_network.xen_server_network_ipv4_netmask"/>
-        <field type="java.lang.Double" id="dim_xen_server_network.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_network.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_network.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_network.xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="dim_xen_server_network.xen_server_pif_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_network.xen_server_vif_count"/>
+        <field type="java.lang.String" id="dim_xen_server_network.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_network.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_network.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_network.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_network.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_network.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_network.mtu"/>
+        <field type="java.lang.String" id="dim_xen_server_network.allowed_operations"/>
+        <field type="java.lang.String" id="dim_xen_server_network.bridge"/>
+        <field type="java.lang.String" id="dim_xen_server_network.default_locking_mode"/>
+        <field type="java.lang.String" id="dim_xen_server_network.name_description"/>
+        <field type="java.lang.String" id="dim_xen_server_network.name_label"/>
+        <field type="java.lang.String" id="dim_xen_server_network.ipv4_begin"/>
+        <field type="java.lang.String" id="dim_xen_server_network.ipv4_end"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_network.is_guest_installer_network"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_network.is_host_internal_management_network"/>
+        <field type="java.lang.String" id="dim_xen_server_network.ipv4_netmask"/>
+        <field type="java.lang.Integer" id="dim_xen_server_network.endpoint_key"/>
         <field type="java.lang.Integer" id="dim_xen_server_vm.xen_server_vm_key"/>
         <field type="xen_server_vm_deleted_at" id="dim_xen_server_vm.xen_server_vm_deleted_at" dataSetExpression="if(dim_xen_server_vm.xen_server_vm_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_name"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_id"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_type"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vm.xen_server_vm_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_xenapi_guest_metrics_ref"/>
-        <field type="java.lang.Float" id="dim_xen_server_vm.xen_server_vm_hvm_shadow_multiplier"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_vcpus_at_startup"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_vcpus_max"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_actions_after_crash"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_actions_after_reboot"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_actions_after_shutdown"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_allowed_operations"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_domarch"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_domid"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vm.xen_server_vm_ha_always_run"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_ha_restart_priority"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vm.xen_server_vm_is_a_snapshot"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vm.xen_server_vm_is_a_template"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vm.xen_server_vm_is_control_domain"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vm.xen_server_vm_is_snapshot_from_vmpp"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_memory_actual"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_name_description"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_name_label"/>
-        <field type="java.lang.String" id="dim_xen_server_vm.xen_server_vm_power_state"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_shutdown_delay"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_start_delay"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_user_version"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vm_version"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vm.xen_server_endpoint_key"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vbd_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vm.xen_server_vif_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vm.xen_server_host_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vm.xen_server_vm_appliance_key"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vm.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.xenapi_guest_metrics_ref"/>
+        <field type="java.lang.Float" id="dim_xen_server_vm.hvm_shadow_multiplier"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.vcpus_at_startup"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.vcpus_max"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.actions_after_crash"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.actions_after_reboot"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.actions_after_shutdown"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.allowed_operations"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.domarch"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.domid"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vm.ha_always_run"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.ha_restart_priority"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vm.is_a_snapshot"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vm.is_a_template"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vm.is_control_domain"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vm.is_snapshot_from_vmpp"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.memory_actual"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.name_description"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.name_label"/>
+        <field type="java.lang.String" id="dim_xen_server_vm.power_state"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.shutdown_delay"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.start_delay"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.user_version"/>
+        <field type="java.lang.Double" id="dim_xen_server_vm.version"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vm.endpoint_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vm.host_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vm.vmappliance_key"/>
         <field type="java.lang.Integer" id="daily_memoryActual.device_key"/>
         <field type="java.lang.Integer" id="daily_memoryActual.component_key"/>
         <field type="java.util.Date" id="daily_memoryActual.date_key"/>
@@ -2599,31 +2578,25 @@
         <field type="java.lang.Integer" id="dim_xen_server_vbd.xen_server_vbd_key"/>
         <field type="xen_server_vbd_deleted_at" id="dim_xen_server_vbd.xen_server_vbd_deleted_at" dataSetExpression="if(dim_xen_server_vbd.xen_server_vbd_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_name"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_id"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_type"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vbd.xen_server_vbd_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_allowed_operations"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vbd.xen_server_vbd_bootable"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vbd.xen_server_vbd_currently_attached"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_vbd_device"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vbd.xen_server_vbd_empty"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_mode"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vbd.xen_server_vbd_storage_lock"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_vbd_type"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vbd.xen_server_vbd_unpluggable"/>
-        <field type="java.lang.String" id="dim_xen_server_vbd.xen_server_vbd_userdevice"/>
-        <field type="java.lang.Double" id="dim_xen_server_vbd.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vbd.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vbd.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vbd.xen_server_vm_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vbd.xen_server_vdi_key"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vbd.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.allowed_operations"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vbd.bootable"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vbd.currently_attached"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.vbd_device"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vbd.empty"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.mode"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vbd.storage_lock"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.vbd_type"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vbd.unpluggable"/>
+        <field type="java.lang.String" id="dim_xen_server_vbd.userdevice"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vbd.vm_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vbd.vdi_key"/>
         <field type="java.lang.Integer" id="daily_read.device_key"/>
         <field type="java.lang.Integer" id="daily_read.component_key"/>
         <field type="java.util.Date" id="daily_read.date_key"/>
@@ -2659,59 +2632,47 @@
         <field type="java.lang.Integer" id="dim_xen_server_vif.xen_server_vif_key"/>
         <field type="xen_server_vif_deleted_at" id="dim_xen_server_vif.xen_server_vif_deleted_at" dataSetExpression="if(dim_xen_server_vif.xen_server_vif_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_name"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_id"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_type"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vif.xen_server_vif_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_xenapi_uuid"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_xenapi_metrics_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_macaddress"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vif.xen_server_vif_mac_autogenerated"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_mtu"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_allowed_operations"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_vif.xen_server_vif_currently_attached"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_vif_device"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_ipv4_allowed"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_ipv6_allowed"/>
-        <field type="java.lang.String" id="dim_xen_server_vif.xen_server_vif_locking_mode"/>
-        <field type="java.lang.Double" id="dim_xen_server_vif.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vif.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_vif.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vif.xen_server_vm_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_vif.xen_server_network_key"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vif.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.xenapi_uuid"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.xenapi_metrics_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.macaddress"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vif.mac_autogenerated"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.mtu"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.allowed_operations"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_vif.currently_attached"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.vif_device"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.ipv4_allowed"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.ipv6_allowed"/>
+        <field type="java.lang.String" id="dim_xen_server_vif.locking_mode"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vif.vm_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_vif.network_key"/>
         <field type="java.lang.Integer" id="dim_xen_server_pool.xen_server_pool_key"/>
         <field type="xen_server_pool_deleted_at" id="dim_xen_server_pool.xen_server_pool_deleted_at" dataSetExpression="if(dim_xen_server_pool.xen_server_pool_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_name"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_id"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_type"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pool.xen_server_pool_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_xenapi_uuid"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pool.xen_server_pool_ha_allow_overcommit"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_pool.xen_server_pool_ha_enabled"/>
-        <field type="java.lang.Double" id="dim_xen_server_pool.xen_server_pool_ha_host_failures_to_tolerate"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_name_description"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_name_label"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_oc_cpuid_feature_mask"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_oc_memory_ratio_hvm"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_oc_memory_ratio_pv"/>
-        <field type="java.lang.String" id="dim_xen_server_pool.xen_server_pool_vswitch_controller"/>
-        <field type="java.lang.Double" id="dim_xen_server_pool.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_pool.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_pool.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pool.xen_server_endpoint_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pool.xen_server_host_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pool.xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pool.suspend_image_sr_xen_server_sr_key"/>
-        <field type="java.lang.Integer" id="dim_xen_server_pool.crash_dump_sr_xen_server_sr_key"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pool.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.xenapi_uuid"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pool.ha_allow_overcommit"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_pool.ha_enabled"/>
+        <field type="java.lang.Double" id="dim_xen_server_pool.ha_host_failures_to_tolerate"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.name_description"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.name_label"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.oc_cpuid_feature_mask"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.oc_memory_ratio_hvm"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.oc_memory_ratio_pv"/>
+        <field type="java.lang.String" id="dim_xen_server_pool.vswitch_controller"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pool.endpoint_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pool.master_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pool.default_sr_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pool.suspend_image_sr_key"/>
+        <field type="java.lang.Integer" id="dim_xen_server_pool.crash_dump_sr_key"/>
         <field type="java.lang.Integer" id="daily_haHostFailuresToTolerate.device_key"/>
         <field type="java.lang.Integer" id="daily_haHostFailuresToTolerate.component_key"/>
         <field type="java.util.Date" id="daily_haHostFailuresToTolerate.date_key"/>
@@ -2747,28 +2708,22 @@
         <field type="java.lang.Integer" id="dim_xen_server_host_cpu.xen_server_host_cpu_key"/>
         <field type="xen_server_host_cpu_deleted_at" id="dim_xen_server_host_cpu.xen_server_host_cpu_deleted_at" dataSetExpression="if(dim_xen_server_host_cpu.xen_server_host_cpu_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_name"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_id"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_type"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_uid"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_xen_server_host_cpu.xen_server_host_cpu_monitor"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_xenapi_ref"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_xenapi_uuid"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.xen_server_host_cpu_family"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_features"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_flags"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_model"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_modelname"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.xen_server_host_cpu_number"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.xen_server_host_cpu_speed"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.xen_server_host_cpu_stepping"/>
-        <field type="java.lang.String" id="dim_xen_server_host_cpu.xen_server_host_cpu_vendor"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.dependents_count"/>
-        <field type="java.lang.Double" id="dim_xen_server_host_cpu.maintenance_window_count"/>
-        <field type="java.lang.Integer" id="dim_xen_server_host_cpu.xen_server_host_key"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_xen_server_host_cpu.monitor"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.productionState"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.preMWProductionState"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.xenapi_ref"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.xenapi_uuid"/>
+        <field type="java.lang.Double" id="dim_xen_server_host_cpu.family"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.features"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.flags"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.model"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.modelname"/>
+        <field type="java.lang.Double" id="dim_xen_server_host_cpu.number"/>
+        <field type="java.lang.Double" id="dim_xen_server_host_cpu.speed"/>
+        <field type="java.lang.Double" id="dim_xen_server_host_cpu.stepping"/>
+        <field type="java.lang.String" id="dim_xen_server_host_cpu.vendor"/>
+        <field type="java.lang.Integer" id="dim_xen_server_host_cpu.host_key"/>
         <field type="java.lang.Integer" id="daily_cpu_info.device_key"/>
         <field type="java.lang.Integer" id="daily_cpu_info.component_key"/>
         <field type="java.util.Date" id="daily_cpu_info.date_key"/>
@@ -2786,10 +2741,10 @@
         <field type="java.lang.Double" id="hourly_cpu_info.fct_max"/>
         <field type="java.lang.Double" id="hourly_cpu_info.fct_min"/>
       </fieldList>
-      <joinInfo alias="dim_xen_server_endpoint" referenceId="dim_xen_server_endpoint"/>
+      <joinInfo alias="dim_device" referenceId="dim_device"/>
       <joinedDataSetList>
         <joinedDataSetRef>
-          <joinString>left outer join dim_xen_server_sr dim_xen_server_sr on (dim_xen_server_sr.endpoint_key == dim_xen_server_endpoint.xen_server_endpoint_key)</joinString>
+          <joinString>left outer join dim_xen_server_sr dim_xen_server_sr on (dim_xen_server_sr.endpoint_key == dim_device.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join daily_physicalSize daily_physicalSize on (dim_xen_server_sr.xen_server_sr_key == daily_physicalSize.component_key)</joinString>
@@ -2819,7 +2774,7 @@
           <joinString>left outer join hourly_virtualSize hourly_virtualSize on (dim_xen_server_vdi.xen_server_vdi_key == hourly_virtualSize.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_xen_server_host dim_xen_server_host on (dim_xen_server_host.master_for_key == dim_xen_server_pool.xen_server_pool_key and dim_xen_server_host.crash_dump_sr_key == dim_xen_server_sr.xen_server_sr_key and dim_xen_server_host.suspend_image_sr_key == dim_xen_server_sr.xen_server_sr_key and dim_xen_server_host.endpoint_key == dim_xen_server_endpoint.xen_server_endpoint_key)</joinString>
+          <joinString>left outer join dim_xen_server_host dim_xen_server_host on (dim_xen_server_host.crash_dump_sr_key == dim_xen_server_sr.xen_server_sr_key and dim_xen_server_host.master_for_key == dim_xen_server_pool.xen_server_pool_key and dim_xen_server_host.endpoint_key == dim_device.device_key and dim_xen_server_host.suspend_image_sr_key == dim_xen_server_sr.xen_server_sr_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join daily_memoryOverhead daily_memoryOverhead on (dim_xen_server_vm.xen_server_vm_key == daily_memoryOverhead.component_key and dim_xen_server_host.xen_server_host_key == daily_memoryOverhead.component_key)</joinString>
@@ -2930,10 +2885,10 @@
           <joinString>left outer join hourly_tx hourly_tx on (dim_xen_server_vif.xen_server_vif_key == hourly_tx.component_key and dim_xen_server_pif.xen_server_pif_key == hourly_tx.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_xen_server_network dim_xen_server_network on (dim_xen_server_network.endpoint_key == dim_xen_server_endpoint.xen_server_endpoint_key)</joinString>
+          <joinString>left outer join dim_xen_server_network dim_xen_server_network on (dim_xen_server_network.endpoint_key == dim_device.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_xen_server_vm dim_xen_server_vm on (dim_xen_server_vm.endpoint_key == dim_xen_server_endpoint.xen_server_endpoint_key and dim_xen_server_vm.host_key == dim_xen_server_host.xen_server_host_key)</joinString>
+          <joinString>left outer join dim_xen_server_vm dim_xen_server_vm on (dim_xen_server_vm.host_key == dim_xen_server_host.xen_server_host_key and dim_xen_server_vm.endpoint_key == dim_device.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join daily_memoryActual daily_memoryActual on (dim_xen_server_vm.xen_server_vm_key == daily_memoryActual.component_key)</joinString>
@@ -3008,7 +2963,7 @@
           <joinString>left outer join dim_xen_server_vif dim_xen_server_vif on (dim_xen_server_vif.network_key == dim_xen_server_network.xen_server_network_key and dim_xen_server_vif.vm_key == dim_xen_server_vm.xen_server_vm_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_xen_server_pool dim_xen_server_pool on (dim_xen_server_pool.endpoint_key == dim_xen_server_endpoint.xen_server_endpoint_key and dim_xen_server_pool.master_key == dim_xen_server_host.xen_server_host_key and dim_xen_server_pool.default_sr_key == dim_xen_server_sr.xen_server_sr_key)</joinString>
+          <joinString>left outer join dim_xen_server_pool dim_xen_server_pool on (dim_xen_server_pool.endpoint_key == dim_device.device_key and dim_xen_server_pool.master_key == dim_xen_server_host.xen_server_host_key and dim_xen_server_pool.default_sr_key == dim_xen_server_sr.xen_server_sr_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join daily_haHostFailuresToTolerate daily_haHostFailuresToTolerate on (dim_xen_server_pool.xen_server_pool_key == daily_haHostFailuresToTolerate.component_key)</joinString>
