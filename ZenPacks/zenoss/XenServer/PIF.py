@@ -37,6 +37,7 @@ class PIF(PooledComponent):
 
     class_label = 'Physical NIC'
     class_plural_label = 'Physical NICs'
+    order = 15
 
     meta_type = portal_type = 'XenServerPIF'
 

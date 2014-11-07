@@ -31,6 +31,7 @@ class HostCPU(PooledComponent):
 
     class_label = 'Host CPU'
     class_plural_label = 'Host CPUs'
+    order = 13
 
     meta_type = portal_type = 'XenServerHostCPU'
 

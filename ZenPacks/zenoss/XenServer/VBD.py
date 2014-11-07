@@ -33,6 +33,7 @@ class VBD(PooledComponent):
 
     class_label = 'Virtual Block Device'
     class_plural_label = 'Virtual Block Devices'
+    order = 21
 
     meta_type = portal_type = 'XenServerVBD'
 

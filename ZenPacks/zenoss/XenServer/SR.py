@@ -32,6 +32,7 @@ class SR(PooledComponent):
 
     class_label = 'Storage Repository'
     class_plural_label = 'Storage Repositories'
+    order = 16
 
     meta_type = portal_type = 'XenServerSR'
 

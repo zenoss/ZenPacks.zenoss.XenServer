@@ -32,6 +32,7 @@ class VMAppliance(PooledComponent):
 
     class_label = 'vApp'
     class_plural_label = 'vApps'
+    order = 19
 
     meta_type = portal_type = 'XenServerVMAppliance'
 
