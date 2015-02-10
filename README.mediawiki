@@ -370,6 +370,10 @@ Domains can be used to create ad hoc views using the following steps.
 
 == Changes ==
 
+;1.0.5
+* Add Analytics support.
+* Add Zenoss 5 support.
+
 ;1.0.4
 * Fix "argument of type 'NoneType' is not iterable" errors. (ZEN-14856)
 * Fix potential for failing to remove storage repositories.
