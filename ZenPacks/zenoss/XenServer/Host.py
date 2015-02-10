@@ -34,6 +34,9 @@ class Host(PooledComponent):
     Model class for Host. Also known as Server.
     '''
 
+    class_label = 'Host'
+    class_plural_label = 'Hosts'
+
     meta_type = portal_type = 'XenServerHost'
 
     xenapi_metrics_ref = None
@@ -54,22 +57,22 @@ class Host(PooledComponent):
     memory_total = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'xenapi_metrics_ref', 'type': 'string', 'mode': 'w'},
-        {'id': 'api_version_major', 'type': 'string', 'mode': 'w'},
-        {'id': 'api_version_minor', 'type': 'string', 'mode': 'w'},
-        {'id': 'api_version_vendor', 'type': 'string', 'mode': 'w'},
-        {'id': 'address', 'type': 'string', 'mode': 'w'},
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'capabilities', 'type': 'lines', 'mode': 'w'},
-        {'id': 'cpu_count', 'type': 'int', 'mode': 'w'},
-        {'id': 'cpu_speed', 'type': 'float', 'mode': 'w'},
-        {'id': 'edition', 'type': 'string', 'mode': 'w'},
-        {'id': 'enabled', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'hostname', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'sched_policy', 'type': 'string', 'mode': 'w'},
-        {'id': 'memory_total', 'type': 'int', 'mode': 'w'},
+        {'id': 'xenapi_metrics_ref', 'label': 'XENAPI Metrics Reference', 'type': 'string', 'mode': 'w'},
+        {'id': 'api_version_major', 'label': 'API Version Major', 'type': 'string', 'mode': 'w'},
+        {'id': 'api_version_minor', 'label': 'API Version Minor', 'type': 'string', 'mode': 'w'},
+        {'id': 'api_version_vendor', 'label': 'API Version Vendor', 'type': 'string', 'mode': 'w'},
+        {'id': 'address', 'label': 'Address', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'capabilities', 'label': 'Capabilities', 'type': 'lines', 'mode': 'w'},
+        {'id': 'cpu_count', 'label': 'CPU Count', 'type': 'int', 'mode': 'w'},
+        {'id': 'cpu_speed', 'label': 'CPU Speed', 'type': 'float', 'mode': 'w'},
+        {'id': 'edition', 'label': 'Edition', 'type': 'string', 'mode': 'w'},
+        {'id': 'enabled', 'label': 'Enabled', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'hostname', 'label': 'Hostname', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
+        {'id': 'sched_policy', 'label': 'Scheduling Policy', 'type': 'string', 'mode': 'w'},
+        {'id': 'memory_total', 'label': 'Total Memory', 'type': 'int', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

@@ -35,7 +35,8 @@ class XenServerCreationJob(SubprocessJob):
     def getJobDescription(cls, *args, **kwargs):
         return "Add {deviceName} under {devicePath}".format(**kwargs)
 
-    def _run(self, deviceName, performanceMonitor='localhost', zProperties=None):
+    def _run(self, deviceName, performanceMonitor='localhost',
+             zProperties=None, **kwargs):
         loader = JobDeviceLoader(self.dmd)
 
         @transact

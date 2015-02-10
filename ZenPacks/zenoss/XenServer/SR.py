@@ -30,6 +30,9 @@ class SR(PooledComponent):
     Model class for SR. Also known as Storage Repository.
     '''
 
+    class_label = 'Storage Repository'
+    class_plural_label = 'Storage Repositories'
+
     meta_type = portal_type = 'XenServerSR'
 
     allowed_operations = None
@@ -43,15 +46,15 @@ class SR(PooledComponent):
     sr_type = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'content_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'local_cache_enabled', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'physical_size', 'type': 'int', 'mode': 'w'},
-        {'id': 'shared', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'sm_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'sr_type', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'content_type', 'label': 'Content Type', 'type': 'string', 'mode': 'w'},
+        {'id': 'local_cache_enabled', 'label': 'Local Cache Enabled', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
+        {'id': 'physical_size', 'label': 'Physical Size', 'type': 'int', 'mode': 'w'},
+        {'id': 'shared', 'label': 'Shared', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'sm_type', 'label': 'SM Type', 'type': 'string', 'mode': 'w'},
+        {'id': 'sr_type', 'label': 'Type', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

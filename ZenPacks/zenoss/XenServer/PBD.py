@@ -32,6 +32,9 @@ class PBD(PooledComponent):
     Model class for PBD (physical block device.)
     '''
 
+    class_label = 'Physical Block Device'
+    class_plural_label = 'Physical Block Devices'
+
     meta_type = portal_type = 'XenServerPBD'
 
     currently_attached = None
@@ -40,10 +43,10 @@ class PBD(PooledComponent):
     dc_location = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'currently_attached', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'dc_device', 'type': 'string', 'mode': 'w'},
-        {'id': 'dc_legacy_mode', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'dc_location', 'type': 'string', 'mode': 'w'},
+        {'id': 'currently_attached', 'label': 'Currently Attached', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'dc_device', 'label': 'Device Name', 'type': 'string', 'mode': 'w'},
+        {'id': 'dc_legacy_mode', 'label': 'Legacy Mode', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'dc_location', 'label': 'Location', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

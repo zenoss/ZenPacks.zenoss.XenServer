@@ -30,6 +30,9 @@ class VMAppliance(PooledComponent):
     Model class for VMAppliance. Also known as vApp.
     '''
 
+    class_label = 'vApp'
+    class_plural_label = 'vApps'
+
     meta_type = portal_type = 'XenServerVMAppliance'
 
     allowed_operations = None
@@ -37,9 +40,9 @@ class VMAppliance(PooledComponent):
     name_label = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (

@@ -29,6 +29,10 @@ class VDI(PooledComponent):
     '''
     Model class for VDI (virtual disk image.)
     '''
+
+    class_label = 'Virtual Disk Image'
+    class_plural_label = 'Virtual Disk Images'
+
     meta_type = portal_type = 'XenServerVDI'
 
     allow_caching = None
@@ -47,20 +51,20 @@ class VDI(PooledComponent):
     virtual_size = None
 
     _properties = PooledComponent._properties + (
-        {'id': 'allow_caching', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'allowed_operations', 'type': 'lines', 'mode': 'w'},
-        {'id': 'is_a_snapshot', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'location', 'type': 'string', 'mode': 'w'},
-        {'id': 'managed', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'missing', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'name_description', 'type': 'string', 'mode': 'w'},
-        {'id': 'name_label', 'type': 'string', 'mode': 'w'},
-        {'id': 'on_boot', 'type': 'string', 'mode': 'w'},
-        {'id': 'read_only', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'sharable', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'storage_lock', 'type': 'boolean', 'mode': 'w'},
-        {'id': 'vdi_type', 'type': 'string', 'mode': 'w'},
-        {'id': 'virtual_size', 'type': 'int', 'mode': 'w'},
+        {'id': 'allow_caching', 'label': 'Allow Caching', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'allowed_operations', 'label': 'Allowed Operations', 'type': 'lines', 'mode': 'w'},
+        {'id': 'is_a_snapshot', 'label': 'Is a Snapshot', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'location', 'label': 'Location', 'type': 'string', 'mode': 'w'},
+        {'id': 'managed', 'label': 'Managed', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'missing', 'label': 'Missing', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'name_description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'name_label', 'label': 'Label', 'type': 'string', 'mode': 'w'},
+        {'id': 'on_boot', 'label': 'On Boot', 'type': 'string', 'mode': 'w'},
+        {'id': 'read_only', 'label': 'Read Only', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'sharable', 'label': 'Sharable', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'storage_lock', 'label': 'Storage Lock', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'vdi_type', 'label': 'Type', 'type': 'string', 'mode': 'w'},
+        {'id': 'virtual_size', 'label': 'Virtual Size', 'type': 'int', 'mode': 'w'},
         )
 
     _relations = PooledComponent._relations + (
