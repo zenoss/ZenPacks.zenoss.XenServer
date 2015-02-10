@@ -32,6 +32,7 @@ class Pool(BaseComponent):
 
     class_label = 'Pool'
     class_plural_label = 'Pools'
+    order = 11
 
     meta_type = portal_type = 'XenServerPool'
 

@@ -32,6 +32,7 @@ class Network(PooledComponent):
 
     class_label = 'Network'
     class_plural_label = 'Networks'
+    order = 18
 
     meta_type = portal_type = 'XenServerNetwork'
 

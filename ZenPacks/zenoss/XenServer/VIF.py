@@ -37,6 +37,7 @@ class VIF(PooledComponent):
 
     class_label = 'Virtual NIC'
     class_plural_label = 'Virtual NICs'
+    order = 22
 
     meta_type = portal_type = 'XenServerVIF'
 

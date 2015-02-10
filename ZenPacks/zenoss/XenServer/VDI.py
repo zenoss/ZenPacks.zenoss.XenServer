@@ -32,6 +32,7 @@ class VDI(PooledComponent):
 
     class_label = 'Virtual Disk Image'
     class_plural_label = 'Virtual Disk Images'
+    order = 17
 
     meta_type = portal_type = 'XenServerVDI'
 

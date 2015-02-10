@@ -34,6 +34,7 @@ class PBD(PooledComponent):
 
     class_label = 'Physical Block Device'
     class_plural_label = 'Physical Block Devices'
+    order = 14
 
     meta_type = portal_type = 'XenServerPBD'
 

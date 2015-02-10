@@ -36,6 +36,7 @@ class Host(PooledComponent):
 
     class_label = 'Host'
     class_plural_label = 'Hosts'
+    order = 12
 
     meta_type = portal_type = 'XenServerHost'
 

@@ -37,6 +37,7 @@ class VM(PooledComponent):
 
     class_label = 'VM'
     class_plural_label = 'VMs'
+    order = 20
 
     meta_type = portal_type = 'XenServerVM'
 
