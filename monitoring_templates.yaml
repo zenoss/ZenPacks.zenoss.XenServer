@@ -469,10 +469,6 @@
       xenapi_ref: "${here/xenapi_metrics_ref}"
 
       datapoints:
-        vcpusNumber:
-          path: VCPUs_number
-          rrdmin: 0
-
         memoryActual:
           path: memory_actual
           rrdmin: 0
@@ -523,15 +519,6 @@
         Used:
           dpName: "rrd_cpuAvg"
           format: "%7.2lf%%"
-
-    CPUs:
-      units: vCPUs
-      miny: 0
-
-      graphpoints:
-        Count:
-          dpName: "metric_vcpusNumber"
-          format: "%4.0lf"
 
     Memory Usage:
       units: bytes
