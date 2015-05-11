@@ -2408,21 +2408,6 @@ memory_actual
 </object>
 </tomanycont>
 </object>
-<object id='vcpusNumber' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataPoint'>
-<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
-</property>
-<property type="boolean" id="isrow" mode="w" >
-True
-</property>
-<property type="string" id="path" mode="w" >
-VCPUs_number
-</property>
-<tomanycont id='aliases'>
-<object id='vcpusNumber' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
-</object>
-</tomanycont>
-</object>
 </tomanycont>
 </object>
 <object id='property' module='ZenPacks.zenoss.XenServer.datasources.XenServerXenAPIDataSource' class='XenServerXenAPIDataSource'>
@@ -2731,66 +2716,6 @@ ${graphPoint/id}
 </property>
 <property type="string" id="dpName" mode="w" >
 rrd_cpuAvg
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-</tomanycont>
-</object>
-<object id='CPUs' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property type="int" id="height" mode="w" >
-100
-</property>
-<property type="int" id="width" mode="w" >
-500
-</property>
-<property type="string" id="units" mode="w" >
-vCPUs
-</property>
-<property type="boolean" id="log" mode="w" >
-False
-</property>
-<property type="boolean" id="base" mode="w" >
-False
-</property>
-<property type="int" id="miny" mode="w" >
-0
-</property>
-<property type="int" id="maxy" mode="w" >
--1
-</property>
-<property type="boolean" id="hasSummary" mode="w" >
-True
-</property>
-<property type="long" id="sequence" mode="w" >
-1
-</property>
-<tomanycont id='graphPoints'>
-<object id='Count' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-0
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%4.0lf
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-metric_vcpusNumber
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
