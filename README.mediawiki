@@ -370,6 +370,9 @@ Domains can be used to create ad hoc views using the following steps.
 
 == Changes ==
 
+;1.0.7
+* Licensing fixes. No functional changes.
+
 ;1.0.6
 * Remove CPU count graph and datapoint
 
