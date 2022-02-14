@@ -198,6 +198,12 @@ class XenAPIPlugin(BasePlugin):
             config.datasources[0].params['xenapi_classname'],
             error)
 
+        global clients
+        ds0 = config.datasources[0]
+        client_key =  (tuple(ds0.xenserver_addresses), ds0.zXenServerUsername, ds0.zXenServerPassword)
+        if client_key in clients:
+            del clients[client_key]
+
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
         return data
