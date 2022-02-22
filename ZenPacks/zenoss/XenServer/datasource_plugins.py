@@ -106,6 +106,13 @@ class BasePlugin(PythonDataSourcePlugin):
 
         return self.collect_xen(config, ds0, client)
 
+    def onError(self, error, config):
+        global clients
+        ds0 = config.datasources[0]
+        client_key =  (tuple(ds0.xenserver_addresses), ds0.zXenServerUsername, ds0.zXenServerPassword)
+        if client_key in clients:
+            del clients[client_key]
+        return
 
 class XenAPIPlugin(BasePlugin):
     '''
@@ -189,6 +196,7 @@ class XenAPIPlugin(BasePlugin):
         return data
 
     def onError(self, error, config):
+        super(XenAPIPlugin, self).onError(error, config)
         if hasattr(error, 'value'):
             error = error.value
 
@@ -197,7 +205,7 @@ class XenAPIPlugin(BasePlugin):
             config.id,
             config.datasources[0].params['xenapi_classname'],
             error)
-
+        
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
         return data
@@ -226,9 +234,10 @@ class XenAPIEventsPlugin(BasePlugin):
         return data
 
     def onError(self, error, config):
+        super(XenAPIEventsPlugin, self).onError(error, config)
         if hasattr(error, 'value'):
             error = error.value
-
+        
         LOG.error('error for %s events: %s', config.id, error)
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
@@ -327,9 +336,10 @@ class XenAPIMessagesPlugin(BasePlugin):
         return data
 
     def onError(self, error, config):
+        super(XenAPIMessagesPlugin, self).onError(error, config)
         if hasattr(error, 'value'):
             error = error.value
-
+        
         LOG.error('error for %s messages: %s', config.id, error)
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
@@ -459,9 +469,10 @@ class XenRRDPlugin(BasePlugin):
         return data
 
     def onError(self, error, config):
+        super(XenRRDPlugin, self).onError(error, config)
         if hasattr(error, 'value'):
             error = error.value
-
+        
         LOG.error('error for %s rrd_updates: %s', config.id, error)
         data = self.new_data()
         data['events'].append(get_event(config, str(error), 5))
