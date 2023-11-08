@@ -220,6 +220,7 @@ class Client(object):
             url_parts.append('json')
 
         result = yield getPage('&'.join(url_parts))
+        LOG.debug("Grabbing rrdupdates performance data from %s", ('&'.join(url_parts)))
         returnValue(result)
 
 
