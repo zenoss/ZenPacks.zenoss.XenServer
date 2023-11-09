@@ -388,6 +388,8 @@ class XenRRDPlugin(BasePlugin):
             start = int(server_time) - ds0.cycletime - 5
             result = yield client.rrd_updates(
                 address, start=start, cf='AVERAGE', host=True)
+            if 'Host' == ds0.template:
+                LOG.debug("Datasource XenRRDPlugin: %s API Results for Host Template: %s", config.id, result)
 
             for _, element in etree.iterparse(StringIO(result)):
                 if element.tag == 'meta':
