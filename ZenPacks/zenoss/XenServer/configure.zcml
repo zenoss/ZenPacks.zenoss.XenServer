@@ -313,4 +313,7 @@
 
     </configure>
 
+    <!-- Include the zenjobs job definitions. -->
+    <include file="jobs.zcml"/>
+    
 </configure>
