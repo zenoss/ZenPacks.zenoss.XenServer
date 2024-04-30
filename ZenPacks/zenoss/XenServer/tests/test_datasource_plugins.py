@@ -9,13 +9,46 @@
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
-from ZenPacks.zenoss.XenServer.datasource_plugins import aggregate_values
+from ZenPacks.zenoss.XenServer.datasource_plugins import aggregate_values, XenAPIPlugin, XenAPIEventsPlugin, XenAPIMessagesPlugin, XenRRDPlugin
 
+class CollectXenException(Exception):
+    """
+    Exception raised by test TestXenApi used to test that it is called
+    """
 
 class Mock:
     pass
 
+class mockConfig:
+    id = 'testID'
+    datasources = []
+    
+class mockDatasource:
+    xenserver_addresses = ['192.20.102.104']
+    zXenServerPassword = 'testUser'
+    zXenServerUsername = 'testPass'
+    params = {'xenapi_classname': 'host'}
 
+class TestXenAPIPlugin(XenAPIPlugin):
+    def collect_xen(self, config, ds0, client):
+        self.onError('testPlugin', config)
+        raise CollectXenException()
+
+class TestXenAPIEventsPlugin(XenAPIEventsPlugin):
+    def collect_xen(self, config, ds0, client):
+        self.onError('testEventsPlugin', config)
+        raise CollectXenException()
+        
+class TestXenAPIMessagesPlugin(XenAPIMessagesPlugin):
+    def collect_xen(self, config, ds0, client):
+        self.onError('testMessagesPlugin', config)
+        raise CollectXenException()
+
+class TestXenRRDPlugin(XenRRDPlugin):
+    def collect_xen(self, config, ds0, client):
+        self.onError('testRRDPlugin', config)
+        raise CollectXenException()
+        
 class TestUtils(BaseTestCase):
     def test_aggregate_values(self):
         values = [
@@ -70,7 +103,29 @@ class TestUtils(BaseTestCase):
                 r, expected,
                 "group {0} of time {1} for {2} was {3} instead of {4}".format(
                     group_f, time_f, v, r, expected))
-
+                    
+    def test_client_cache_removal(self):
+        #classes being tested for client cache removal on Error
+        self.xenApiPlugin = TestXenAPIPlugin()
+        self.xenApiEventsPlugin = TestXenAPIEventsPlugin()
+        self.xenApiMessagesPlugin = TestXenAPIMessagesPlugin()
+        self.xenRRDPlugin = TestXenRRDPlugin()
+        #generate test config
+        ds0 = mockDatasource()
+        config = mockConfig()
+        config.datasources = [ds0]
+        
+        with self.assertRaises(CollectXenException):
+            self.xenApiPlugin.collect(config)
+            
+        with self.assertRaises(CollectXenException):
+            self.xenApiEventsPlugin.collect(config)
+            
+        with self.assertRaises(CollectXenException):
+            self.xenApiMessagesPlugin.collect(config)
+            
+        with self.assertRaises(CollectXenException):
+            self.xenRRDPlugin.collect(config)
 
 def test_suite():
     from unittest import TestSuite, makeSuite
